@@ -62,24 +62,18 @@ const fetchLatestTag = (
   if (!force && inflight) return inflight
 
   const request = (async () => {
-    // Deliberately not /releases/latest: that endpoint skips pre-releases, and
-    // every Android beta so far has been one - it answers "b19" to a phone
-    // already running b21. The list endpoint includes them, but orders by
-    // created_at rather than version, so pick the newest tag ourselves.
-    const res = await fetch(
-      `https://api.github.com/repos/${repoOwner}/${repoName}/releases?per_page=30`
-    )
+    // /releases/latest deliberately: it ignores pre-releases, and flipping a
+    // release off "pre-release" is how a build is declared ready for users.
+    // Builds that are still baking stay invisible to the updater by design.
+    const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`)
     if (!res.ok) {
       console.error(`Failed to fetch latest APK version: ${res.status}`)
       return null
     }
-    const releases = await res.json()
-    const tags = (Array.isArray(releases) ? releases : [])
-      .filter((release) => !release.draft && typeof release.tag_name === 'string')
-      .map((release) => release.tag_name as string)
-    if (!tags.length) return null
+    const release = await res.json()
+    if (typeof release?.tag_name !== 'string') return null
 
-    cachedTag = tags.reduce((best, tag) => (compareTags(tag, best) > 0 ? tag : best))
+    cachedTag = release.tag_name
     return cachedTag
   })()
 
