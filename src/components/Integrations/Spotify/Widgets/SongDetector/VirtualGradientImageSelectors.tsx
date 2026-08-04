@@ -9,15 +9,13 @@ const VirtualGradientImageSelectors = () => {
   const selectedGradient = useStore((state) => state.selectedGradient)
   const extractedColors = useStore((state) => state.extractedColors)
 
-  // Each row reads and writes through whichever engine owns it.
   const gradient = useEngineRow('gradient')
   const image = useEngineRow('image')
 
   const asList = (value: any): string[] => (typeof value === 'string' ? value.split(',') : value)
 
-  // Album art needs somewhere to draw: an imagespin on a single-row strip is
-  // meaningless, so image targets are matrix virtuals only. Gradients apply to
-  // any virtual.
+  // Image targets are matrix virtuals only - an imagespin on a single row is
+  // meaningless. Gradients apply to any virtual.
   const allVirtuals = Object.keys(virtuals)
   const matrixVirtuals = allVirtuals.filter((v) => (virtuals[v]?.config?.rows || 1) > 1)
 
@@ -48,8 +46,6 @@ const VirtualGradientImageSelectors = () => {
         engineAvailable={gradient.engineAvailable}
         disabled={
           gradient.virtuals.length === 0 ||
-          // The core extracts its own gradients, so it needs neither a local
-          // selection nor locally extracted colours.
           (!gradient.isCore && (selectedGradient === null || extractedColors.length === 0))
         }
       />

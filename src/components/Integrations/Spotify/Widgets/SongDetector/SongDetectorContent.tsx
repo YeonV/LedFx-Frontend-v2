@@ -17,7 +17,6 @@ const SongDetectorContent = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
 
-  // Keeps core-owned rows in sync with the backend config.
   useNowPlayingEngine()
 
   // Auto-open settings when detector is not available or not running

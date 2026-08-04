@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Accordion, AccordionSummary, Grid, Typography, useTheme } from '@mui/material'
+import { Accordion, AccordionSummary, Chip, Grid, Stack, Typography, useTheme } from '@mui/material'
 import { SettingsAccordion, useStyles } from './SettingsComponents'
 import useStore from '../../store/useStore'
 import AudioCard from './AudioCard'
@@ -25,6 +25,16 @@ import {
 import Tile from '../../components/Tile'
 import Uncategorized from './Uncategorized'
 
+const NOW_PLAYING_FEATURES = [
+  'Scene Triggers',
+  'Album Art',
+  'Gradients',
+  'Texter',
+  'Visualizers',
+  'Lyrics',
+  'Player'
+]
+
 const SettingsNew = () => {
   const classes = useStyles()
   const navigate = useNavigate()
@@ -39,6 +49,7 @@ const SettingsNew = () => {
   const setPgs = useStore((state) => state.ui.setPgs)
   const setSd = useStore((state) => state.ui.setSd)
   const setSongDetectorScreenOpen = useStore((state) => state.ui.setSongDetectorScreenOpen)
+  const setSdPlus = useStore((state) => state.ui.setSdPlus)
   const setDialogOpenClientManagement = useStore((state) => state.setDialogOpenClientManagement)
   const coreParams = useStore((state) => state.coreParams)
 
@@ -130,15 +141,29 @@ const SettingsNew = () => {
             onClick={() => setSd(true)}
           />
         )}
-        {isCC && (
-          <Tile
-            client
-            beta
-            icon={<LibraryMusic fontSize="large" />}
-            text="Song Detector Plus"
-            onClick={() => setSongDetectorScreenOpen(true)}
-          />
-        )}
+        <Tile
+          beta
+          icon={<LibraryMusic fontSize="large" />}
+          text="Now Playing"
+          onClick={() => setSongDetectorScreenOpen(true)}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            setSdPlus(true)
+          }}
+          tooltip={
+            <Stack spacing={0.5} alignItems="flex-start">
+              {NOW_PLAYING_FEATURES.map((f) => (
+                <Chip
+                  key={f}
+                  label={f}
+                  size="small"
+                  variant="outlined"
+                  sx={{ color: 'common.white', borderColor: 'rgba(255,255,255,0.35)' }}
+                />
+              ))}
+            </Stack>
+          }
+        />
         <Tile
           client
           beta

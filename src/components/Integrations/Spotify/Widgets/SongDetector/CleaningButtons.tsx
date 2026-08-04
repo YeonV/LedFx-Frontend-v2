@@ -44,38 +44,27 @@ const CleaningButtons = () => {
 
   return (
     <>
-      <Tooltip title={cleanTitles ? 'Disable Title Cleaning' : 'Enable Title Cleaning'}>
-        <IconButton
-          onClick={() => setCleanTitles(!cleanTitles)}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 112,
-            zIndex: 1,
-            color: cleanTitles ? 'success.main' : 'text.secondary'
-          }}
-          size="small"
-        >
-          <CleaningServicesIcon />
-        </IconButton>
-      </Tooltip>
+      {/* DOM order is visual order here - Tune must stay left of Cleaning. */}
       {cleanTitles && (
         <Tooltip title="Edit Cleaning Regex & List">
           <IconButton
             onClick={handleOpenDialog}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 152,
-              zIndex: 1,
-              color: dialogOpen ? 'success.main' : 'text.secondary'
-            }}
+            sx={{ color: dialogOpen ? 'success.main' : 'text.secondary' }}
             size="small"
           >
             <TuneIcon />
           </IconButton>
         </Tooltip>
       )}
+      <Tooltip title={cleanTitles ? 'Disable Title Cleaning' : 'Enable Title Cleaning'}>
+        <IconButton
+          onClick={() => setCleanTitles(!cleanTitles)}
+          sx={{ color: cleanTitles ? 'success.main' : 'text.secondary' }}
+          size="small"
+        >
+          <CleaningServicesIcon />
+        </IconButton>
+      </Tooltip>
       <Dialog
         open={dialogOpen}
         onClose={() => {

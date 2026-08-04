@@ -27,7 +27,7 @@ const keybindings = [
   },
   {
     keys: 'ctrl+alt+s',
-    description: 'Song Detector Plus'
+    description: 'Now Playing'
   },
   {
     keys: 'ctrl+alt+e',

@@ -15,6 +15,7 @@ import {
   useTheme,
   useMediaQuery
 } from '@mui/material'
+import type { Theme } from '@mui/material'
 import { styled } from '@mui/styles'
 
 import useStore from '../../../store/useStore'
@@ -37,6 +38,22 @@ import TopBarMenu from './TopBarMenu'
 interface FrontendConfig {
   updateUrl: string
   releaseUrl: string
+}
+
+const STATUS_GREEN = '#4caf50'
+
+/**
+ * The green only reads on an achromatic app bar - on the coloured themes it sits
+ * at 1.1:1 to 1.7:1 against its own background, under the 3:1 WCAG wants.
+ */
+const statusIconColor = (theme: Theme): string => {
+  const hex = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(
+    (theme.palette.secondary.main || '').trim()
+  )?.[1]
+  if (!hex) return theme.palette.secondary.contrastText
+  const full = hex.length === 3 ? hex.replace(/./g, (c) => c + c) : hex
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16))
+  return r === g && g === b ? STATUS_GREEN : theme.palette.secondary.contrastText
 }
 
 export const StyledBadge = styled(Badge)(() => ({
@@ -85,6 +102,10 @@ const TopBar = () => {
   const { standard, plus } = useSongDetector()
   const setSd = useStore((state) => state.ui.setSd)
   const setSongDetectorScreenOpen = useStore((state) => state.ui.setSongDetectorScreenOpen)
+  const currentTrack = useStore((state) => state.spotify.currentTrack)
+  const trackPlaying = useStore((state) => state.playing)
+  const setSdPlus = useStore((state) => state.ui.setSdPlus)
+  const iconStatusColor = statusIconColor(theme)
 
   useEffect(() => {
     if (disconnected === false) {
@@ -401,26 +422,30 @@ const TopBar = () => {
                         <BladeIcon
                           style={{
                             position: 'relative',
-                            color: '#4caf50'
+                            color: iconStatusColor
                           }}
                           name="mdi:music-circle"
                         />
                       </IconButton>
                     </Tooltip>
                   )}
-                  {/* Song Detector Plus Status IconButton - opens screen */}
-                  {isElectron() && plus.isAvailable && plus.isRunning && (
-                    <Tooltip title="Song Detector Plus: Running - Click to open">
+                  {((isElectron() && plus.isAvailable && plus.isRunning) ||
+                    (!!currentTrack && trackPlaying)) && (
+                    <Tooltip title="Now Playing: Running - Click to open">
                       <IconButton
-                        aria-label="song detector plus status"
+                        aria-label="now playing status"
                         edge="end"
                         color="inherit"
                         onClick={() => setSongDetectorScreenOpen(true)}
+                        onContextMenu={(e) => {
+                          e.preventDefault()
+                          setSdPlus(true)
+                        }}
                       >
                         <BladeIcon
                           style={{
                             position: 'relative',
-                            color: '#4caf50'
+                            color: iconStatusColor
                           }}
                           name="mdi:music-circle-outline"
                         />

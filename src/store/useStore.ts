@@ -112,9 +112,8 @@ const useStore = create(
                   'pixelGraphs',
                   'externalStudioRef',
                   'clientIdentity',
-                  // Server state, not user preference: persisting it would
-                  // rehydrate another core's config on the next load and
-                  // resolve engines from it before the real fetch lands.
+                  // Server state: persisting it would resolve engines from
+                  // another core's stale config before the real fetch lands.
                   'nowPlayingState',
                   'nowPlayingAvailable'
                 ].includes(key)

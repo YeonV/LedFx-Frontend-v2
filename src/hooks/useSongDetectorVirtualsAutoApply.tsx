@@ -23,10 +23,8 @@ export const useSongDetectorVirtualsAutoApply = () => {
   const imageConfig = useStore((state) => state.imageConfig)
   const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
 
-  // Per row: when the core owns a row it drives those virtuals itself and this
-  // browser must not also push, or the two engines fight, last writer wins.
-  // Colour extraction and gradient generation keep running regardless - the UI
-  // needs them for its previews and selectors.
+  // Core-owned rows are driven by the core - this browser must not also push,
+  // or the engines fight. Extraction still runs; the UI needs it for previews.
   const coreOwnsGradient = useEngineRow('gradient').isCore
   const coreOwnsText = useEngineRow('text').isCore
   const coreOwnsImage = useEngineRow('image').isCore

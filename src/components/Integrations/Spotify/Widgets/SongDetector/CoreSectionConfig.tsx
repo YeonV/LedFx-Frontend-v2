@@ -12,22 +12,12 @@ const BACKEND_SECTION: Record<EngineSection, 'gradient' | 'track_text' | 'album_
 
 const FALLBACK_VARIANTS = ['led_safe', 'led_punchy', 'led_max']
 
-/**
- * Settings that only exist while LedFx core owns a row.
- *
- * The browser engine's controls are meaningless in core mode - the core does
- * its own gradient extraction and runs its own Texter2d preset - so the
- * configuration panel swaps to these instead of showing settings that would
- * silently do nothing.
- */
 const CoreSectionConfig = ({ section }: { section: EngineSection }) => {
   const backendSection = BACKEND_SECTION[section]
   const config = useStore((state) => state.nowPlayingState?.config)
   const gradients = useStore((state) => state.nowPlayingState?.artwork?.gradients)
   const updateNowPlayingConfig = useStore((state) => state.updateNowPlayingConfig)
 
-  // Texter2d presets for the core's track-text effect: LedFx built-ins are
-  // fetched, user presets already live in the config.
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
   const userPresetsAll = useStore((state) => state.config?.user_presets)
   const userTexterPresets = ((userPresetsAll as any)?.texter2d ?? {}) as Record<
@@ -54,16 +44,13 @@ const CoreSectionConfig = ({ section }: { section: EngineSection }) => {
   const write = (patch: Record<string, any>) =>
     updateNowPlayingConfig({ [backendSection]: { ...current, ...patch } } as any)
 
-  // Variants come from the artwork the core actually extracted, so the list
-  // matches what it can really apply.
   const variants = gradients ? Object.keys(gradients) : FALLBACK_VARIANTS
   const activeVariant = variants.includes(current.variant ?? '')
     ? (current.variant as string)
     : variants[0]
   const variantGradient = gradients?.[activeVariant]?.gradient
 
-  // Track the slider locally while dragging; only write on release, or every
-  // pixel of travel becomes a PUT.
+  // Local while dragging; write on release, or every pixel becomes a PUT.
   const [duration, setDuration] = useState(current.duration ?? 0)
   useEffect(() => {
     setDuration(current.duration ?? 0)

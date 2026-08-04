@@ -29,10 +29,6 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   const setSelectedGradient = useStore((state) => state.setSelectedGradient)
   const setImageConfig = useStore((state) => state.setImageConfig)
 
-  // A core-owned row extracts and applies on the core, so its browser-side
-  // settings here would silently do nothing - swap them for the core's own.
-  // Keyed on the selected engine, not on whether it is currently running:
-  // picking Core should switch the panel immediately, before pressing play.
   const gradientIsCore = useEngineRow('gradient').isCore
   const imageIsCore = useEngineRow('image').isCore
 

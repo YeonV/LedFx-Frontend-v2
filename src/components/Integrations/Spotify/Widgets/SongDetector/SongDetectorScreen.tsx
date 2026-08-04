@@ -57,7 +57,7 @@ export default function SongDetectorScreen() {
             back
           </Button>
           <Typography variant="h6" className={classes.title}>
-            Song Detector Plus
+            Now Playing
           </Typography>
         </Toolbar>
       </AppBar>
@@ -65,7 +65,7 @@ export default function SongDetectorScreen() {
         sx={{
           backgroundColor: theme.palette.background.default,
           height: 'calc(100vh - 32px)',
-          paddingTop: '1rem',
+          paddingTop: 0,
           paddingBottom: '3rem',
           overflow: 'auto',
           display: 'flex',

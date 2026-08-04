@@ -11,7 +11,6 @@ const VirtualTextSelector = ({ generalDetector }: { generalDetector?: boolean })
 
   const getVirtuals = useStore((state) => state.getVirtuals)
 
-  // Song-detector mode routes through whichever engine owns the text row.
   const text = useEngineRow('text')
   const useEngine = !!generalDetector
 
@@ -21,8 +20,7 @@ const VirtualTextSelector = ({ generalDetector }: { generalDetector?: boolean })
 
   const textVirtuals = useEngine ? text.virtuals : textVirtualsLocal
   const isActive = useEngine ? text.enabled : isActiveLocal
-  // While the core owns this row it pushes the texter effect itself; this tab
-  // must not also push, or the two engines fight over the same virtuals.
+  // Core pushes this row itself - do not also push, or the engines fight.
   const coreOwns = useEngine && text.isCore
 
   const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
@@ -87,8 +85,6 @@ const VirtualTextSelector = ({ generalDetector }: { generalDetector?: boolean })
 
   const toggleAutoApply = () => {
     if (useEngine) {
-      // Turning on locally applies once immediately; in core mode this is
-      // purely the backend's enabled flag and it pushes on the next track.
       if (!isActive) applyText()
       text.toggleEnabled()
       return

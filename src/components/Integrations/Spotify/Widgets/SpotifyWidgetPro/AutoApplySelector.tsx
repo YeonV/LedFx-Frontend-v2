@@ -12,7 +12,7 @@ import {
   ToggleButtonGroup,
   Tooltip
 } from '@mui/material'
-import { Dns, Language, PlayArrow, Stop } from '@mui/icons-material'
+import { DeveloperBoard, Devices, PlayArrow, Stop } from '@mui/icons-material'
 
 // Reusable selector/toggle component
 const AutoApplySelector = ({
@@ -40,10 +40,7 @@ const AutoApplySelector = ({
   renderValue?: (selected: string[]) => string
   getOptionLabel?: (option: any) => string
   getOptionValue?: (option: any) => string
-  /**
-   * Which engine applies this row. Omit entirely for rows the core cannot
-   * drive (visualisers are browser canvases), and no switch is rendered.
-   */
+  /** Omit for rows the core cannot drive - no switch is then rendered. */
   engine?: 'browser' | 'core'
   onEngineChange?: (engine: 'browser' | 'core') => void
   engineAvailable?: boolean
@@ -56,9 +53,8 @@ const AutoApplySelector = ({
         size="small"
         value={value}
         onChange={onChange}
-        // notched must be forced to match the forced-shrink InputLabel above:
-        // with an empty selection MUI leaves the outline closed, so the border
-        // runs straight through the floating label text.
+        // notched is forced to match the forced-shrink InputLabel: without it
+        // an empty selection leaves the outline closed, striking through the label.
         input={<OutlinedInput label={label} size="small" notched />}
         renderValue={renderValue || ((selected) => selected.join(', '))}
       >
@@ -80,11 +76,11 @@ const AutoApplySelector = ({
         exclusive
         value={engine}
         onChange={(_e, next) => next && onEngineChange(next)}
-        sx={{ '& .MuiToggleButton-root': { px: 1, py: 0.5 } }}
+        sx={{ height: 40, '& .MuiToggleButton-root': { px: 1, py: 0 } }}
       >
         <ToggleButton value="browser">
-          <Tooltip title="Applied by this browser. Stops when the tab closes.">
-            <Language fontSize="small" />
+          <Tooltip title="Applied by this client. Stops when the tab closes.">
+            <Devices fontSize="small" />
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="core" disabled={!engineAvailable}>
@@ -95,15 +91,13 @@ const AutoApplySelector = ({
                 : 'Now Playing service unavailable on this core'
             }
           >
-            <Dns fontSize="small" />
+            <DeveloperBoard fontSize="small" />
           </Tooltip>
         </ToggleButton>
       </ToggleButtonGroup>
     )}
     <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
-      {/* Never disable while running: whatever made it startable may be gone
-          (virtuals cleared, engine switched), and the user must always be able
-          to stop it from the row it belongs to. */}
+      {/* Never disable while running - the user must always be able to stop. */}
       <span>
         <IconButton
           size="small"

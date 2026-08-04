@@ -12,7 +12,8 @@ import {
   Pause as PauseIcon,
   PlayArrow,
   Settings,
-  BarChart,
+  ChevronLeft,
+  ChevronRight,
   Lyrics as LyricsIcon
 } from '@mui/icons-material'
 import { useState, useEffect, useRef } from 'react'
@@ -127,53 +128,40 @@ const SongDetectorPlayer = ({
   return (
     <>
       <Card sx={{ width: '100%', position: 'relative' }}>
-        {/* Cleaning toggle and config buttons */}
-        <CleaningButtons />
-        {onToggleLyrics && (
-          <IconButton
-            onClick={onToggleLyrics}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 72,
-              zIndex: 1,
-              color: lyricsOpen ? 'success.main' : 'text.secondary'
-            }}
-            size="small"
-          >
-            <LyricsIcon />
-          </IconButton>
-        )}
-        {onToggleStats && (
-          <IconButton
-            onClick={onToggleStats}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 40,
-              zIndex: 1,
-              color: statsOpen ? 'success.main' : 'text.secondary'
-            }}
-            size="small"
-          >
-            <BarChart />
-          </IconButton>
-        )}
-        {isCC && onToggleSettings && (
-          <IconButton
-            onClick={onToggleSettings}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              zIndex: 1,
-              color: settingsOpen ? 'success.main' : 'text.secondary'
-            }}
-            size="small"
-          >
-            <Settings />
-          </IconButton>
-        )}
+        <Stack
+          direction="row"
+          spacing={0}
+          sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+        >
+          <CleaningButtons />
+          {onToggleLyrics && (
+            <IconButton
+              onClick={onToggleLyrics}
+              sx={{ color: lyricsOpen ? 'success.main' : 'text.secondary' }}
+              size="small"
+            >
+              <LyricsIcon />
+            </IconButton>
+          )}
+          {onToggleStats && (
+            <IconButton
+              onClick={onToggleStats}
+              sx={{ color: statsOpen ? 'success.main' : 'text.secondary' }}
+              size="small"
+            >
+              {statsOpen ? <ChevronRight /> : <ChevronLeft />}
+            </IconButton>
+          )}
+          {isCC && onToggleSettings && (
+            <IconButton
+              onClick={onToggleSettings}
+              sx={{ color: settingsOpen ? 'success.main' : 'text.secondary' }}
+              size="small"
+            >
+              <Settings />
+            </IconButton>
+          )}
+        </Stack>
         <CardContent sx={{ pb: '16px !important' }}>
           <Stack direction="row" spacing={2} alignItems="center">
             {/* Album Art */}

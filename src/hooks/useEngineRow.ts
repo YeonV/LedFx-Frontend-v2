@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import useStore from '../store/useStore'
 import type { EngineSection, NowPlayingEngine } from '../store/ui/storeSongDectector'
 
-/** Row section -> backend config section. */
 const BACKEND_SECTION: Record<EngineSection, 'gradient' | 'track_text' | 'album_art'> = {
   gradient: 'gradient',
   text: 'track_text',
@@ -10,18 +9,12 @@ const BACKEND_SECTION: Record<EngineSection, 'gradient' | 'track_text' | 'album_
 }
 
 /**
- * One row of the Song Detector's virtual targets, independent of which engine
- * runs it.
- *
- * The selector and the play button behave identically to the user; only the
- * destination changes. In browser mode they read and write the local store; in
- * core mode they read and write the backend Now Playing config, where the play
- * button is that section's `enabled` flag.
+ * One row of the Song Detector's virtual targets, whichever engine runs it.
  *
  * The effective engine is not simply the local preference: if the backend
- * reports a section enabled, the core *is* driving those virtuals right now,
- * so every client reports core regardless of what it would have chosen. That
- * is what stops two browsers from both claiming the same virtuals.
+ * reports a section enabled, the core *is* driving those virtuals, so every
+ * client must report core. That is what stops two browsers claiming the same
+ * virtuals.
  */
 export const useEngineRow = (section: EngineSection) => {
   const backendSection = BACKEND_SECTION[section]
@@ -66,15 +59,14 @@ export const useEngineRow = (section: EngineSection) => {
     | undefined
   const backendOwns = !!backend?.enabled
 
-  // Core wins whenever it is actually driving; otherwise honour the preference.
   const engine: NowPlayingEngine = backendOwns ? 'core' : preference
   const isCore = engine === 'core'
 
   const writeBackend = useCallback(
     (patch: { enabled?: boolean; virtual_ids?: string[] }) =>
       updateNowPlayingConfig({
-        // Spread the existing section so backend-only fields the UI never
-        // shows (variant, duration, preset) survive the write.
+        // Spread first: variant/duration/preset are not in the UI and would
+        // otherwise be wiped by this write.
         [backendSection]: { ...(backend ?? {}), ...patch }
       } as any),
     [updateNowPlayingConfig, backendSection, backend]
@@ -85,17 +77,13 @@ export const useEngineRow = (section: EngineSection) => {
       if (next === engine) return
       setPreference(section, next)
       if (next === 'core') {
-        // Hand this row over: carry the current selection up, and stand down
-        // locally so both engines are never live at once.
         await writeBackend({ enabled: localEnabled, virtual_ids: localVirtuals })
         setLocalEnabled(false)
       } else {
-        // Take it back: adopt whatever the core was using, then release it.
         const adopted = backend?.virtual_ids ?? localVirtuals
         setLocalVirtuals(adopted)
-        // Only inherit the running state if there is something to run on -
-        // otherwise the row comes back "active" with an empty selection, which
-        // can never do anything and looks stuck.
+        // Only inherit running state if something was adopted, or the row
+        // comes back active with an empty selection and looks stuck.
         setLocalEnabled(!!backend?.enabled && adopted.length > 0)
         await writeBackend({ enabled: false })
       }

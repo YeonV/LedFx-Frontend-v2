@@ -3,16 +3,9 @@ import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 
 /**
- * Backend Now Playing configuration.
- *
- * Config only, deliberately: the track itself (title, artist, position,
- * artwork path) already reaches the frontend through the `song_detected`
- * websocket event, and keeping a second copy here would give two sources of
- * truth for "what is playing" that drift apart - this one a snapshot from the
- * last fetch, the other live.
- *
- * The one exception is the extracted gradients, which the core computes from
- * the artwork and the browser cannot reproduce.
+ * Backend Now Playing config. Config only, deliberately: the track already
+ * arrives live via `song_detected`, and a second copy here would drift.
+ * Gradients are the exception - only the core can compute them.
  */
 
 export interface NowPlayingGradientConfig {
@@ -42,7 +35,6 @@ export interface NowPlayingConfig {
 
 export interface NowPlayingState {
   config: NowPlayingConfig
-  /** Gradients the core extracted from the current artwork, keyed by variant. */
   artwork: { gradients: Record<string, { gradient: string }> | null } | null
 }
 
@@ -55,7 +47,6 @@ const storeNowPlaying = (set: any) => ({
     if (resp && resp.config) {
       set(
         produce((state: IStore) => {
-          // Narrow on the way in - the endpoint returns the whole state.
           state.nowPlayingState = {
             config: resp.config,
             artwork: resp.artwork ? { gradients: resp.artwork.gradients ?? null } : null

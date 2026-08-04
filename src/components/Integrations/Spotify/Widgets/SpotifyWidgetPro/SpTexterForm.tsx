@@ -23,10 +23,6 @@ import VisualiserTextSelector from './VisualiserTextSelector'
 import React from 'react'
 
 const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
-  // While the core owns the text row it runs its own Texter2d preset, so these
-  // browser-side texter settings would silently do nothing. Keyed on the
-  // selected engine, not on whether it is currently running: picking Core
-  // should switch the panel immediately, before pressing play.
   const textRow = useEngineRow('text')
   const textIsCore = !!generalDetector && textRow.isCore
   const schemas = useStore((state) => state.schemas)

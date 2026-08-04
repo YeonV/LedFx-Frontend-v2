@@ -30,7 +30,7 @@ const SongDetectorPlusFloating = ({ close }: { close?: () => void }) => {
           display="flex"
         >
           {close && <span />}
-          <Typography>Song Detector Plus</Typography>
+          <Typography>Now Playing</Typography>
           {close && (
             <IconButton onClick={() => close()}>
               <Close />
@@ -39,7 +39,9 @@ const SongDetectorPlusFloating = ({ close }: { close?: () => void }) => {
         </Stack>
         <Box
           sx={{
-            p: 2,
+            px: 2,
+            pb: 2,
+            pt: 0,
             maxHeight: 'calc(100vh - 100px)',
             overflow: 'auto'
           }}
