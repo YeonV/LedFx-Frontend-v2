@@ -1,76 +1,69 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import useStore from '../../../../../store/useStore'
+import useEngineRow from '../../../../../hooks/useEngineRow'
 import AutoApplySelector from '../SpotifyWidgetPro/AutoApplySelector'
 import CardStack from './CardStack'
 
 const VirtualGradientImageSelectors = () => {
   const virtuals = useStore((state) => state.virtuals)
-
-  // Use global state for gradient and image auto-apply
-  const gradientVirtualsGlobal = useStore((state) => state.gradientVirtuals)
-  const imageVirtualsGlobal = useStore((state) => state.imageVirtuals)
-  const selectedGradientGlobal = useStore((state) => state.selectedGradient)
+  const selectedGradient = useStore((state) => state.selectedGradient)
   const extractedColors = useStore((state) => state.extractedColors)
-  const gradientAutoApply = useStore((state) => state.gradientAutoApply)
-  const imageAutoApply = useStore((state) => state.imageAutoApply)
 
-  const setGradientVirtualsGlobal = useStore((state) => state.setGradientVirtuals)
-  const setImageVirtualsGlobal = useStore((state) => state.setImageVirtuals)
-  const setGradientAutoApply = useStore((state) => state.setGradientAutoApply)
-  const setImageAutoApply = useStore((state) => state.setImageAutoApply)
+  // Each row reads and writes through whichever engine owns it.
+  const gradient = useEngineRow('gradient')
+  const image = useEngineRow('image')
 
-  // Use global state directly
-  const gradientVirtuals = gradientVirtualsGlobal
-  const imageVirtuals = imageVirtualsGlobal
-  const selectedGradient = selectedGradientGlobal
+  const asList = (value: any): string[] => (typeof value === 'string' ? value.split(',') : value)
 
-  // Compute album art URL using backend API endpoint
-
-  const toggleGradientAutoApply = useCallback(() => {
-    setGradientAutoApply(!gradientAutoApply)
-  }, [gradientAutoApply, setGradientAutoApply])
-
-  const toggleImageAutoApply = useCallback(() => {
-    setImageAutoApply(!imageAutoApply)
-  }, [imageAutoApply, setImageAutoApply])
+  // Album art needs somewhere to draw: an imagespin on a single-row strip is
+  // meaningless, so image targets are matrix virtuals only. Gradients apply to
+  // any virtual.
+  const allVirtuals = Object.keys(virtuals)
+  const matrixVirtuals = allVirtuals.filter((v) => (virtuals[v]?.config?.rows || 1) > 1)
 
   const handleGradientVirtualChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    // Remove from image virtuals if present
-    setImageVirtualsGlobal(imageVirtuals.filter((v) => !selected.includes(v)))
-    setGradientVirtualsGlobal(selected)
+    const selected = asList(event.target.value)
+    // A virtual can only carry one of the two effects.
+    image.setVirtuals(image.virtuals.filter((v) => !selected.includes(v)))
+    gradient.setVirtuals(selected)
   }
 
   const handleImageVirtualChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    // Remove from gradient virtuals if present
-    setGradientVirtualsGlobal(gradientVirtuals.filter((v) => !selected.includes(v)))
-    setImageVirtualsGlobal(selected)
+    const selected = asList(event.target.value)
+    gradient.setVirtuals(gradient.virtuals.filter((v) => !selected.includes(v)))
+    image.setVirtuals(selected)
   }
 
   return (
     <CardStack>
       <AutoApplySelector
         label="Gradient Virtuals"
-        options={Object.keys(virtuals)}
-        value={gradientVirtuals}
+        options={allVirtuals}
+        value={gradient.virtuals}
         onChange={handleGradientVirtualChange}
-        isActive={gradientAutoApply}
-        onToggle={toggleGradientAutoApply}
+        isActive={gradient.enabled}
+        onToggle={gradient.toggleEnabled}
+        engine={gradient.engine}
+        onEngineChange={gradient.setEngine}
+        engineAvailable={gradient.engineAvailable}
         disabled={
-          gradientVirtuals.length === 0 || selectedGradient === null || extractedColors.length === 0
+          gradient.virtuals.length === 0 ||
+          // The core extracts its own gradients, so it needs neither a local
+          // selection nor locally extracted colours.
+          (!gradient.isCore && (selectedGradient === null || extractedColors.length === 0))
         }
       />
       <AutoApplySelector
         label="Image Virtuals"
-        options={Object.keys(virtuals)}
-        value={imageVirtuals}
+        options={matrixVirtuals}
+        value={image.virtuals}
         onChange={handleImageVirtualChange}
-        isActive={imageAutoApply}
-        onToggle={toggleImageAutoApply}
-        disabled={imageVirtuals.length === 0 || extractedColors.length === 0}
+        isActive={image.enabled}
+        onToggle={image.toggleEnabled}
+        engine={image.engine}
+        onEngineChange={image.setEngine}
+        engineAvailable={image.engineAvailable}
+        disabled={image.virtuals.length === 0 || (!image.isCore && extractedColors.length === 0)}
       />
     </CardStack>
   )

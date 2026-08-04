@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../store/useStore'
+import useEngineRow from './useEngineRow'
 import { Ledfx } from '../api/ledfx'
 
 // --- Virtuals Hook ---
@@ -21,6 +22,14 @@ export const useSongDetectorVirtualsAutoApply = () => {
   const imageVirtuals = useStore((state) => state.imageVirtuals)
   const imageConfig = useStore((state) => state.imageConfig)
   const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
+
+  // Per row: when the core owns a row it drives those virtuals itself and this
+  // browser must not also push, or the two engines fight, last writer wins.
+  // Colour extraction and gradient generation keep running regardless - the UI
+  // needs them for its previews and selectors.
+  const coreOwnsGradient = useEngineRow('gradient').isCore
+  const coreOwnsText = useEngineRow('text').isCore
+  const coreOwnsImage = useEngineRow('image').isCore
 
   // Track previous values to detect changes
   const prevTextTrackRef = useRef<string>('')
@@ -139,6 +148,7 @@ export const useSongDetectorVirtualsAutoApply = () => {
     }
     // Microtask: trigger auto-apply after gradients are set
     Promise.resolve().then(() => {
+      if (coreOwnsGradient) return
       if (gradientAutoApply && gradientVirtuals.length > 0 && generatedGradients.length > 0) {
         Ledfx('/api/effects', 'PUT', {
           action: 'apply_global',
@@ -156,7 +166,7 @@ export const useSongDetectorVirtualsAutoApply = () => {
       currentTrack !== prevTextTrackRef.current || textAutoApply !== prevIsActiveTextVirtRef.current
     prevTextTrackRef.current = currentTrack
     prevIsActiveTextVirtRef.current = textAutoApply
-    if (!hasChanges || currentTrack === '') return
+    if (!hasChanges || currentTrack === '' || coreOwnsText) return
     const timer = setTimeout(() => {
       if (textAutoApply && textVirtuals.length > 0) {
         Ledfx('/api/effects', 'PUT', {
@@ -169,7 +179,7 @@ export const useSongDetectorVirtualsAutoApply = () => {
       }
     }, 200)
     return () => clearTimeout(timer)
-  }, [currentTrack, textAutoApply, textVirtuals, spotifyTexter, getVirtuals])
+  }, [currentTrack, textAutoApply, textVirtuals, spotifyTexter, getVirtuals, coreOwnsText])
 
   // AUTO-APPLY GRADIENT: When gradients change (new song) or toggles change or selection change
   // Remove the old gradient auto-apply effect, now handled in the gradients generation effect
@@ -184,7 +194,7 @@ export const useSongDetectorVirtualsAutoApply = () => {
       albumArtUrl !== prevAlbumArtRef.current || imageAutoApply !== prevIsActiveImgVirtRef.current
     prevAlbumArtRef.current = albumArtUrl
     prevIsActiveImgVirtRef.current = imageAutoApply
-    if (!hasChanges || !albumArtUrl) return
+    if (!hasChanges || !albumArtUrl || coreOwnsImage) return
     if (imageAutoApply && imageVirtuals.length > 0) {
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global_effect',
@@ -196,5 +206,13 @@ export const useSongDetectorVirtualsAutoApply = () => {
         virtuals: imageVirtuals
       }).then(() => getVirtuals())
     }
-  }, [thumbnailPath, albumArtCacheBuster, imageAutoApply, imageVirtuals, imageConfig, getVirtuals])
+  }, [
+    thumbnailPath,
+    albumArtCacheBuster,
+    imageAutoApply,
+    imageVirtuals,
+    imageConfig,
+    getVirtuals,
+    coreOwnsImage
+  ])
 }

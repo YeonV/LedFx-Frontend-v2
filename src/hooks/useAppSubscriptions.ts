@@ -22,7 +22,20 @@ const useAppSubscriptions = () => {
 
     // Format as protocol URL to reuse existing handler logic
     const songTitle = `${artist} - ${title}`
-    const thumbnailFilename = thumbnail ? thumbnail.split(/[/\\]/).pop() : ''
+
+    // The song detector sends an absolute OS path, so only its filename is
+    // usable - the assets API resolves relative to .ledfx/assets.
+    // The backend Now Playing service is the one exception: it already emits an
+    // assets-relative path, and its artwork lives in a subdirectory, so
+    // reducing it to a basename would point at a file that does not exist.
+    // Kept as an explicit case rather than "keep anything relative" so the
+    // detector's behaviour is untouched.
+    const NOW_PLAYING_ASSET_PREFIX = 'now_playing/'
+    const thumbnailFilename = thumbnail
+      ? thumbnail.startsWith(NOW_PLAYING_ASSET_PREFIX)
+        ? thumbnail
+        : thumbnail.split(/[/\\]/).pop()
+      : ''
 
     // Build protocol URL with query params
     let protocolUrl = `ledfx://song/ledfxcc/${encodeURIComponent(songTitle)}`

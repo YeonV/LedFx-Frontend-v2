@@ -47,7 +47,43 @@ export const generateSongHash = (songName: string, duration: number): string => 
   return Math.abs(hash).toString(36)
 }
 
+export type NowPlayingEngine = 'browser' | 'core'
+export type EngineSection = 'gradient' | 'text' | 'image'
+
 const storeSongDectector = (set: any) => ({
+  /**
+   * Per-row engine preference: who applies this row's virtuals.
+   *
+   * 'browser' - this tab's auto-apply hooks (per-browser, dies with the tab)
+   * 'core'    - the backend Now Playing service (shared, runs headless)
+   *
+   * Per row rather than global because the backend config is already three
+   * independent sections (gradient / track_text / album_art), so this is its
+   * natural granularity - and it allows mixing, e.g. gradient on core while
+   * text stays local.
+   *
+   * This is only a *preference*. The effective engine is resolved in
+   * useEngineRow: if the backend reports a section enabled, the core is
+   * actually driving those virtuals and every browser must obey, whatever it
+   * would have preferred. Otherwise two clients could both drive one virtual.
+   *
+   * Visualiser rows have no engine at all - they are browser canvases the
+   * core cannot reach.
+   */
+  nowPlayingEngines: {
+    gradient: 'browser',
+    text: 'browser',
+    image: 'browser'
+  } as Record<EngineSection, NowPlayingEngine>,
+  setNowPlayingEngine: (section: EngineSection, engine: NowPlayingEngine) => {
+    set(
+      produce((state: any) => {
+        state.nowPlayingEngines[section] = engine
+      }),
+      false,
+      'songDetector/setNowPlayingEngine'
+    )
+  },
   song: '',
   thumbnailPath: '',
   albumArtCacheBuster: 0,

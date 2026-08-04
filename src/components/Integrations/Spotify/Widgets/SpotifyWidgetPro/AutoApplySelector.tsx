@@ -8,9 +8,11 @@ import {
   OutlinedInput,
   Select,
   Stack,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip
 } from '@mui/material'
-import { PlayArrow, Stop } from '@mui/icons-material'
+import { Dns, Language, PlayArrow, Stop } from '@mui/icons-material'
 
 // Reusable selector/toggle component
 const AutoApplySelector = ({
@@ -23,7 +25,10 @@ const AutoApplySelector = ({
   disabled,
   renderValue,
   getOptionLabel,
-  getOptionValue
+  getOptionValue,
+  engine,
+  onEngineChange,
+  engineAvailable = true
 }: {
   label: string
   options: any[]
@@ -35,15 +40,26 @@ const AutoApplySelector = ({
   renderValue?: (selected: string[]) => string
   getOptionLabel?: (option: any) => string
   getOptionValue?: (option: any) => string
+  /**
+   * Which engine applies this row. Omit entirely for rows the core cannot
+   * drive (visualisers are browser canvases), and no switch is rendered.
+   */
+  engine?: 'browser' | 'core'
+  onEngineChange?: (engine: 'browser' | 'core') => void
+  engineAvailable?: boolean
 }) => (
-  <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: 1, mb: 2, mt: 1 }}>
-    <FormControl fullWidth>
+  <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: 1, mb: 1, mt: 1 }}>
+    <FormControl fullWidth size="small">
       <InputLabel shrink>{label}</InputLabel>
       <Select
         multiple
+        size="small"
         value={value}
         onChange={onChange}
-        input={<OutlinedInput label={label} />}
+        // notched must be forced to match the forced-shrink InputLabel above:
+        // with an empty selection MUI leaves the outline closed, so the border
+        // runs straight through the floating label text.
+        input={<OutlinedInput label={label} size="small" notched />}
         renderValue={renderValue || ((selected) => selected.join(', '))}
       >
         {options.map((option) => {
@@ -58,17 +74,48 @@ const AutoApplySelector = ({
         })}
       </Select>
     </FormControl>
-    <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
-      <IconButton
-        onClick={onToggle}
-        disabled={disabled}
-        sx={{
-          color: isActive ? 'success.main' : 'primary.main',
-          py: 2
-        }}
+    {engine && onEngineChange && (
+      <ToggleButtonGroup
+        size="small"
+        exclusive
+        value={engine}
+        onChange={(_e, next) => next && onEngineChange(next)}
+        sx={{ '& .MuiToggleButton-root': { px: 1, py: 0.5 } }}
       >
-        {isActive ? <Stop /> : <PlayArrow />}
-      </IconButton>
+        <ToggleButton value="browser">
+          <Tooltip title="Applied by this browser. Stops when the tab closes.">
+            <Language fontSize="small" />
+          </Tooltip>
+        </ToggleButton>
+        <ToggleButton value="core" disabled={!engineAvailable}>
+          <Tooltip
+            title={
+              engineAvailable
+                ? 'Applied by LedFx core. Shared by all clients and keeps running with no browser open.'
+                : 'Now Playing service unavailable on this core'
+            }
+          >
+            <Dns fontSize="small" />
+          </Tooltip>
+        </ToggleButton>
+      </ToggleButtonGroup>
+    )}
+    <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
+      {/* Never disable while running: whatever made it startable may be gone
+          (virtuals cleared, engine switched), and the user must always be able
+          to stop it from the row it belongs to. */}
+      <span>
+        <IconButton
+          size="small"
+          onClick={onToggle}
+          disabled={disabled && !isActive}
+          sx={{
+            color: isActive ? 'success.main' : 'primary.main'
+          }}
+        >
+          {isActive ? <Stop /> : <PlayArrow />}
+        </IconButton>
+      </span>
     </Tooltip>
   </Stack>
 )

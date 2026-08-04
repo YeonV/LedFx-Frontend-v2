@@ -11,8 +11,10 @@ import {
 import { ExpandMore } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import useStore from '../../../../../store/useStore'
+import useEngineRow from '../../../../../hooks/useEngineRow'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import VisualiserGradientImageSelectors from './VisualiserGradientImageSelectors'
+import CoreSectionConfig from './CoreSectionConfig'
 import VirtualGradientImageSelectors from './VirtualGradientImageSelectors'
 
 const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => {
@@ -26,6 +28,13 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
 
   const setSelectedGradient = useStore((state) => state.setSelectedGradient)
   const setImageConfig = useStore((state) => state.setImageConfig)
+
+  // A core-owned row extracts and applies on the core, so its browser-side
+  // settings here would silently do nothing - swap them for the core's own.
+  // Keyed on the selected engine, not on whether it is currently running:
+  // picking Core should switch the panel immediately, before pressing play.
+  const gradientIsCore = useEngineRow('gradient').isCore
+  const imageIsCore = useEngineRow('image').isCore
 
   // Use global state directly
   const imageConfig = imageConfigGlobal
@@ -72,7 +81,11 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
           </AccordionSummary>
           <AccordionDetails>
             <Stack direction="column" spacing={2}>
-              {gradients.length > 0 && (
+              {/* Core-owned rows extract and apply on the core, so their
+                  browser-side settings are replaced by the core's own. */}
+              {gradientIsCore && <CoreSectionConfig section="gradient" />}
+              {imageIsCore && <CoreSectionConfig section="image" />}
+              {!gradientIsCore && gradients.length > 0 && (
                 <BladeFrame title="Gradient Options">
                   <Stack direction="row" flexWrap="wrap" gap={1} sx={{ width: '100%' }}>
                     {gradients.map((gradient, idx) => (
@@ -96,7 +109,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
               )}
 
               {/* Color Palette Display */}
-              {extractedColors.length > 0 && (
+              {!gradientIsCore && extractedColors.length > 0 && (
                 <BladeFrame title="Extracted Colors">
                   <Stack direction="row" flexWrap="wrap" gap={1} sx={{ width: '100%' }}>
                     {extractedColors.map((color: string, idx: number) => (
@@ -118,98 +131,103 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
               )}
 
               {/* Image Effect Configuration */}
-              <BladeFrame title="Image Effect Settings">
-                <Stack direction="column" spacing={2} flex={1} pt={2}>
-                  <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
-                    <BladeFrame title="Brightness" style={{ flex: 1 }}>
-                      <Slider
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        valueLabelDisplay="auto"
-                        value={imageConfig.brightness}
-                        onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfig({ ...imageConfig, brightness: v })
-                        }
-                      />
-                    </BladeFrame>
-                    <BladeFrame title="BG Brightness" style={{ flex: 1 }}>
-                      <Slider
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        valueLabelDisplay="auto"
-                        value={imageConfig.background_brightness}
-                        onChange={(_e, v) =>
-                          typeof v === 'number' &&
-                          setImageConfig({ ...imageConfig, background_brightness: v })
-                        }
-                      />
-                    </BladeFrame>
-                  </Stack>
+              {!imageIsCore && (
+                <BladeFrame title="Image Effect Settings">
+                  <Stack direction="column" spacing={2} flex={1} pt={2}>
+                    <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
+                      <BladeFrame title="Brightness" style={{ flex: 1 }}>
+                        <Slider
+                          min={0}
+                          max={1}
+                          step={0.01}
+                          valueLabelDisplay="auto"
+                          value={imageConfig.brightness}
+                          onChange={(_e, v) =>
+                            typeof v === 'number' &&
+                            setImageConfig({ ...imageConfig, brightness: v })
+                          }
+                        />
+                      </BladeFrame>
+                      <BladeFrame title="BG Brightness" style={{ flex: 1 }}>
+                        <Slider
+                          min={0}
+                          max={1}
+                          step={0.01}
+                          valueLabelDisplay="auto"
+                          value={imageConfig.background_brightness}
+                          onChange={(_e, v) =>
+                            typeof v === 'number' &&
+                            setImageConfig({ ...imageConfig, background_brightness: v })
+                          }
+                        />
+                      </BladeFrame>
+                    </Stack>
 
-                  <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
-                    <BladeFrame title="Blur" style={{ flex: 1 }}>
-                      <Slider
-                        min={0}
-                        max={10}
-                        step={0.1}
-                        valueLabelDisplay="auto"
-                        value={imageConfig.blur}
-                        onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfig({ ...imageConfig, blur: v })
-                        }
-                      />
-                    </BladeFrame>
-                    <BladeFrame title="Min Size" style={{ flex: 1 }}>
-                      <Slider
-                        min={1}
-                        max={100}
-                        step={1}
-                        valueLabelDisplay="auto"
-                        value={imageConfig.min_size}
-                        onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfig({ ...imageConfig, min_size: v })
-                        }
-                      />
-                    </BladeFrame>
-                  </Stack>
+                    <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
+                      <BladeFrame title="Blur" style={{ flex: 1 }}>
+                        <Slider
+                          min={0}
+                          max={10}
+                          step={0.1}
+                          valueLabelDisplay="auto"
+                          value={imageConfig.blur}
+                          onChange={(_e, v) =>
+                            typeof v === 'number' && setImageConfig({ ...imageConfig, blur: v })
+                          }
+                        />
+                      </BladeFrame>
+                      <BladeFrame title="Min Size" style={{ flex: 1 }}>
+                        <Slider
+                          min={1}
+                          max={100}
+                          step={1}
+                          valueLabelDisplay="auto"
+                          value={imageConfig.min_size}
+                          onChange={(_e, v) =>
+                            typeof v === 'number' && setImageConfig({ ...imageConfig, min_size: v })
+                          }
+                        />
+                      </BladeFrame>
+                    </Stack>
 
-                  <GradientPicker
-                    isGradient={false}
-                    colors={extractedColors}
-                    title="BG Color"
-                    pickerBgColor={imageConfig.background_color}
-                    sendColorToVirtuals={(v: string) =>
-                      setImageConfig({ ...imageConfig, background_color: v })
-                    }
-                  />
+                    <GradientPicker
+                      isGradient={false}
+                      colors={extractedColors}
+                      title="BG Color"
+                      pickerBgColor={imageConfig.background_color}
+                      sendColorToVirtuals={(v: string) =>
+                        setImageConfig({ ...imageConfig, background_color: v })
+                      }
+                    />
 
-                  <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
-                    <BladeFrame style={{ flex: 1 }} title="Clip">
-                      <Switch
-                        checked={imageConfig.clip}
-                        onChange={(_e, b) => setImageConfig({ ...imageConfig, clip: b })}
-                        color="primary"
-                      />
-                    </BladeFrame>
-                    <BladeFrame style={{ flex: 1 }} title="Flip H">
-                      <Switch
-                        checked={imageConfig.flip_horizontal}
-                        onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_horizontal: b })}
-                        color="primary"
-                      />
-                    </BladeFrame>
-                    <BladeFrame style={{ flex: 1 }} title="Flip V">
-                      <Switch
-                        checked={imageConfig.flip_vertical}
-                        onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_vertical: b })}
-                        color="primary"
-                      />
-                    </BladeFrame>
+                    <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
+                      <BladeFrame style={{ flex: 1 }} title="Clip">
+                        <Switch
+                          checked={imageConfig.clip}
+                          onChange={(_e, b) => setImageConfig({ ...imageConfig, clip: b })}
+                          color="primary"
+                        />
+                      </BladeFrame>
+                      <BladeFrame style={{ flex: 1 }} title="Flip H">
+                        <Switch
+                          checked={imageConfig.flip_horizontal}
+                          onChange={(_e, b) =>
+                            setImageConfig({ ...imageConfig, flip_horizontal: b })
+                          }
+                          color="primary"
+                        />
+                      </BladeFrame>
+                      <BladeFrame style={{ flex: 1 }} title="Flip V">
+                        <Switch
+                          checked={imageConfig.flip_vertical}
+                          onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_vertical: b })}
+                          color="primary"
+                        />
+                      </BladeFrame>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </BladeFrame>
+                </BladeFrame>
+              )}
             </Stack>
           </AccordionDetails>
         </Accordion>

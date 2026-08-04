@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Box, Grid, Collapse } from '@mui/material'
+import useNowPlayingEngine from '../../../../../hooks/useNowPlayingEngine'
 import useSongDetector from '../../../../../hooks/useSongDetector'
 import SpTexterForm from '../SpotifyWidgetPro/SpTexterForm'
 import SongDetectorAlbumArtForm from './SongDetectorAlbumArtForm'
@@ -15,6 +16,9 @@ const SongDetectorContent = () => {
   const [lyricsOpen, setLyricsOpen] = useState(false)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
+
+  // Keeps core-owned rows in sync with the backend config.
+  useNowPlayingEngine()
 
   // Auto-open settings when detector is not available or not running
   useEffect(() => {
