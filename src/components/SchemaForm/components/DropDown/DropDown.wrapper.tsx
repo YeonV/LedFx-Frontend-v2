@@ -23,7 +23,7 @@ const EffectDropDown = ({
 }: EffectDropDownProps) => {
   // Use feature flag to determine view mode if not explicitly provided
   const effectGridViewEnabled = useStore((state) => state.features.effectGridView)
-  const actualViewMode = viewMode !== undefined ? viewMode : (effectGridViewEnabled ? 'grid' : 'list')
+  const actualViewMode = viewMode !== undefined ? viewMode : effectGridViewEnabled ? 'grid' : 'list'
   const effectNames =
     effects &&
     Object.keys(effects)

@@ -99,12 +99,7 @@ export const WebSocketManager = () => {
     // Note: visualizerConfigOptimistic intentionally NOT in deps to avoid infinite loop
     // This effect should only run when clients list or connection state changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isConnected,
-    clients,
-    clientIdentity?.name,
-    clientIdentity?.deviceId
-  ])
+  }, [isConnected, clients, clientIdentity?.name, clientIdentity?.deviceId])
 
   useEffect(() => {
     if (isConnected && pixelGraphs.length > 0) {

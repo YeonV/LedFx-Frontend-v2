@@ -18,6 +18,8 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  Switch,
+  FormControlLabel,
   Tooltip
 } from '@mui/material'
 import {
@@ -31,7 +33,6 @@ import {
   Save,
   Cancel
 } from '@mui/icons-material'
-import { Switch, FormControlLabel } from '@mui/material'
 import useStore from '../../store/useStore'
 
 interface FormState {
@@ -208,7 +209,9 @@ const SendspinDialog = () => {
                   size="small"
                   checked={!!config.sendspin_always_on}
                   onChange={() => {
-                    setSystemConfig({ sendspin_always_on: !config.sendspin_always_on }).then(() => getSystemConfig())
+                    setSystemConfig({ sendspin_always_on: !config.sendspin_always_on }).then(() =>
+                      getSystemConfig()
+                    )
                   }}
                   disabled={!available}
                 />
