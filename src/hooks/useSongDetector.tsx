@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import useStore from '../store/useStore'
 
 interface SongDetectorStatus {
   installed: boolean
@@ -148,6 +149,16 @@ export const useSongDetector = () => {
         deviceName,
         plus: withPosition
       })
+      // Stand the core down: both publish song_detected, and two publishers on
+      // one channel fight over the track, the position anchor and the artwork.
+      // Deliberately one-way - stopping the detector must NOT switch a privacy
+      // feature back on behind the user's back.
+      const state = useStore.getState()
+      if (state.config?.now_playing_enabled) {
+        state
+          .setSystemConfig({ now_playing_enabled: false })
+          .then(() => Promise.all([state.getSystemConfig(), state.getInfo()]))
+      }
     }
   }
 

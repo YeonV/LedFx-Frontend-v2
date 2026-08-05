@@ -21,7 +21,12 @@ export const useEngineRow = (section: EngineSection) => {
 
   const preference = useStore((state) => state.nowPlayingEngines[section])
   const setPreference = useStore((state) => state.setNowPlayingEngine)
-  const available = useStore((state) => state.nowPlayingAvailable)
+  // Reachable *and* switched on. The endpoint answers either way so the user
+  // can turn the feature on, but while it is off the core reads nothing, so
+  // offering Core here would be an engine that never runs.
+  const endpointAvailable = useStore((state) => state.nowPlayingAvailable)
+  const featureEnabled = useStore((state) => !!state.backendFeatures.now_playing_enabled)
+  const available = endpointAvailable && featureEnabled
   const config = useStore((state) => state.nowPlayingState?.config)
   const updateNowPlayingConfig = useStore((state) => state.updateNowPlayingConfig)
 
@@ -57,7 +62,11 @@ export const useEngineRow = (section: EngineSection) => {
   const backend = config?.[backendSection] as
     | { enabled?: boolean; virtual_ids?: string[] }
     | undefined
-  const backendOwns = !!backend?.enabled
+  // Virtuals too, not just the flag: the core only acts on a section that has
+  // both, and track_text/album_art ship enabled by default. Testing the flag
+  // alone would hand those rows to a core with nothing selected - it does
+  // nothing while the browser stands down, and the row silently stops working.
+  const backendOwns = !!backend?.enabled && (backend?.virtual_ids?.length ?? 0) > 0
 
   const engine: NowPlayingEngine = backendOwns ? 'core' : preference
   const isCore = engine === 'core'
@@ -102,7 +111,9 @@ export const useEngineRow = (section: EngineSection) => {
   )
 
   const virtuals: string[] = isCore ? (backend?.virtual_ids ?? []) : localVirtuals
-  const enabled = isCore ? backendOwns : localEnabled
+  // The raw flag, not backendOwns: this drives the play button, which must
+  // report what the user actually toggled even before a virtual is picked.
+  const enabled = isCore ? !!backend?.enabled : localEnabled
 
   const setVirtuals = useCallback(
     (next: string[]) => {

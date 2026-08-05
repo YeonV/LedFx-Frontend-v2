@@ -72,6 +72,8 @@ export interface ISystemConfig {
   startup_scene_id: string
   startup_playlist_id: string
   sendspin_always_on: boolean
+  /** Opt-in. While false the core never reads the OS media session. */
+  now_playing_enabled?: boolean
   lifx_broadcast_address?: string
   lifx_discovery_timeout?: number
   sendspin_servers?: Record<string, { server_url: string; client_name: string }>

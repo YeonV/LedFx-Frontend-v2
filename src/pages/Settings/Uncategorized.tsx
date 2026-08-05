@@ -12,6 +12,10 @@ const Uncategorized = () => {
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
   const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
   const backendFeatures = useStore((state) => state.backendFeatures)
+  const config = useStore((state) => state.config)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const getInfo = useStore((state) => state.getInfo)
 
   // Offscreen capture state
   const offscreenCaptureEnabled = useStore(
@@ -166,6 +170,24 @@ const Uncategorized = () => {
         checked={blenderAutomagic}
         onChange={() => setBlenderAutomagic(!blenderAutomagic)}
       />
+      {backendFeatures.now_playing && (
+        <SettingsRow
+          beta
+          title="Now Playing"
+          info={
+            'Lets LedFx read your media session: the track title can be shown on your virtuals, ' +
+            'artist and title are sent to MusicBrainz to find cover art, and that art is cached ' +
+            'to disk. Off by default. Switching it off stops all of it and deletes the cache.'
+          }
+          checked={!!config.now_playing_enabled}
+          onChange={async () => {
+            await setSystemConfig({ now_playing_enabled: !config.now_playing_enabled })
+            // getInfo too: the core reports the live state in /api/info, and the
+            // Song Detector's engine switches key off it.
+            await Promise.all([getSystemConfig(), getInfo()])
+          }}
+        />
+      )}
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
       </SettingsRow>
