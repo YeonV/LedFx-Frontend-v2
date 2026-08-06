@@ -1,10 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, Box, IconButton, Stack, capitalize } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  Box,
+  IconButton,
+  Stack,
+  capitalize,
+  Select,
+  MenuItem,
+  ListSubheader
+} from '@mui/material'
 import { GridOn, GridOff, Settings } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
@@ -66,10 +77,20 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
   const features = useStore((state) => state.features)
   const effects = useStore((state) => state.schemas.effects)
   const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
+  const getLedFxPresets = useStore((state) => state.getLedFxPresets)
+  const getUserPresets = useStore((state) => state.getUserPresets)
+  const activatePreset = useStore((state) => state.activatePreset)
   const [fade] = useState(false)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
   const [matrix, setMatrix] = useState(initMatix)
   const [showSettings, setShowSettings] = useState(false)
+  // Held locally rather than read from state.presets: that slot is a single
+  // shared object, and this component is mounted once per sub-virtual
+  // (background, foreground, mask), so they would overwrite each other. These
+  // catalogues are keyed by effect type instead, so each instance can look up
+  // its own.
+  const [ledfxPresets, setLedfxPresets] = useState<Record<string, any>>({})
+  const [userPresets, setUserPresets] = useState<Record<string, any>>({})
 
   const getV = () => {
     for (const prop in virtuals) {
@@ -112,6 +133,31 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     getVirtuals()
     getSchemas()
   }, [])
+
+  // Fetched only once the settings panel is open. Both getters hit /api/config,
+  // so loading them eagerly would cost a full config fetch per card on render.
+  useEffect(() => {
+    if (!showSettings) return
+    getLedFxPresets().then((p: any) => p && setLedfxPresets(p))
+    getUserPresets().then((p: any) => p && setUserPresets(p))
+  }, [showSettings, effectType])
+
+  const applyPreset = (value: string) => {
+    // Category and id travel together: the two namespaces are independent and
+    // can hold the same preset id, so the id alone is ambiguous.
+    const [category, presetId] = value.split('::')
+    if (!effectType || !presetId) return
+    activatePreset(virtId, category as 'ledfx_presets' | 'user_presets', effectType, presetId).then(
+      () => {
+        getVirtuals()
+        getDevices()
+      }
+    )
+  }
+
+  const ledfxForType: Record<string, any> = (effectType && ledfxPresets?.[effectType]) || {}
+  const userForType: Record<string, any> = (effectType && userPresets?.[effectType]) || {}
+  const hasPresets = Object.keys(ledfxForType).length + Object.keys(userForType).length > 0
 
   useEffect(() => {
     if (virtuals[virtId]?.effect && Object.keys(virtuals[virtId]?.effect).length === 0) {
@@ -200,6 +246,39 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
           theModel &&
           effectType && (
             <div>
+              {hasPresets && (
+                <BladeFrame title="Preset" full style={{ margin: '0 0 1rem 0', width: 'unset' }}>
+                  {/*
+                    Deliberately an action, not persisted state: applying a
+                    preset then nudging any slider means the config no longer
+                    matches it, so showing it as still selected would lie.
+                  */}
+                  <Select
+                    variant="standard"
+                    disableUnderline
+                    fullWidth
+                    value=""
+                    displayEmpty
+                    onChange={(e) => applyPreset(e.target.value as string)}
+                  >
+                    <MenuItem value="" disabled>
+                      Apply a preset...
+                    </MenuItem>
+                    {Object.keys(ledfxForType).length > 0 && <ListSubheader>LedFx</ListSubheader>}
+                    {Object.entries(ledfxForType).map(([id, preset]) => (
+                      <MenuItem key={`ledfx-${id}`} value={`ledfx_presets::${id}`}>
+                        {preset?.name || id}
+                      </MenuItem>
+                    ))}
+                    {Object.keys(userForType).length > 0 && <ListSubheader>User</ListSubheader>}
+                    {Object.entries(userForType).map(([id, preset]) => (
+                      <MenuItem key={`user-${id}`} value={`user_presets::${id}`}>
+                        {preset?.name || id}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </BladeFrame>
+              )}
               <BladeEffectSchemaForm
                 handleEffectConfig={(e: any) => handleEffectConfig(e, virtId)}
                 virtId={virtId}
