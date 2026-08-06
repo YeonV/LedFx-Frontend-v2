@@ -64,6 +64,39 @@ const defaultColors = [
   '#5C6B7E'
 ]
 
+// Ceiling on the column count. Past this, the tallest unbreakable category
+// still sets the dialog height while extra columns only add empty space.
+const MAX_COLUMNS = 4
+
+// Column geometry. The dialog width is fixed: sizing it to the visible content
+// was tried and reverted, because the search box filters on every keystroke and
+// the dialog resized per character.
+const COLUMN_GAP_PX = 16
+const COLUMN_MIN_WIDTH_PX = 260
+
+// Vertical space the dialog spends on everything that is not an effect row:
+// the control bar, content padding, the dialog's own margin and a category
+// header. Deliberately generous - overestimating just means slightly shorter
+// rows, underestimating means the dialog scrolls when it did not need to.
+// Dropped from 300 when the chips moved up into the control bar.
+const CHROME_ALLOWANCE_PX = 260
+
+// Row metrics. The floor is the original compact height, so a short window
+// behaves exactly as before; the ceiling stops rows becoming absurd on a tall
+// screen with few effects visible - revert ROW_MAX_PX to 44 for the previous,
+// tighter look.
+const ROW_MIN_PX = 29
+const ROW_MAX_PX = 56
+const ROW_GAP_PX = 3
+
+// Label size follows the row height, so text does not float in a tall row.
+// The floor is body2 (0.875rem), the size rows have always used, so a compact
+// row is pixel-identical to before. The ratio is what a comfortable list row
+// tends to want; the ceiling keeps it from shouting on very tall rows.
+const ROW_FONT_RATIO = 0.34
+const FONT_MIN_REM = 0.875
+const FONT_MAX_REM = 1.125
+
 const categoryOrder = [
   'Non-Reactive',
   'BPM',
@@ -130,6 +163,84 @@ const EffectGridSelector = ({
     })
   }, [allEffects, searchQuery, hiddenCategories])
 
+  /**
+   * The same effects, grouped back into category blocks in declared order.
+   *
+   * Each block is laid out as one unbreakable unit inside a CSS multi-column
+   * flow, which is what keeps a category intact in a single column while still
+   * letting the browser even out the column heights. Category sizes are very
+   * uneven (Matrix has 21 effects, Simple has 2), so a fixed lane per category
+   * would leave most of the dialog empty.
+   */
+  const categorisedEffects = useMemo(() => {
+    const byCategory = new Map<string, Effect[]>()
+    filteredEffects.forEach((effect) => {
+      const category = effect.category || 'Non-Reactive'
+      if (!byCategory.has(category)) byCategory.set(category, [])
+      byCategory.get(category)!.push(effect)
+    })
+
+    const present = [...byCategory.keys()]
+    const ordered = [
+      ...categoryOrder.filter((c) => byCategory.has(c)),
+      ...present.filter((c) => !categoryOrder.includes(c))
+    ]
+
+    // Largest category first. CSS column balancing is not an optimal packer: it
+    // commits to column heights as it flows, so a big unbreakable block met
+    // late (Matrix, 20 effects) forces one tall column after short ones have
+    // already been settled. Leading with the big blocks lets the small ones
+    // fill in around them. Ties keep the declared order.
+    return ordered
+      .map((category) => ({ category, effects: byCategory.get(category)! }))
+      .sort((a, b) => b.effects.length - a.effects.length)
+  }, [filteredEffects])
+
+  /**
+   * Rows the tallest column will end up holding, which is what the row height
+   * has to divide into. Two things can set it: a single category too big to
+   * share a column (Matrix), or the average once everything is spread over
+   * MAX_COLUMNS. Whichever is larger wins.
+   *
+   * This is an estimate - the real column fill happens in the browser, after
+   * layout - but it only needs to be close, because the result is clamped.
+   */
+  const rowsInTallestColumn = useMemo(() => {
+    // Deliberately measured from the category chips only, ignoring the search
+    // query. Search filters on every keystroke, so keying row height off it
+    // would grow and shrink every row as you type. Chip toggles are discrete,
+    // so they can safely drive layout; typing must not.
+    const perCategory = new Map<string, number>()
+    allEffects.forEach((effect) => {
+      const category = effect.category || 'Non-Reactive'
+      if (hiddenCategories.includes(category)) return
+      perCategory.set(category, (perCategory.get(category) || 0) + 1)
+    })
+    if (!perCategory.size) return 1
+
+    const counts = [...perCategory.values()]
+    const largestBlock = Math.max(...counts) + 1
+    const totalRows = counts.reduce((total, n) => total + n + 1, 0)
+    return Math.max(largestBlock, Math.ceil(totalRows / MAX_COLUMNS))
+  }, [allEffects, hiddenCategories])
+
+  /**
+   * Grow rows to use the vertical space that is actually there.
+   *
+   * Pure CSS on purpose: `100vh` re-evaluates on resize, so this tracks the
+   * window without a resize listener or a re-render. Only the row count comes
+   * from JS, and it changes only when the filters do.
+   */
+  const idealRow = `calc((100vh - ${CHROME_ALLOWANCE_PX}px) / ${rowsInTallestColumn} - ${ROW_GAP_PX}px)`
+  const rowHeight = `clamp(${ROW_MIN_PX}px, ${idealRow}, ${ROW_MAX_PX}px)`
+
+  // Derived from the row height via a custom property rather than recomputing
+  // the clamp, so height and label size cannot drift apart.
+  const rowFontSize =
+    `clamp(${FONT_MIN_REM}rem, ` +
+    `calc(var(--effect-row-h) * ${ROW_FONT_RATIO}), ` +
+    `${FONT_MAX_REM}rem)`
+
   const toggleCategory = (category: string) => {
     setHiddenCategories((prev) =>
       prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
@@ -158,7 +269,7 @@ const EffectGridSelector = ({
       sx={{
         '& .MuiDialog-paper': {
           width: '80vw',
-          maxWidth: 'none',
+          maxWidth: '1400px',
           backgroundColor: theme.palette.background.paper,
           border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
           borderRadius: 2
@@ -174,47 +285,49 @@ const EffectGridSelector = ({
           overflow: 'hidden'
         }}
       >
+        {/*
+          One control bar: close, title, category chips, search. Chips and
+          search are both filters, so they belong in the same zone rather than
+          stacked as two layers of chrome.
+
+          Everything here wraps rather than using breakpoints. The chip group is
+          the flexible item, so on a narrower dialog the chips wrap onto a
+          second line inside the bar while search stays top-right; if it gets
+          tighter still, the outer wrap drops search onto its own line.
+        */}
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
+            flexWrap: 'wrap',
+            columnGap: 2,
+            rowGap: 1,
             p: 2,
             backgroundColor: 'transparent',
             borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`
           }}
         >
-          <IconButton edge="start" onClick={onClose} aria-label="close" sx={{ mr: 2 }}>
+          <IconButton edge="start" onClick={onClose} aria-label="close">
             <Close />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flex: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flex: '0 0 auto' }}>
             {title}
           </Typography>
-          <TextField
-            placeholder="Search effects..."
-            variant="outlined"
-            size="small"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              )
-            }}
+          <Box
             sx={{
-              minWidth: 250,
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: alpha(theme.palette.action.active, 0.04),
-                '&:hover': {
-                  backgroundColor: alpha(theme.palette.action.active, 0.08)
-                }
-              }
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 0.5,
+              // takes the slack between title and search, and is allowed to
+              // shrink below its content width so its own wrap kicks in first
+              flex: '1 1 auto',
+              minWidth: 0,
+              // Chips sit against the search field, so the two filter controls
+              // read as one group. Use 'flex-start' instead to park them next
+              // to the title.
+              justifyContent: 'flex-end'
             }}
-          />
-        </Box>
-        <Box sx={{ px: 2, py: 1.5, backgroundColor: 'transparent' }}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          >
             {(categoryOrder.filter((c) => groups && Object.keys(groups).includes(c)).length > 0
               ? categoryOrder.filter((c) => groups && Object.keys(groups).includes(c))
               : Object.keys(groups || {})
@@ -252,6 +365,30 @@ const EffectGridSelector = ({
               )
             })}
           </Box>
+          <TextField
+            placeholder="Search effects..."
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              )
+            }}
+            sx={{
+              minWidth: 250,
+              flex: '0 0 auto',
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: alpha(theme.palette.action.active, 0.04),
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.action.active, 0.08)
+                }
+              }
+            }}
+          />
         </Box>
 
         <DialogContent
@@ -296,69 +433,137 @@ const EffectGridSelector = ({
           ) : (
             <Box
               sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                gap: 0.75
+                // single source of truth for row height; the label size is
+                // derived from it further down
+                '--effect-row-h': rowHeight,
+                // Width AND count together, so count acts as a cap: at most
+                // MAX_COLUMNS columns, each at least COLUMN_MIN_WIDTH_PX.
+                // Capping matters because one category is ~3x the median - past
+                // four columns the tallest block sets the height while the extra
+                // columns just add empty space. On a narrow viewport the browser
+                // drops to fewer columns on its own.
+                columns: `${COLUMN_MIN_WIDTH_PX}px ${MAX_COLUMNS}`,
+                columnGap: `${COLUMN_GAP_PX}px`,
+                // the default, but explicit: it is the whole reason the columns
+                // even out despite lopsided categories
+                columnFill: 'balance'
               }}
             >
-              {filteredEffects.map((effect) => {
-                const isSelected = effect.id === value
-                const bgColor = getCategoryColor(effect.category || 'Non-Reactive')
+              {categorisedEffects.map(({ category, effects }) => {
+                const categoryColor = getCategoryColor(category)
 
                 return (
-                  <Card
-                    key={effect.id}
+                  <Box
+                    key={category}
                     sx={{
-                      backgroundColor: isSelected
-                        ? alpha(theme.palette.primary.main, 0.3)
-                        : bgColor,
-                      border: isSelected
-                        ? `2px solid ${theme.palette.primary.main}`
-                        : `1px solid ${theme.palette.divider}`,
-                      borderRadius: 1,
-                      transition: 'all 0.15s ease',
-                      overflow: 'hidden',
-                      '&:hover': {
-                        transform: 'scale(1.03)',
-                        boxShadow: theme.shadows[3],
-                        borderColor: theme.palette.primary.main
-                      }
+                      // keep a category whole in one column
+                      breakInside: 'avoid',
+                      WebkitColumnBreakInside: 'avoid',
+                      pageBreakInside: 'avoid',
+                      mb: 2
                     }}
                   >
-                    <CardActionArea
-                      onClick={() => handleEffectSelect(effect.id)}
+                    <Box
                       sx={{
-                        height: '100%',
-                        px: 0.5,
-                        py: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        px: 1,
+                        py: 0.5,
+                        mb: 0.5,
+                        borderRadius: 1,
+                        backgroundColor: categoryColor
                       }}
                     >
-                      <CardContent
+                      <Typography
+                        variant="subtitle2"
                         sx={{
-                          p: '2px',
-                          '&:last-child': {
-                            pb: '2px'
-                          }
+                          fontWeight: 700,
+                          color: theme.palette.text.primary,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.06em',
+                          fontSize: '0.72rem',
+                          flex: 1,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
                         }}
                       >
-                        <Typography
-                          variant="body1"
+                        {category}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: alpha(theme.palette.text.primary, 0.7) }}
+                      >
+                        {effects.length}
+                      </Typography>
+                    </Box>
+
+                    {effects.map((effect) => {
+                      const isSelected = effect.id === value
+
+                      return (
+                        <Card
+                          key={effect.id}
                           sx={{
-                            fontWeight: isSelected ? 600 : 400,
-                            color: theme.palette.text.primary,
-                            textAlign: 'center',
-                            lineHeight: 1.2,
-                            display: 'block',
+                            mb: `${ROW_GAP_PX}px`,
+                            borderRadius: 1,
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap'
+                            // A tint rather than a solid block: the header
+                            // already carries the category, so rows stay
+                            // readable and the column reads as one lane.
+                            backgroundColor: isSelected
+                              ? alpha(theme.palette.primary.main, 0.3)
+                              : alpha(categoryColor, 0.35),
+                            borderLeft: `3px solid ${
+                              isSelected ? theme.palette.primary.main : categoryColor
+                            }`,
+                            transition: 'background-color 0.12s ease',
+                            '&:hover': {
+                              backgroundColor: isSelected
+                                ? alpha(theme.palette.primary.main, 0.4)
+                                : alpha(categoryColor, 0.7)
+                            }
                           }}
                         >
-                          {effect.name}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
+                          <CardActionArea
+                            onClick={() => handleEffectSelect(effect.id)}
+                            sx={{
+                              px: 1,
+                              py: 0.5,
+                              minHeight: 'var(--effect-row-h)',
+                              display: 'flex',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <CardContent
+                              sx={{
+                                p: 0,
+                                width: '100%',
+                                minWidth: 0,
+                                '&:last-child': { pb: 0 }
+                              }}
+                            >
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontWeight: isSelected ? 700 : 400,
+                                  color: theme.palette.text.primary,
+                                  fontSize: rowFontSize,
+                                  lineHeight: 1.3,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap'
+                                }}
+                              >
+                                {effect.name}
+                              </Typography>
+                            </CardContent>
+                          </CardActionArea>
+                        </Card>
+                      )
+                    })}
+                  </Box>
                 )
               })}
             </Box>
