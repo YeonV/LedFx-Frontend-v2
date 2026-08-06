@@ -30,6 +30,11 @@ import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { SettingsRow } from '../../pages/Settings/SettingsComponents'
 import { isAndroidApp } from '../FireTv/android.bridge'
 import { UPDATE_CONSENT, requestUpdateGrantIfNeeded } from '../FireTv/androidUpdateConsent'
+import {
+  NOW_PLAYING_CONSENT,
+  requestNowPlayingGrantIfNeeded,
+  shouldAskForNowPlaying
+} from '../FireTv/androidNowPlayingConsent'
 
 export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
   const intro = useStore((state) => state.intro)
@@ -91,6 +96,9 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
   // dropped the step from `steps` the array would shrink while activeStep had
   // already advanced past its old end - steps[activeStep] would be undefined.
   const [askForUpdateConsent] = useState(() => isAndroidApp() && androidUpdates === 'unset')
+  // Same reasoning: granting access flips the answer, and a step that vanished
+  // mid-run would shift every later step under the user.
+  const [askForNowPlaying] = useState(() => shouldAskForNowPlaying())
 
   const schem = useStore((state) => state?.schemas?.audio?.schema)
   const schema = {
@@ -298,6 +306,21 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           // just agreed to it, rather than ambushing them with a system
           // settings screen halfway through their first update.
           requestUpdateGrantIfNeeded()
+          handleNext()
+        }
+      },
+      askForNowPlaying && {
+        key: 'nowPlaying',
+        icon: 'musicNote',
+        title: NOW_PLAYING_CONSENT.title,
+        label_left: NOW_PLAYING_CONSENT.decline,
+        label_right: NOW_PLAYING_CONSENT.accept,
+        action_left: handleNext,
+        action_right: () => {
+          // Switch the feature on and ask for the grant in one go: on its own
+          // the switch reads nothing, and on its own the grant does nothing.
+          onSystemSettingsChange('now_playing_enabled', true)
+          requestNowPlayingGrantIfNeeded()
           handleNext()
         }
       },
@@ -664,6 +687,18 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               <br />
               <br />
               {UPDATE_CONSENT.footnote}
+            </Typography>
+          )}
+          {steps[activeStep].key === 'nowPlaying' && (
+            <Typography
+              variant="body1"
+              textAlign="center"
+              sx={{ px: 2, pt: 2, maxWidth: 600, marginX: 'auto' }}
+            >
+              {NOW_PLAYING_CONSENT.body}
+              <br />
+              <br />
+              {NOW_PLAYING_CONSENT.footnote}
             </Typography>
           )}
           <Stack

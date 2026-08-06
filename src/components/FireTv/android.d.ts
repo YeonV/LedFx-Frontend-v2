@@ -11,6 +11,10 @@ declare global {
       canInstallPackages?: () => boolean
       /** Opens the per-app "Install unknown apps" settings screen. */
       requestInstallPermission?: () => void
+      /** False until the user grants notification access, which Now Playing needs. */
+      hasNotificationAccess?: () => boolean
+      /** Opens the notification-access settings screen. */
+      requestNotificationAccess?: () => void
     }
   }
 }

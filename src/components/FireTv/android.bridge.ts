@@ -65,6 +65,24 @@ export const requestInstallPermission = () => {
   window.AndroidRemoteControl?.requestInstallPermission?.()
 }
 
+/**
+ * Whether LedFx may read the phone's media session.
+ *
+ * Now Playing on Android goes through MediaSessionManager, which Android only
+ * opens up to an app the user has granted notification access. Older APKs have
+ * no such bridge method; report false there so the UI offers the step rather
+ * than promising a feature that cannot work.
+ */
+export const hasNotificationAccess = (): boolean => {
+  if (!window.AndroidRemoteControl?.hasNotificationAccess) return false
+  return window.AndroidRemoteControl.hasNotificationAccess()
+}
+
+/** Sends the user to the notification-access settings screen. */
+export const requestNotificationAccess = () => {
+  window.AndroidRemoteControl?.requestNotificationAccess?.()
+}
+
 export const downloadAndInstallApk = (url: string) => {
   if (window.AndroidRemoteControl?.downloadAndInstallApk) {
     console.log(`Requesting APK download: ${url}`)
