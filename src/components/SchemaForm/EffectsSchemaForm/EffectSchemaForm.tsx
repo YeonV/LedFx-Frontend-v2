@@ -3,6 +3,7 @@ import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
 import GradientPickerWrapper from '../components/GradientPicker/GradientPicker.wrapper'
+import BladeMultiSelect from '../components/MultiSelect/BladeMultiSelect'
 import { EffectSchemaFormProps } from './EffectSchemaForm.props'
 import useStore from '../../../store/useStore'
 import VirtualPickerSchemaForm from '../components/VirtualPicker/VirtualPickerSchemaForm'
@@ -39,6 +40,22 @@ const EffectSchemaForm = ({
         model &&
         schemaProperties.map((s: any, i: number) => {
           switch (s.type) {
+            case 'multiselect':
+              return (
+                <BladeMultiSelect
+                  key={s.id}
+                  index={i}
+                  model={model}
+                  model_id={s.id}
+                  schema={s}
+                  hideDesc={descriptions !== 'Show'}
+                  onChange={(model_id: string, value: string[]) => {
+                    const c: Record<string, unknown> = {}
+                    c[model_id] = value
+                    return handleEffectConfig && handleEffectConfig(c)
+                  }}
+                />
+              )
             case 'boolean':
               return (
                 <BladeBoolean

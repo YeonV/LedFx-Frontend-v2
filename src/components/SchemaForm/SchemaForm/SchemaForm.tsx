@@ -20,6 +20,7 @@ import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
 import BladeFrame from '../components/BladeFrame'
 import GradientPicker from '../components/GradientPicker/GradientPicker'
+import BladeMultiSelect from '../components/MultiSelect/BladeMultiSelect'
 import { SchemaFormProps } from './SchemaForm.props'
 import useStore from '../../../store/useStore'
 
@@ -90,6 +91,27 @@ const SchemaForm = ({
         {yzSchema &&
           yzSchema.map((s: any, i: number) => {
             switch (s.type) {
+              case 'multiselect':
+                return (
+                  <BladeMultiSelect
+                    key={s.id}
+                    index={i}
+                    model={model}
+                    model_id={s.id}
+                    schema={s}
+                    disabled={!s.permitted}
+                    required={s.required}
+                    hideDesc={hideDesc}
+                    onChange={(model_id: string, value: string[]) => {
+                      const c: Record<string, unknown> = {}
+                      c[model_id] = value
+                      if (onModelChange) {
+                        return onModelChange(c)
+                      }
+                      return null
+                    }}
+                  />
+                )
               case 'boolean':
                 return (
                   <BladeBoolean
@@ -116,13 +138,13 @@ const SchemaForm = ({
                 let audio_groups: any = []
                 if (s.id === 'audio_device') {
                   // eslint-disable-next-line
-                for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
+                  for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
                     if (typeof value === 'string') {
                       if (!group[value?.split(':')[0]]) {
                         group[value.split(':')[0]] = {}
                       }
                       // eslint-disable-next-line
-                    group[value.split(':')[0]][key] = value.split(':')[1];
+                      group[value.split(':')[0]][key] = value.split(':')[1]
                     }
                   }
 
