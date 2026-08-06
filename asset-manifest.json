@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/LedFx-Frontend-v2/static/css/main.6e31a61a.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.5c336985.js",
+    "main.css": "/LedFx-Frontend-v2/static/css/main.43913191.css",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.89b86755.js",
     "static/js/882.6322ae33.chunk.js": "/LedFx-Frontend-v2/static/js/882.6322ae33.chunk.js",
     "static/js/429.b62d6362.chunk.js": "/LedFx-Frontend-v2/static/js/429.b62d6362.chunk.js",
     "static/js/464.efa9ae26.chunk.js": "/LedFx-Frontend-v2/static/js/464.efa9ae26.chunk.js",
@@ -44,7 +44,7 @@
     "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.866a1a9f220801e888735cdfa6f22698.svg"
   },
   "entrypoints": [
-    "static/css/main.6e31a61a.css",
-    "static/js/main.5c336985.js"
+    "static/css/main.43913191.css",
+    "static/js/main.89b86755.js"
   ]
 }
