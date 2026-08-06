@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import useStore from '../../store/useStore'
 import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
+import { Ledfx } from '../../api/ledfx'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 import {
   Dialog,
@@ -13,7 +14,9 @@ import {
   Box,
   Chip,
   Select,
-  MenuItem
+  MenuItem,
+  LinearProgress,
+  Typography
 } from '@mui/material'
 import {
   Delete,
@@ -44,6 +47,39 @@ const AudioCard = ({ className }: any) => {
   const setUsePerDeviceDelay = useStore((state) => state.setUsePerDeviceDelay)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
+
+  // Stem separation model. Not shipped with LedFx (~211MB, and its training data
+  // is undocumented upstream), so it is fetched on request. A packaged binary has
+  // no interpreter, so the CLI downloader is unreachable for most users - this
+  // row is how they get it.
+  const [stemModel, setStemModel] = useState<any>(null)
+  const stemsEnabled = !!model?.stems_enabled
+
+  const refreshStemModel = async () => {
+    try {
+      setStemModel(await Ledfx('/api/stem_model'))
+    } catch {
+      setStemModel(null)
+    }
+  }
+
+  const downloadStemModel = async () => {
+    // Optimistic, so the button reacts before the first poll comes back
+    setStemModel((s: any) => ({ ...(s || {}), downloading: true, progress: 0 }))
+    await Ledfx('/api/stem_model', 'POST', {})
+    refreshStemModel()
+  }
+
+  useEffect(() => {
+    if (!stemsEnabled) return undefined
+    refreshStemModel()
+    // Poll only while a download is running: 211MB takes a while, and the
+    // endpoint is the only source of progress.
+    const id = setInterval(() => {
+      if (stemModel?.downloading) refreshStemModel()
+    }, 1000)
+    return () => clearInterval(id)
+  }, [stemsEnabled, stemModel?.downloading])
 
   // Listen for electron messages
   window.api?.receive('fromMain', (args: any) => {
@@ -158,6 +194,53 @@ const AudioCard = ({ className }: any) => {
           }}
         />
       )}
+      {/* STEM SEPARATION MODEL */}
+      {stemsEnabled && (
+        <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+          <SettingsRow
+            title="Stem Separation Model"
+            info="A ~211MB model, downloaded from the upstream project rather than bundled with LedFx. Stem separation stays unavailable until it is present."
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label={
+                  stemModel?.installed
+                    ? 'Installed'
+                    : stemModel?.downloading
+                      ? `${Math.round((stemModel?.progress || 0) * 100)}%`
+                      : 'Not downloaded'
+                }
+                color={stemModel?.installed ? 'success' : stemModel?.error ? 'error' : 'default'}
+                size="small"
+              />
+              {!stemModel?.installed && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Download />}
+                  disabled={!stemModel || stemModel.downloading}
+                  onClick={downloadStemModel}
+                >
+                  {stemModel?.downloading ? 'Downloading...' : 'Download (211 MB)'}
+                </Button>
+              )}
+            </Box>
+          </SettingsRow>
+          {stemModel?.downloading && (
+            <LinearProgress
+              variant="determinate"
+              value={Math.min(100, (stemModel?.progress || 0) * 100)}
+              sx={{ mt: 1 }}
+            />
+          )}
+          {stemModel?.error && (
+            <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
+              {stemModel.error}
+            </Typography>
+          )}
+        </Box>
+      )}
+
       {/* MACOS AUDIO DRIVER & VOLUME CONTROL SECTION */}
       {isMacOS && isCC && (
         <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>

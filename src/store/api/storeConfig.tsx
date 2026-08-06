@@ -46,6 +46,9 @@ export interface ISystemConfig {
     pitch_method: string
     pitch_tolerance: number
     onset_method: string
+    stems_enabled: boolean
+    stem_hop: number
+    stem_threads: number
   }
   user_colors: Record<string, string>
   devices: undefined
