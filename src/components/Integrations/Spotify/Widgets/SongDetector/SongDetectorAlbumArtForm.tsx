@@ -43,7 +43,10 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Stack direction="column" spacing={2} sx={{ flex: 1, display: 'flex' }}>
+      {/* Flush on phones, matching the text column. The spacing exists to keep
+          the two columns' selectors bottom-aligned side by side, which stops
+          meaning anything once they are stacked. */}
+      <Stack direction="column" spacing={{ xs: 0, sm: 2 }} sx={{ flex: 1, display: 'flex' }}>
         {/* Album Art Thumbnail */}
         {albumArtUrl && preview && (
           <Box
@@ -229,7 +232,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
         </Accordion>
 
         {/* Virtual Device Selectors */}
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
         <VirtualGradientImageSelectors />
         <VisualiserGradientImageSelectors />
       </Stack>

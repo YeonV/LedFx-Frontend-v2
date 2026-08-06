@@ -57,7 +57,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     >
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography>Text Configuration (virtuals only)</Typography>
+          <Typography>Track Info Configuration (virtuals only)</Typography>
         </AccordionSummary>
         <AccordionDetails>
           {textIsCore ? (

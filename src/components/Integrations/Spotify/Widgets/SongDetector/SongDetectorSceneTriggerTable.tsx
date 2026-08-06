@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import {
   Box,
-  Card,
   FormControl,
   Select,
   MenuItem,
@@ -9,13 +8,25 @@ import {
   IconButton,
   Stack,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material'
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
-import { DeleteForever, Add, PlayArrow, Pause, FileDownload, UploadFile } from '@mui/icons-material'
+import {
+  DeleteForever,
+  Add,
+  PlayArrow,
+  Pause,
+  FileDownload,
+  UploadFile,
+  ExpandMore
+} from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import useStore from '../../../../../store/useStore'
 import Popover from '../../../../Popover/Popover'
+import CardStack from './CardStack'
 import { generateSongHash } from '../../../../../store/ui/storeSongDectector'
 
 const PREFIX = 'SongDetectorSceneTriggerTable'
@@ -431,9 +442,39 @@ export default function SongDetectorSceneTriggerTable() {
 
   return (
     <Root style={{ display: 'flex', width: '100%' }}>
-      <Card sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">Scene Triggers</Typography>
+      <Box sx={{ width: '100%' }}>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography>Scene Triggers</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 0 }}>
+            <DataGrid
+              className={classes.root}
+              autoHeight
+              disableRowSelectionOnClick
+              processRowUpdate={handleProcessRowUpdate}
+              onProcessRowUpdateError={(error) => {
+                console.error('❌ Row update error:', error)
+              }}
+              sx={{
+                boxShadow: 2,
+                color: '#fff',
+                border: 0
+              }}
+              columns={columns}
+              rows={rows}
+              getRowClassName={(params: GridRowParams<any>) => {
+                if (firedTriggers.has(params.row.id)) {
+                  return 'trigger_fired'
+                }
+                return params.row.songHash === currentSongHash ? 'currently_playing' : ''
+              }}
+            />
+          </AccordionDetails>
+        </Accordion>
+        {/* Kept outside the accordion, like the selector rows in the Text and
+            Album Art sections: still reachable while the table is collapsed. */}
+        <CardStack>
           <Stack direction="row" alignItems="center" spacing={1}>
             <TextField
               label="Latency"
@@ -441,7 +482,7 @@ export default function SongDetectorSceneTriggerTable() {
               value={triggerLatencyMs}
               onChange={(e) => setTriggerLatencyMs(Number(e.target.value))}
               size="small"
-              sx={{ width: 120 }}
+              sx={{ flexGrow: 1, minWidth: 90 }}
               InputProps={{
                 endAdornment: <InputAdornment position="end">ms</InputAdornment>
               }}
@@ -501,31 +542,8 @@ export default function SongDetectorSceneTriggerTable() {
               {sceneTriggerActive ? <Pause /> : <PlayArrow />}
             </IconButton>
           </Stack>
-        </Box>
-        <DataGrid
-          className={classes.root}
-          autoHeight
-          disableRowSelectionOnClick
-          processRowUpdate={handleProcessRowUpdate}
-          onProcessRowUpdateError={(error) => {
-            console.error('❌ Row update error:', error)
-          }}
-          sx={{
-            boxShadow: 2,
-            color: '#fff',
-            border: 1,
-            borderColor: '#666'
-          }}
-          columns={columns}
-          rows={rows}
-          getRowClassName={(params: GridRowParams<any>) => {
-            if (firedTriggers.has(params.row.id)) {
-              return 'trigger_fired'
-            }
-            return params.row.songHash === currentSongHash ? 'currently_playing' : ''
-          }}
-        />
-      </Card>
+        </CardStack>
+      </Box>
     </Root>
   )
 }

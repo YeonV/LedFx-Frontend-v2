@@ -9,7 +9,8 @@ import {
   DialogContent,
   DialogTitle,
   Input,
-  Link
+  Link,
+  useMediaQuery
 } from '@mui/material'
 import GitInfo from 'react-git-info/macro'
 import useStore from '../../store/useStore'
@@ -29,6 +30,7 @@ export default function AboutDialog({ className, children, startIcon }: any) {
   const setUpdateNotificationInterval = useStore((state) => state.setUpdateNotificationInterval)
 
   const [open, setOpen] = useState(false)
+  const xsmall = useMediaQuery('(max-width: 600px)')
   const [bcommit, setLedFxSHA] = useState('')
   const [bversion, setBversion] = useState('')
   const [buildType, setBuildType] = useState('')
@@ -102,13 +104,14 @@ export default function AboutDialog({ className, children, startIcon }: any) {
         onClose={handleClose}
         aria-labelledby="about-dialog-title"
         aria-describedby="about-dialog-description"
+        fullScreen={xsmall}
         PaperProps={{
-          style: { margin: '0 auto' }
+          style: xsmall ? { margin: 0, maxWidth: '100%' } : { margin: '0 auto' }
         }}
       >
         <DialogTitle id="about-dialog-title">About LedFx</DialogTitle>
         <DialogContent>
-          <div style={{ minWidth: 400 }}>
+          <div style={{ minWidth: xsmall ? 0 : 400 }}>
             <Card style={{ marginBottom: '1rem' }}>
               <CardHeader title="Backend" />
               <CardContent style={{ paddingTop: 0 }}>

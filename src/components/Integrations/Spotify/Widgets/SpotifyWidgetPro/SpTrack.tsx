@@ -5,6 +5,11 @@ import useStore from '../../../../../store/useStore'
 import { getPlaylist } from '../../../../../utils/spotifyProxies'
 import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import useStyle, { CoverImage } from './SpWidgetPro.styles'
+// Imported rather than './icon.png': the core serves the frontend from a route
+// allowlist that icon.png is not on, so the literal path is 200 on the dev
+// server and 404 in the app a user actually runs. Importing emits it under
+// /static, which is served everywhere.
+import defaultImage from '../../../../../app-icon.png'
 
 export default function SpTrack({ className }: any) {
   const classes = useStyle()
@@ -18,7 +23,7 @@ export default function SpTrack({ className }: any) {
   const image =
     spotifyCtx?.track_window?.current_track?.album.images[0].url ||
     spCtx?.item?.album?.images[0].url ||
-    './icon.png'
+    defaultImage
   const artist = spotifyCtx?.track_window?.current_track?.artists ||
     spCtx?.item?.artists || [{ name: 'on LedFx' }]
 

@@ -20,7 +20,8 @@ import {
   Divider,
   Switch,
   FormControlLabel,
-  Tooltip
+  Tooltip,
+  useMediaQuery
 } from '@mui/material'
 import {
   Close,
@@ -44,6 +45,7 @@ interface FormState {
 const emptyForm = (): FormState => ({ id: '', server_url: 'ws://', client_name: 'LedFx' })
 
 const SendspinDialog = () => {
+  const xsmall = useMediaQuery('(max-width: 600px)')
   const open = useStore((state) => state.dialogs.sendspinManager?.open || false)
   const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
   const servers = useStore((state) => state.sendspinServers)
@@ -174,6 +176,10 @@ const SendspinDialog = () => {
       onClose={handleClose}
       maxWidth="md"
       fullWidth
+      // The table and the header controls need more width than a phone leaves
+      // once the dialog keeps its margins, which is what pushed the add button
+      // off the edge and put a scrollbar under the table.
+      fullScreen={xsmall}
       TransitionProps={{ onEntered: handleOpen }}
     >
       <DialogTitle>
@@ -198,11 +204,29 @@ const SendspinDialog = () => {
         )}
 
         {/* Configured servers table */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+        {/* Four controls in one row wrap every label on a phone, so below sm
+            the heading and toggle take the first row and the actions the next. */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            gap: { xs: 1, sm: 0 },
+            justifyContent: 'space-between',
+            mb: 1
+          }}
+        >
           <Typography variant="subtitle1" fontWeight={600}>
             Configured Servers
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1,
+              alignItems: 'center',
+              flexWrap: { xs: 'wrap', sm: 'nowrap' }
+            }}
+          >
             <FormControlLabel
               control={
                 <Switch

@@ -8,8 +8,10 @@ import { Ledfx } from '../../../../../api/ledfx'
 // import { colorfulness, rgbSum } from '../../../../../utils/helpers'
 import AutoApplySelector from './AutoApplySelector'
 import CardStack from '../SongDetector/CardStack'
+import usePruneAlbumArtVirtuals from '../../../../../hooks/usePruneAlbumArtVirtuals'
 
 const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
+  usePruneAlbumArtVirtuals()
   const virtuals = useStore((state) => state.virtuals)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const spotifyCtx = useContext(SpotifyStateContext)
@@ -615,6 +617,12 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     // applyVisualiserConfig
   ])
 
+  // Album art targets are matrix virtuals only - an imagespin on a single row
+  // is meaningless. Gradients apply to any virtual. Matches the Now Playing
+  // screen, which offered the same control with the same effect but a
+  // different option set.
+  const matrixVirtuals = Object.keys(virtuals).filter((v) => (virtuals[v]?.config?.rows || 1) > 1)
+
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
     const selected = typeof value === 'string' ? value.split(',') : value
@@ -775,8 +783,8 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           disabled={gradientVirtuals.length === 0}
         />
         <AutoApplySelector
-          label="Image Virtuals"
-          options={Object.keys(virtuals)}
+          label="Album Art Virtuals"
+          options={matrixVirtuals}
           value={imageVirtuals}
           onChange={handleImageVirtualChange}
           isActive={isActiveImageVirtuals}

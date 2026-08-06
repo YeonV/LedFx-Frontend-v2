@@ -86,8 +86,11 @@ const Tile = ({
   return (
     <Grid
       sx={{
-        width: '158px',
-        height: '110px'
+        // Fill the cell the container hands out. A fixed width left a dead
+        // strip at the right edge on narrow screens and forced labels to wrap
+        // at widths where they would otherwise have fit.
+        width: '100%',
+        minHeight: '110px'
       }}
     >
       {component ||

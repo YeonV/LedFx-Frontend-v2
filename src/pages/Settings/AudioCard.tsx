@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useStore from '../../store/useStore'
+import Popover from '../../components/Popover/Popover'
 import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
 import { Ledfx } from '../../api/ledfx'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
@@ -16,18 +17,101 @@ import {
   Select,
   MenuItem,
   LinearProgress,
-  Typography
+  Typography,
+  Stack,
+  useMediaQuery
 } from '@mui/material'
 import {
   Delete,
-  Visibility,
+  ManageHistory,
+  Close,
   Download,
   DeleteForever,
   VolumeUp,
   VolumeDown,
   VolumeOff,
-  Info
+  Info,
+  Mic as MicIcon,
+  Speaker as SpeakerIcon,
+  Hub as HubIcon
 } from '@mui/icons-material'
+
+/**
+ * Device names carry three kinds of information at once, e.g.
+ * "Windows WASAPI: Evo (2-Crusher Evo) [Loopback]". The selector already
+ * encodes the tag as an icon and drops it from the text; this does the same,
+ * and dims the parenthesised hardware detail so the device name itself reads
+ * first.
+ */
+const DeviceName = ({ name }: { name: string }) => {
+  const isLoopback = name.includes('[Loopback]')
+  const isSendspin = name.toLowerCase().startsWith('sendspin')
+  const parts = name
+    .replace('[Loopback]', '')
+    .trim()
+    .split(/(\([^)]*\)|\[[^\]]*\])/g)
+    .filter(Boolean)
+
+  return (
+    <Stack direction="row" alignItems="center" spacing={1} sx={{ flex: 1, minWidth: 0 }}>
+      {isSendspin ? (
+        <HubIcon fontSize="small" sx={{ color: 'text.secondary', flexShrink: 0 }} />
+      ) : isLoopback ? (
+        <SpeakerIcon fontSize="small" sx={{ color: 'text.secondary', flexShrink: 0 }} />
+      ) : (
+        <MicIcon fontSize="small" sx={{ color: 'text.secondary', flexShrink: 0 }} />
+      )}
+      <Typography
+        component="span"
+        sx={{ minWidth: 0, wordBreak: 'break-word', fontSize: '0.85rem', lineHeight: 1.35 }}
+      >
+        {parts.map((part, i) =>
+          part.startsWith('(') ? (
+            <Box
+              component="span"
+              key={i}
+              sx={{ display: 'block', color: 'text.secondary', fontSize: '0.8em' }}
+            >
+              {part}
+            </Box>
+          ) : part.startsWith('[') ? (
+            <Box
+              component="span"
+              key={i}
+              sx={{
+                ml: 0.5,
+                px: 0.6,
+                py: 0.1,
+                fontSize: '0.7em',
+                textTransform: 'uppercase',
+                letterSpacing: 0.5,
+                color: 'primary.main',
+                border: 1,
+                borderColor: 'primary.main',
+                borderRadius: 1,
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {part.slice(1, -1)}
+            </Box>
+          ) : (
+            // the host API prefix gets its own line, so the device name itself
+            // starts at the left edge instead of trailing a long vendor string
+            part
+              .split(/:\s*/)
+              .filter(Boolean)
+              .map((line, j, all) => (
+                <Box component="span" key={`${i}-${j}`} sx={{ display: 'block' }}>
+                  {line}
+                  {j < all.length - 1 ? ':' : ''}
+                </Box>
+              ))
+          )
+        )}
+      </Typography>
+    </Stack>
+  )
+}
 
 const AudioCard = ({ className }: any) => {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -121,19 +205,37 @@ const AudioCard = ({ className }: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const previousAudioDevice = useRef<number | undefined>(undefined)
+  const xsmall = useMediaQuery('(max-width: 600px)')
+
   useEffect(() => {
-    if (usePerDeviceDelay && model?.audio_device && schema.properties?.audio_device?.enum) {
-      if (
-        (perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]] ||
-          perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]] === 0) &&
-        perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]] !== model.delay_ms
-      ) {
-        setSystemConfig({
-          audio: {
-            delay_ms: perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]]
-          }
-        }).then(() => getSystemConfig())
+    if (!usePerDeviceDelay || !schema.properties?.audio_device?.enum) return
+    const deviceName = schema.properties.audio_device.enum[model?.audio_device]
+    if (!deviceName) return
+
+    const stored = perDeviceDelay[deviceName]
+    const known = typeof stored === 'number' && !Number.isNaN(stored)
+    const deviceChanged =
+      previousAudioDevice.current !== undefined &&
+      previousAudioDevice.current !== model?.audio_device
+    previousAudioDevice.current = model?.audio_device
+
+    // Switching to a device we never saved must reset, not inherit the delay
+    // of the device we came from - that is the whole point of "per device".
+    if (deviceChanged) {
+      const target = known ? stored : (schema.properties.delay_ms?.default ?? 0)
+      if (target !== model?.delay_ms) {
+        setSystemConfig({ audio: { delay_ms: target } }).then(() => getSystemConfig())
       }
+      return
+    }
+
+    // Turning the feature on should adopt what is set right now rather than
+    // wiping it, and restore a known value if there is one.
+    if (known && stored !== model?.delay_ms) {
+      setSystemConfig({ audio: { delay_ms: stored } }).then(() => getSystemConfig())
+    } else if (!known && typeof model?.delay_ms === 'number') {
+      setPerDeviceDelay({ ...perDeviceDelay, [deviceName]: model.delay_ms })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usePerDeviceDelay, model?.audio_device])
@@ -341,7 +443,7 @@ const AudioCard = ({ className }: any) => {
             setDialogOpen(true)
           }}
         >
-          <Visibility color="disabled" />
+          <ManageHistory color="disabled" />
         </IconButton>
         <IconButton
           size="small"
@@ -358,27 +460,86 @@ const AudioCard = ({ className }: any) => {
         />
       </SettingsRow>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg">
-        <DialogTitle>Per Device Delay</DialogTitle>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        fullScreen={xsmall}
+      >
+        <DialogTitle
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}
+        >
+          Per Device Delay
+          {/* full screen has no backdrop to tap, so the dialog needs its own way out */}
+          <IconButton aria-label="close" onClick={() => setDialogOpen(false)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
-          {perDeviceDelay.length === 0 ? (
+          {Object.keys(perDeviceDelay).length === 0 ? (
             <p>No per device delay set</p>
           ) : (
-            Object.entries(perDeviceDelay).map(([key, value], i) => (
-              <SettingsRow key={i} title={key} style={{ paddingLeft: '20px' }}>
-                <TextField
-                  sx={{ width: '70px', ml: 3 }}
-                  variant="standard"
-                  type="number"
-                  value={value}
-                  onChange={(e) =>
-                    setPerDeviceDelay({
-                      ...perDeviceDelay,
-                      [key]: parseInt(e.target.value)
-                    })
-                  }
-                />
-              </SettingsRow>
+            Object.entries(
+              Object.entries(perDeviceDelay).reduce(
+                (groups, [key, value]) => {
+                  const host = key.includes(':') ? key.split(':')[0].trim() : 'Other'
+                  groups[host] = groups[host] || []
+                  groups[host].push([key, value])
+                  return groups
+                },
+                {} as Record<string, [string, any][]>
+              )
+            ).map(([host, entries]) => (
+              <Box key={host} sx={{ mb: 1 }}>
+                <Typography
+                  variant="overline"
+                  color="primary"
+                  sx={{ display: 'block', lineHeight: 2, letterSpacing: 1 }}
+                >
+                  {host}
+                </Typography>
+                {entries.map(([key, value], i) => (
+                  // SettingsRow is a fixed 40px tall: device names are long enough
+                  // to wrap to three lines and overlap the row below it.
+                  <Stack
+                    key={i}
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{ py: 1, borderBottom: 1, borderColor: 'divider' }}
+                  >
+                    <DeviceName
+                      name={key.includes(':') ? key.slice(key.indexOf(':') + 1).trim() : key}
+                    />
+                    <TextField
+                      sx={{ width: 90, flexShrink: 0 }}
+                      variant="outlined"
+                      size="small"
+                      type="number"
+                      value={value}
+                      onChange={(e) => {
+                        const parsed = parseInt(e.target.value, 10)
+                        setPerDeviceDelay({
+                          ...perDeviceDelay,
+                          [key]: Number.isNaN(parsed) ? 0 : parsed
+                        })
+                      }}
+                    />
+                    <Popover
+                      type="iconbutton"
+                      variant="text"
+                      color="inherit"
+                      size="small"
+                      text={`Forget delay for ${key}?`}
+                      onConfirm={() => {
+                        const { [key]: _removed, ...rest } = perDeviceDelay
+                        setPerDeviceDelay(rest)
+                      }}
+                    />
+                  </Stack>
+                ))}
+              </Box>
             ))
           )}
         </DialogContent>

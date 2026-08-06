@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Box, Grid, Collapse } from '@mui/material'
 import useNowPlayingEngine from '../../../../../hooks/useNowPlayingEngine'
+import usePruneAlbumArtVirtuals from '../../../../../hooks/usePruneAlbumArtVirtuals'
 import useSongDetector from '../../../../../hooks/useSongDetector'
 import SpTexterForm from '../SpotifyWidgetPro/SpTexterForm'
 import SongDetectorAlbumArtForm from './SongDetectorAlbumArtForm'
@@ -18,6 +19,7 @@ const SongDetectorContent = () => {
   const isCC = coreParams && Object.keys(coreParams).length > 0
 
   useNowPlayingEngine()
+  usePruneAlbumArtVirtuals()
 
   // Auto-open settings when detector is not available or not running
   useEffect(() => {

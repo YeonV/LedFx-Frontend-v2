@@ -128,8 +128,10 @@ const BladeSelect = ({
       }
       required={required}
       style={{
-        ...wrapperStyle,
-        flexBasis: schema.title === 'Name' ? '100%' : '49%'
+        // default first, caller last: a wrapperStyle asking for a full-width
+        // field was previously overruled by the hard-coded flexBasis
+        flexBasis: schema.title === 'Name' ? '100%' : '49%',
+        ...wrapperStyle
       }}
     >
       {variant === 'contained' ? (

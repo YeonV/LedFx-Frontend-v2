@@ -115,7 +115,10 @@ const Scenes = () => {
         </Collapse>
 
         <Stack
-          direction={'row'}
+          // The side column keeps its padding even when empty, stealing 32px
+          // from the card row. Stacked on phones the cards get the full width,
+          // matching the device cards.
+          direction={{ xs: 'column', sm: 'row' }}
           // justifyContent={'center'}
           alignItems={'flex-start'}
         >
@@ -191,6 +194,11 @@ const Scenes = () => {
               m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
               className="step-scenes-one"
               sx={{
+                // Full-bleed on phones so the cards reach the same width as the
+                // device cards; the auto margins only make sense once the row
+                // is narrower than the screen.
+                width: { xs: '100%', sm: 'auto' },
+                mx: { xs: 0, sm: undefined },
                 maxWidth: '100%',
                 overflowY: features.sceneScroll ? 'auto' : 'unset',
                 maxHeight: features.sceneScroll ? 'calc(100vh - 185px)' : 'auto'

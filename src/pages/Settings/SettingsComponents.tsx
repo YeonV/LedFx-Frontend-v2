@@ -1,10 +1,13 @@
 import { makeStyles, styled } from '@mui/styles'
+import { useState } from 'react'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Button,
   Chip,
+  ClickAwayListener,
+  IconButton,
   Slider,
   Switch,
   type SxProps,
@@ -218,6 +221,7 @@ export const SettingsRow = ({
   alpha?: boolean
   info?: string | null
 }) => {
+  const [infoOpen, setInfoOpen] = useState(false)
   const classes = useStyles()
   const theme = useTheme()
   const alphaMode = useStore((state) => state.features.alpha)
@@ -260,9 +264,26 @@ export const SettingsRow = ({
         }}
       >
         {info && (
-          <Tooltip title={info}>
-            <Info fontSize="small" sx={{ mr: 2 }} />
-          </Tooltip>
+          <ClickAwayListener onClickAway={() => setInfoOpen(false)}>
+            <Tooltip
+              title={info}
+              open={infoOpen}
+              onOpen={() => setInfoOpen(true)}
+              onClose={() => setInfoOpen(false)}
+              // long-press to reveal also triggers the context menu on touch,
+              // so touch opens it by tap instead
+              disableTouchListener
+            >
+              <IconButton
+                size="small"
+                aria-label="info"
+                onClick={() => setInfoOpen((open) => !open)}
+                sx={{ mr: 1.5, p: 0.5 }}
+              >
+                <Info fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </ClickAwayListener>
         )}
         {children ||
           (title === 'Beta Mode' ? (

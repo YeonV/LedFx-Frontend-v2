@@ -349,12 +349,35 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     <Dialog
       onClose={handleClose}
       open={intro || Object.keys(devices).length === 0}
+      // On a phone the content is taller than the viewport, so a floating box
+      // clips its own buttons. Full screen gives the step the whole display and
+      // lets the actions sit on a footer that cannot scroll away.
+      fullScreen={xsmall}
       PaperProps={{
-        style: { maxWidth: 'calc(100vw - 64px)' }
+        style: xsmall ? { maxWidth: '100vw', margin: 0 } : { maxWidth: 'calc(100vw - 64px)' }
       }}
     >
-      <DialogContent>
-        <Box sx={{ flexGrow: 1 }}>
+      <DialogContent
+        sx={
+          xsmall
+            ? { display: 'flex', flexDirection: 'column', px: 2, pb: 0 }
+            : undefined
+        }
+      >
+        <Box
+          sx={
+            xsmall
+              ? // Full screen makes the paper taller than the step needs, so
+                // centre the whole stack instead of stranding it at the top.
+                {
+                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }
+              : { flexGrow: 1 }
+          }
+        >
           <Box
             sx={{
               display: 'flex',
@@ -415,15 +438,19 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                 ) : null}
               </Stack>
             ) : (
-              <BladeIcon intro style={{ fontSize: 128 }} name={steps[activeStep].icon} />
+              <BladeIcon
+                intro
+                style={{ fontSize: xsmall ? 72 : 128 }}
+                name={steps[activeStep].icon}
+              />
             )}
 
             <div>
               <Typography
                 marginLeft={0}
-                marginTop={5}
+                marginTop={xsmall ? 1 : 5}
                 marginBottom={0}
-                variant={xsmall ? 'h4' : 'h3'}
+                variant={xsmall ? 'h5' : 'h3'}
                 textAlign={small ? 'center' : 'left'}
               >
                 {steps[activeStep].key === 'wledScanning' ? (
@@ -703,10 +730,24 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           )}
           <Stack
             direction={small ? 'column' : 'row'}
-            gap={3}
+            gap={xsmall ? 1.5 : 3}
             justifyContent="center"
-            marginTop={3}
-            marginBottom={3}
+            marginTop={xsmall ? 2 : 3}
+            marginBottom={xsmall ? 1 : 3}
+            // Keep the actions reachable on a phone: the body above scrolls,
+            // this does not.
+            sx={
+              xsmall
+                ? {
+                    position: 'sticky',
+                    bottom: 0,
+                    pt: 1,
+                    pb: 1,
+                    bgcolor: 'background.paper',
+                    zIndex: 1
+                  }
+                : undefined
+            }
           >
             {steps[activeStep].label_left && (
               <Button
@@ -724,7 +765,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                     textTransform: 'none',
 
                     // minHeight: 'min(15vh, 120px)',
-                    fontSize: '2rem'
+                    fontSize: xsmall ? '1.1rem' : '2rem'
                   },
                   small
                     ? {
@@ -735,7 +776,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                       },
                   small
                     ? {
-                        minWidth: '60vw'
+                        minWidth: '100%'
                       }
                     : {
                         minWidth: 'min(30vw, 350px)'
@@ -770,7 +811,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                     marginTop: 0,
 
                     // minHeight: 'min(15vh, 120px)',
-                    fontSize: '2rem'
+                    fontSize: xsmall ? '1.1rem' : '2rem'
                   },
                   small
                     ? {
@@ -781,7 +822,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                       },
                   small
                     ? {
-                        minWidth: '60vw'
+                        minWidth: '100%'
                       }
                     : {
                         minWidth: 'min(30vw, 350px)'

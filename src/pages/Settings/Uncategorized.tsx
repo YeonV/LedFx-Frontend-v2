@@ -3,19 +3,21 @@ import LogColorFilterSelect from './LogFilterSelect'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
-import { Box, TextField, Button } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
-  const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
   const backendFeatures = useStore((state) => state.backendFeatures)
   const config = useStore((state) => state.config)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const getInfo = useStore((state) => state.getInfo)
+  const setCurrentTrack = useStore((state) => state.setCurrentTrack)
+  const setThumbnailPath = useStore((state) => state.setThumbnailPath)
+  const setPositionData = useStore((state) => state.setPositionData)
 
   // Offscreen capture state
   const offscreenCaptureEnabled = useStore(
@@ -84,10 +86,10 @@ const Uncategorized = () => {
       />
       <SettingsRow
         beta
-        title="BG Visualiser (eats performance)"
+        title="BG Visualiser"
         checked={features.bgvisualiser}
         onChange={() => setFeatures('bgvisualiser', !features.bgvisualiser)}
-        info={'BG Visualiser will disable Playground'}
+        info={'Eats performance. Also disables Playground while it is on.'}
       />
       {features.bgvisualiser && (
         <>
@@ -181,27 +183,32 @@ const Uncategorized = () => {
           }
           checked={!!config.now_playing_enabled}
           onChange={async () => {
-            await setSystemConfig({ now_playing_enabled: !config.now_playing_enabled })
+            const next = !config.now_playing_enabled
+            await setSystemConfig({ now_playing_enabled: next })
             // getInfo too: the core reports the live state in /api/info, and the
             // Song Detector's engine switches key off it.
             await Promise.all([getSystemConfig(), getInfo()])
+            // The core deletes the cached artwork, but the browser goes on
+            // rendering the copy it already fetched - a cached <img> is never
+            // re-requested, so deleting the file changes nothing on screen.
+            // Clearing the path is what actually restores the fallback image,
+            // and the track with it, so nothing stale is left behind.
+            if (!next) {
+              setCurrentTrack('')
+              setThumbnailPath('')
+              setPositionData({
+                position: null,
+                duration: null,
+                playing: false,
+                timestamp: null
+              })
+            }
           }}
         />
       )}
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
       </SettingsRow>
-      {backendFeatures.sendspin && (
-        <SettingsRow beta title="Sendspin Servers (HA Music Assistant)">
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={() => setDialogOpenSendspinManager(true)}
-          >
-            Manage
-          </Button>
-        </SettingsRow>
-      )}
     </>
   )
 }

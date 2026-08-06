@@ -6,8 +6,10 @@ import {
   Typography,
   LinearProgress,
   IconButton,
-  Collapse
+  Collapse,
+  useMediaQuery
 } from '@mui/material'
+import { createPortal } from 'react-dom'
 import {
   Pause as PauseIcon,
   PlayArrow,
@@ -24,6 +26,12 @@ import { formatTime } from '../../../../../utils/helpers'
 import { generateSongHash } from '../../../../../store/ui/storeSongDectector'
 import CleaningButtons from './CleaningButtons'
 import Lyrics from './Lyrics'
+// Imported, not a public/ path. The core serves the frontend from an explicit
+// route allowlist (/static, /fonts, /modules, /favicon, index.html, ...) and
+// icon.png is not on it - './icon.png' is 200 on the CRA dev server and 404 in
+// the app a user actually runs. Importing makes webpack emit it under /static,
+// which is served everywhere: dev server, core, and Electron's file://.
+import defaultImage from '../../../../../app-icon.png'
 
 const SongDetectorPlayer = ({
   settingsOpen,
@@ -52,40 +60,57 @@ const SongDetectorPlayer = ({
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
 
+  // On phones the action icons live in the screen's toolbar; the slot is
+  // resolved after mount because the toolbar renders above this component.
+  const xsmall = useMediaQuery('(max-width: 600px)')
+  const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    setToolbarSlot(xsmall ? document.getElementById('now-playing-toolbar-actions') : null)
+  }, [xsmall])
+  const renderActions = (node: React.ReactNode) =>
+    toolbarSlot ? createPortal(node, toolbarSlot) : node
+
   const [currentPosition, setCurrentPosition] = useState<number | null>(null)
-  const [isSeekingBack, setIsSeekingBack] = useState(false)
+  // True for one beat after a discontinuous position change: mount, a track
+  // change, or a seek in either direction.
+  //
+  // The bar's 0.2s transition is what turns the 100ms interpolation ticks into
+  // smooth motion instead of ten visible steps a second, so it has to stay for
+  // ordinary playback. On a jump the bar is not travelling anywhere - it is
+  // being told where it already was - and animating that misrepresents what
+  // happened. Most visible on mount, where the value goes 0 -> real position
+  // and the bar slides across the card for no reason.
+  const [skipTransition, setSkipTransition] = useState(false)
   const previousPositionRef = useRef<number | null>(null)
 
   const [marqueeActive, setMarqueeActive] = useState(false)
 
   // Interpolate position for smooth updates
   useEffect(() => {
-    if (!position || !timestamp || !playing) {
-      // Detect backward seek (e.g., restart or seek back)
-      if (
-        previousPositionRef.current !== null &&
-        position !== null &&
-        position < previousPositionRef.current - 1
-      ) {
-        setIsSeekingBack(true)
-        setTimeout(() => setIsSeekingBack(false), 50)
+    // One second is the discontinuity test: the interval below advances the
+    // bar ~0.1s per tick, so anything larger cannot have come from playback.
+    // No previous value at all is the mount case, which is a jump too.
+    const apply = (next: number | null) => {
+      const previous = previousPositionRef.current
+      if (next !== null && (previous === null || Math.abs(next - previous) > 1)) {
+        setSkipTransition(true)
+        // Released a beat later rather than in an effect: the flag has to
+        // survive until the browser has painted the new value, or the
+        // transition is back before it did any good.
+        setTimeout(() => setSkipTransition(false), 50)
       }
-      previousPositionRef.current = position
-      setCurrentPosition(position)
+      previousPositionRef.current = next
+      setCurrentPosition(next)
+    }
+
+    if (!position || !timestamp || !playing) {
+      apply(position)
       return
     }
 
     const updatePosition = () => {
       const elapsed = Date.now() / 1000 - timestamp!
-      const interpolated = Math.min(position! + elapsed, duration || Infinity)
-
-      // Detect backward seek (e.g., restart or seek back)
-      if (previousPositionRef.current !== null && interpolated < previousPositionRef.current - 1) {
-        setIsSeekingBack(true)
-        setTimeout(() => setIsSeekingBack(false), 50)
-      }
-      previousPositionRef.current = interpolated
-      setCurrentPosition(interpolated)
+      apply(Math.min(position! + elapsed, duration || Infinity))
     }
 
     updatePosition()
@@ -108,9 +133,6 @@ const SongDetectorPlayer = ({
 
   const { artist, title } = currentTrack ? parseTrack(currentTrack) : { artist: '', title: '' }
 
-  // Electron-compatible default image path (relative path works with file:// protocol)
-  const defaultImage = './icon.png'
-
   // Get triggers for current song
   const currentSongHash = currentTrack && duration ? generateSongHash(currentTrack, duration) : null
   const currentSongTriggers = currentSongHash
@@ -128,47 +150,55 @@ const SongDetectorPlayer = ({
   return (
     <>
       <Card sx={{ width: '100%', position: 'relative' }}>
-        <Stack
-          direction="row"
-          spacing={0}
-          sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+        {renderActions(
+          <Stack
+            direction="row"
+            spacing={0}
+            sx={
+              toolbarSlot
+                ? { alignItems: 'center' }
+                : { position: 'absolute', top: 8, right: 8, zIndex: 1 }
+            }
+          >
+            <CleaningButtons />
+            {onToggleLyrics && (
+              <IconButton
+                onClick={onToggleLyrics}
+                sx={{ color: lyricsOpen ? 'success.main' : 'text.secondary' }}
+                size="small"
+              >
+                <LyricsIcon />
+              </IconButton>
+            )}
+            {onToggleStats && (
+              <IconButton
+                onClick={onToggleStats}
+                sx={{ color: statsOpen ? 'success.main' : 'text.secondary' }}
+                size="small"
+              >
+                {statsOpen ? <ChevronRight /> : <ChevronLeft />}
+              </IconButton>
+            )}
+            {isCC && onToggleSettings && (
+              <IconButton
+                onClick={onToggleSettings}
+                sx={{ color: settingsOpen ? 'success.main' : 'text.secondary' }}
+                size="small"
+              >
+                <Settings />
+              </IconButton>
+            )}
+          </Stack>
+        )}
+        <CardContent
+          sx={{ p: { xs: 1, sm: 2 }, pb: { xs: '8px !important', sm: '16px !important' } }}
         >
-          <CleaningButtons />
-          {onToggleLyrics && (
-            <IconButton
-              onClick={onToggleLyrics}
-              sx={{ color: lyricsOpen ? 'success.main' : 'text.secondary' }}
-              size="small"
-            >
-              <LyricsIcon />
-            </IconButton>
-          )}
-          {onToggleStats && (
-            <IconButton
-              onClick={onToggleStats}
-              sx={{ color: statsOpen ? 'success.main' : 'text.secondary' }}
-              size="small"
-            >
-              {statsOpen ? <ChevronRight /> : <ChevronLeft />}
-            </IconButton>
-          )}
-          {isCC && onToggleSettings && (
-            <IconButton
-              onClick={onToggleSettings}
-              sx={{ color: settingsOpen ? 'success.main' : 'text.secondary' }}
-              size="small"
-            >
-              <Settings />
-            </IconButton>
-          )}
-        </Stack>
-        <CardContent sx={{ pb: '16px !important' }}>
           <Stack direction="row" spacing={2} alignItems="center">
             {/* Album Art */}
             <Box
               sx={{
-                width: 120,
-                height: 120,
+                width: { xs: 110, sm: 120 },
+                height: { xs: 110, sm: 120 },
                 flexShrink: 0,
                 borderRadius: 1,
                 overflow: 'hidden',
@@ -188,17 +218,32 @@ const SongDetectorPlayer = ({
                   objectFit: 'cover'
                 }}
                 onError={(e) => {
-                  ;(e.target as HTMLImageElement).src = defaultImage
+                  // Clear the handler before reassigning: without this, a
+                  // fallback that itself fails re-enters onError and the
+                  // browser retries several times a second, flickering its
+                  // broken-image glyph forever.
+                  const img = e.currentTarget
+                  img.onerror = null
+                  if (img.src !== defaultImage) img.src = defaultImage
                 }}
               />
             </Box>
 
             {/* Track Info */}
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                // relative, not margin: a centred flex item re-centres its margin
+                // box, so a negative margin only moves it by half
+                position: 'relative',
+                top: { xs: '-3px', sm: 0 }
+              }}
+            >
               {title && title.length > 55 ? (
                 <Box
                   sx={{
-                    maxWidth: 620,
+                    maxWidth: '100%',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
                     position: 'relative'
@@ -222,7 +267,11 @@ const SongDetectorPlayer = ({
                   </Box>
                 </Box>
               ) : (
-                <Typography variant="h5" noWrap sx={{ fontWeight: 'bold', mb: 0.5, maxWidth: 620 }}>
+                <Typography
+                  variant="h5"
+                  noWrap
+                  sx={{ fontWeight: 'bold', mb: 0.5, maxWidth: '100%' }}
+                >
                   {title || 'No track playing'}
                 </Typography>
               )}
@@ -257,7 +306,7 @@ const SongDetectorPlayer = ({
                         '& .MuiLinearProgress-bar': {
                           borderRadius: 3,
                           backgroundColor: 'success.main',
-                          transition: isSeekingBack ? 'none' : undefined
+                          transition: skipTransition ? 'none' : undefined
                         }
                       }}
                     />

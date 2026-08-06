@@ -9,7 +9,7 @@ import { hasNotificationAccess, isAndroidApp, requestNotificationAccess } from '
  */
 export const NOW_PLAYING_CONSENT = {
   title: 'Show what you are playing?',
-  body: 'LedFx can read the track playing on this phone and colour your virtuals from its cover art. Android will warn that notification access lets an app read your notifications: that screen is the only way it hands over the media session, so LedFx asks for it and then disconnects from the notification stream itself.',
+  body: "LedFx can read the track playing on this phone and colour your virtuals from its cover art. Android's next screen warns about reading notifications: that is simply how it hands over the media session.",
   footnote: 'Either way you can change this later under Settings › Now Playing.',
   decline: 'Not now',
   accept: 'Enable Now Playing'

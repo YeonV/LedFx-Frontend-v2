@@ -2,7 +2,11 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
   root: {
-    width: 'min(92vw, 345px)'
+    // Same rule as the device card, so both pages size their cards alike.
+    margin: '0.5rem',
+    minWidth: '230px',
+    maxWidth: '400px',
+    width: '100%'
   },
   sceneTitle: {
     fontSize: '1.1rem',
@@ -10,10 +14,12 @@ const useStyles = makeStyles({
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   },
-  '@media (max-width: 580px)': {
+  '@media (max-width: 410px)': {
     root: {
-      width: '95vw'
-    },
+      margin: '0.25rem 0'
+    }
+  },
+  '@media (max-width: 580px)': {
     sceneTitle: {
       fontSize: '1rem',
       cursor: 'default'

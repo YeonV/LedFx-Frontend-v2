@@ -50,7 +50,7 @@ const VirtualGradientImageSelectors = () => {
         }
       />
       <AutoApplySelector
-        label="Image Virtuals"
+        label="Album Art Virtuals"
         options={matrixVirtuals}
         value={image.virtuals}
         onChange={handleImageVirtualChange}

@@ -50,7 +50,11 @@ function SortableCardWrapper({
   }
 
   return (
-    <Grid ref={setNodeRef} style={style}>
+    <Grid
+      ref={setNodeRef}
+      style={style}
+      sx={{ display: 'flex', flex: '1 1 230px', '& > *': { width: '100%' } }}
+    >
       {children({ listeners, attributes })}
     </Grid>
   )

@@ -174,7 +174,7 @@ const VisualiserTextSelector = ({ generalDetector }: { generalDetector?: boolean
 
   return (
     <AutoApplySelector
-      label="Text Visualisers"
+      label="Track Info Visualisers"
       options={clients ? Object.entries(clients) : []}
       value={generalDetector ? filteredTextVisualisers : textVisualisers}
       onChange={handleTextVisualiserChangeByName}

@@ -20,7 +20,8 @@ import {
   QueueMusic,
   SettingsInputComponent,
   SportsEsports,
-  People
+  People,
+  Cast
 } from '@mui/icons-material'
 import Tile from '../../components/Tile'
 import Uncategorized from './Uncategorized'
@@ -51,6 +52,8 @@ const SettingsNew = () => {
   const setSongDetectorScreenOpen = useStore((state) => state.ui.setSongDetectorScreenOpen)
   const setSdPlus = useStore((state) => state.ui.setSdPlus)
   const setDialogOpenClientManagement = useStore((state) => state.setDialogOpenClientManagement)
+  const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
+  const backendFeatures = useStore((state) => state.backendFeatures)
   const coreParams = useStore((state) => state.coreParams)
 
   const isCC = coreParams && Object.keys(coreParams).length > 0
@@ -112,8 +115,14 @@ const SettingsNew = () => {
       </Accordion>
       <Grid
         container
-        spacing={2}
         sx={{
+          // Columns as wide as they need to be and no wider: tiles stretch to
+          // share the row instead of leaving the remainder as dead space at
+          // the right edge. Self-correcting at every width, so phones get two
+          // full-width columns and desktops as many as fit.
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(158px, 1fr))',
+          gap: 2,
           m: 0,
           backgroundColor: theme.palette.background.paper,
           p: 2,
@@ -124,7 +133,7 @@ const SettingsNew = () => {
         <Tile component={<AssetManager variant="tile" />} />
         <Tile
           icon={<People fontSize="large" />}
-          text="Client Management"
+          text="Client Manager"
           onClick={() => setDialogOpenClientManagement(true)}
         />
         <Tile
@@ -139,6 +148,15 @@ const SettingsNew = () => {
             icon={<LibraryMusic fontSize="large" />}
             text="Song Detector"
             onClick={() => setSd(true)}
+          />
+        )}
+        {backendFeatures.sendspin && (
+          <Tile
+            beta
+            icon={<Cast fontSize="large" />}
+            text="Sendspin"
+            onClick={() => setDialogOpenSendspinManager(true)}
+            tooltip="Manage Sendspin servers (HA Music Assistant)"
           />
         )}
         <Tile
@@ -220,8 +238,10 @@ const SettingsNew = () => {
       </Accordion>
       <Grid
         container
-        spacing={2}
         sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(158px, 1fr))',
+          gap: 2,
           mb: 2,
           backgroundColor: theme.palette.background.paper,
           p: 2,

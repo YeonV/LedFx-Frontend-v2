@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import Card from '@mui/material/Card'
+import Chip from '@mui/material/Chip'
 import Button from '@mui/material/Button'
 import SettingsIcon from '@mui/icons-material/Settings'
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -47,6 +48,8 @@ const DeviceCard = ({
   colorIndicator = true,
   isPlaying = true,
   isStreaming = false,
+  stems = [],
+  stemBand = 'full',
   previewOnly = true,
   dummy = false,
   isEffectSet = true,
@@ -190,12 +193,15 @@ const DeviceCard = ({
                   color="textSecondary"
                   style={{
                     height: 25,
+                    marginTop: '3px',
                     display: 'flex',
                     alignItems: 'center',
                     visibility: !expanded ? 'visible' : 'hidden'
                   }}
                 >
-                  {effectName}
+                  <Box component="span" sx={{ mr: 1 }}>
+                    {effectName}
+                  </Box>
                   <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                     <Button
                       variant="text"
@@ -207,12 +213,13 @@ const DeviceCard = ({
                       style={{
                         color: '#999',
                         minWidth: 'unset',
+                        padding: '2px',
                         zIndex: expanded ? 1 : 3
                       }}
                     >
                       {isPlaying ? <Pause /> : <PlayArrow />}
                     </Button>
-                    <Box sx={{ m: 1, position: 'relative' }}>
+                    <Box sx={{ m: 0, ml: 0.25, position: 'relative' }}>
                       <Button
                         size="small"
                         variant="text"
@@ -231,6 +238,7 @@ const DeviceCard = ({
                         style={{
                           color: '#999',
                           minWidth: 'unset',
+                          padding: '2px',
                           zIndex: expanded ? 1 : 3
                         }}
                       >
@@ -250,10 +258,38 @@ const DeviceCard = ({
                       )}
                     </Box>
                   </span>
+                  {stems?.length > 0 && (
+                    <Chip
+                      size="small"
+                      variant="outlined"
+                      // several stems would outgrow the row, so they collapse to
+                      // initials and the full set stays in the title
+                      label={
+                        (stems.length > 1
+                          ? stems.map((s2: string) => s2.charAt(0).toUpperCase()).join('+')
+                          : stems[0]) + (stemBand && stemBand !== 'full' ? ` ${stemBand}` : '')
+                      }
+                      title={stems.join(', ') + (stemBand && stemBand !== 'full' ? ` (${stemBand})` : '')}
+                      sx={{
+                        // the chevron is a sibling column, so the row ends short
+                        // of it; pull the chip across to sit under it
+                        mr: '-90px',
+                        ml: 'auto',
+                        opacity: 0.7,
+                        height: 18,
+                        fontSize: '0.65rem',
+                        '& .MuiChip-label': { px: 0.75 }
+                      }}
+                    />
+                  )}
                 </Typography>
               </Fade>
             ) : isStreaming ? (
-              <Typography variant="body1" color="textSecondary" style={{ height: 25 }}>
+              <Typography
+                variant="body1"
+                color="textSecondary"
+                style={{ height: 25, marginTop: '3px' }}
+              >
                 Streaming...
               </Typography>
             ) : (

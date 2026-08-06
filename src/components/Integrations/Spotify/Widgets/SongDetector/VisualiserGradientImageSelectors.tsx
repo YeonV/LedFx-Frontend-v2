@@ -82,7 +82,7 @@ const VisualiserGradientImageSelectors = () => {
         renderValue={(selected) => selected.join(', ')}
       />
       <AutoApplySelector
-        label="Image Visualisers"
+        label="Album Art Visualisers"
         options={clients ? Object.entries(clients) : []}
         value={filteredImageVisualisers}
         onChange={handleImageVisualiserChange}

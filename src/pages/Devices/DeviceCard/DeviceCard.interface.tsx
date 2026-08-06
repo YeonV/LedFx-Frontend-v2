@@ -11,6 +11,10 @@ export interface DeviceCardProps {
    * Name of the current Effect
    */
   effectName: string | undefined
+  /** Stems the active effect reacts to. Empty means the full mix. */
+  stems?: string[]
+  /** Band the selected stems are narrowed to; 'full' means no narrowing. */
+  stemBand?: string
   /**
    * Flag if Effect is set
    */

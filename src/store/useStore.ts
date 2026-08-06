@@ -115,7 +115,14 @@ const useStore = create(
                   // Server state: persisting it would resolve engines from
                   // another core's stale config before the real fetch lands.
                   'nowPlayingState',
-                  'nowPlayingAvailable'
+                  'nowPlayingAvailable',
+                  // Points at an artwork asset in the core's cache, which the
+                  // core deletes when Now Playing is switched off. Persisting
+                  // it means a restart with nothing playing rehydrates a path
+                  // to a file that no longer exists, and the player renders a
+                  // 404 instead of its fallback.
+                  'thumbnailPath',
+                  'albumArtCacheBuster'
                 ].includes(key)
             )
           )

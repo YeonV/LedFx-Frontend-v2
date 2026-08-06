@@ -204,6 +204,10 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
           virtuals[virtual]?.config.icon_name
         }
         effectName={virtuals[virtual]?.effect?.name}
+        // stems/stem_band come from stems.patch, so the generated types (built
+        // from upstream's schema) do not carry them yet
+        stems={(virtuals[virtual]?.effect?.config as any)?.stems}
+        stemBand={(virtuals[virtual]?.effect?.config as any)?.stem_band}
         graphsActive={graphs && graphsMulti}
         graphsMulti={graphsMulti}
         showMatrix={showMatrix}

@@ -99,7 +99,7 @@ const VirtualTextSelector = ({ generalDetector }: { generalDetector?: boolean })
 
   return (
     <AutoApplySelector
-      label="Text Virtuals"
+      label="Track Info Virtuals"
       options={matrix}
       value={textVirtuals}
       onChange={handleTextVirtualChange}
