@@ -69,6 +69,19 @@ export default function BarBottom() {
     setBotHeight(height + (features.firetv ? fireTvBarHeight : 0)) // Use 0 when disabled
   }, [spotifyEnabled, spotifyExpanded, fireTvBarHeight, features.firetv])
 
+  // The whole bottom stack is position:fixed, so it covers the end of the page.
+  // #root reserves scroll space for it via --ledfx-bottom-stack; without this the
+  // last (stack height - 56px) of every page is unreachable by scrolling.
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--ledfx-bottom-stack',
+      `${botHeight + (ios ? 80 : 56)}px`
+    )
+    return () => {
+      document.documentElement.style.removeProperty('--ledfx-bottom-stack')
+    }
+  }, [botHeight])
+
   useEffect(() => {
     setValue(pathname)
   }, [pathname])

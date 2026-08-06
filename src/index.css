@@ -35,7 +35,10 @@ body {
   height: 100%;
   min-height: 100vh;
   width: 100%;
-  padding-bottom: 56px;
+  /* BarBottom publishes the real height of the fixed bottom stack (nav bar +
+     Spotify player + FireTV bar). The constant is only the floor for when no
+     bar is mounted -- hard-coding it hid the page end whenever the stack grew. */
+  padding-bottom: max(56px, var(--ledfx-bottom-stack, 0px));
   overflow-x: hidden;
 }
 
@@ -99,7 +102,7 @@ body.displayModeVisualiser #root {
 }
 @media screen and (max-width: 720px) {
   #root {
-    padding-bottom: 120px;
+    padding-bottom: max(120px, var(--ledfx-bottom-stack, 0px));
   }
   .showHd {
     display: flex !important;
