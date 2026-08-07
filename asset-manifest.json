@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.43913191.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.edbf25a9.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.019593c3.js",
     "static/js/882.6322ae33.chunk.js": "/LedFx-Frontend-v2/static/js/882.6322ae33.chunk.js",
     "static/js/429.b62d6362.chunk.js": "/LedFx-Frontend-v2/static/js/429.b62d6362.chunk.js",
     "static/js/464.efa9ae26.chunk.js": "/LedFx-Frontend-v2/static/js/464.efa9ae26.chunk.js",
@@ -16,6 +16,7 @@
     "static/media/Nunito-Regular.ttf": "/LedFx-Frontend-v2/static/media/Nunito-Regular.9d7a6e03c6e3ed49c7ac.ttf",
     "static/media/launchpad.png": "/LedFx-Frontend-v2/static/media/launchpad.4a1e671d782cbad8d71e.png",
     "static/media/MaterialIcons-Regular.woff2": "/LedFx-Frontend-v2/static/media/MaterialIcons-Regular.f71673ad689fb42ddae1.woff2",
+    "static/media/app-icon.png": "/LedFx-Frontend-v2/static/media/app-icon.b3d2950a96323940d694.png",
     "service-worker.js": "/LedFx-Frontend-v2/service-worker.js",
     "static/media/mixedContent2.webp": "/LedFx-Frontend-v2/static/media/mixedContent2.7aafad8cbef70f792bd9.webp",
     "static/media/blademod.svg": "/LedFx-Frontend-v2/static/media/blademod.f939f478785a84b3edcc820eef654556.svg",
@@ -45,6 +46,6 @@
   },
   "entrypoints": [
     "static/css/main.43913191.css",
-    "static/js/main.edbf25a9.js"
+    "static/js/main.019593c3.js"
   ]
 }
