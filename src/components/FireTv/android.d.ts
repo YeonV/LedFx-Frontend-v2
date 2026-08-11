@@ -15,6 +15,16 @@ declare global {
       hasNotificationAccess?: () => boolean
       /** Opens the notification-access settings screen. */
       requestNotificationAccess?: () => void
+      /** False on Android 9 and below, where AudioPlaybackCapture does not exist. */
+      supportsPlaybackCapture?: () => boolean
+      /** True once a capture consent has been approved and not revoked. */
+      hasPlaybackCapture?: () => boolean
+      /** Shows the system capture-consent dialog. Resolves asynchronously. */
+      requestPlaybackCapture?: () => void
+      /** Audio HAL buffer quantum in frames, 0 if unknown. */
+      getAudioFramesPerBuffer?: () => number
+      /** Audio HAL native output sample rate in Hz, 0 if unknown. */
+      getAudioSampleRate?: () => number
     }
   }
 }

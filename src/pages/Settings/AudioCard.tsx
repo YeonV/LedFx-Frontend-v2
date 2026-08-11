@@ -33,8 +33,18 @@ import {
   Info,
   Mic as MicIcon,
   Speaker as SpeakerIcon,
-  Hub as HubIcon
+  Hub as HubIcon,
+  GraphicEq
 } from '@mui/icons-material'
+import {
+  supportsPlaybackCapture,
+  hasPlaybackCapture,
+  requestPlaybackCapture,
+  alignedFrameRate
+} from '../../components/FireTv/android.bridge'
+
+/** LedFx's own default; what a non-continuous input goes back to. */
+const DEFAULT_FRAME_RATE = 60
 
 /**
  * Device names carry three kinds of information at once, e.g.
@@ -137,7 +147,75 @@ const AudioCard = ({ className }: any) => {
   // no interpreter, so the CLI downloader is unreachable for most users - this
   // row is how they get it.
   const [stemModel, setStemModel] = useState<any>(null)
-  const stemsEnabled = !!model?.stems_enabled
+  // Capability, not preference. Stem separation ships as a patch, so the audio
+  // schema only declares these keys on a core that has it - whereas the saved
+  // config keeps `stems_enabled` forever once it has been switched on. Reading
+  // the config alone meant a core built without stems still got polled for
+  // /api/stem_model, which is not routed there, and the row rendered controls
+  // that core could never honour.
+  const stemsAvailable = !!schema?.properties?.stems_enabled
+  const stemsEnabled = stemsAvailable && !!model?.stems_enabled
+
+  // Android's default input taps the output mix through the Visualizer API,
+  // which is 8-bit and only refreshes ~20x a second. AudioPlaybackCapture reads
+  // the same audio digitally and continuously, but Android gates it behind a
+  // recording-consent dialog that only an Activity can show.
+  const captureSupported = supportsPlaybackCapture()
+  const [captureGranted, setCaptureGranted] = useState(() => hasPlaybackCapture())
+  const capturePollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // The consent dialog has no callback into the WebView - the approval crosses
+  // to the service process out of band. Re-check whenever this window regains
+  // focus, which is exactly when the user has finished with the dialog.
+  useEffect(() => {
+    if (!captureSupported) return undefined
+    const recheck = () => setCaptureGranted(hasPlaybackCapture())
+    window.addEventListener('focus', recheck)
+    return () => {
+      window.removeEventListener('focus', recheck)
+      if (capturePollRef.current) clearInterval(capturePollRef.current)
+    }
+  }, [captureSupported])
+
+  /**
+   * Keep sample_rate matched to the selected input's nature.
+   *
+   * sample_rate is what LedFx divides the device rate by to get its block size,
+   * so it is also the only lever that can land a block on the audio HAL's
+   * buffer quantum. The two continuous Android inputs benefit: aligned blocks
+   * take the fast capture path and are shorter, roughly halving buffered
+   * latency. The Visualizer does not - its buffer only refreshes about 20 times
+   * a second, so asking for more frames only burns CPU re-reading stale data.
+   */
+  const applyAlignedFrameRate = (next: any) => {
+    const aligned = alignedFrameRate()
+    if (!aligned || !schema?.properties?.audio_device?.enum) return next
+    const changedDevice = next?.audio_device !== model?.audio_device
+    if (!changedDevice) return next
+
+    const deviceName = schema.properties.audio_device.enum[next.audio_device] || ''
+    const isContinuous = /AudioRecord API|PlaybackCapture API/.test(deviceName)
+    const wanted = isContinuous ? aligned : DEFAULT_FRAME_RATE
+    if (next.sample_rate === wanted) return next
+    return { ...next, sample_rate: wanted }
+  }
+
+  const handleRequestCapture = () => {
+    requestPlaybackCapture()
+    // Focus alone is not always enough - on some launchers the WebView never
+    // loses it. Poll briefly as a backstop, then give up rather than spin.
+    if (capturePollRef.current) clearInterval(capturePollRef.current)
+    let tries = 0
+    capturePollRef.current = setInterval(() => {
+      tries += 1
+      const granted = hasPlaybackCapture()
+      if (granted || tries > 20) {
+        setCaptureGranted(granted)
+        if (capturePollRef.current) clearInterval(capturePollRef.current)
+        capturePollRef.current = null
+      }
+    }, 1000)
+  }
 
   const refreshStemModel = async () => {
     try {
@@ -291,11 +369,44 @@ const AudioCard = ({ className }: any) => {
           model={model}
           onModelChange={(e) => {
             setSystemConfig({
-              audio: e
+              audio: applyAlignedFrameRate(e)
             }).then(() => getSystemConfig())
           }}
         />
       )}
+      {/* CAPTURE APP AUDIO (Android 10+) */}
+      {captureSupported && (
+        <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+          <SettingsRow
+            title="Capture App Audio"
+            info="Reads what other apps are playing digitally and without gaps. The default Android input samples the output roughly 20 times a second at 8-bit, so about half the audio is never seen. Android asks for recording consent; apps that opt out of capture stay silent."
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label={captureGranted ? 'Allowed' : 'Not allowed'}
+                color={captureGranted ? 'success' : 'default'}
+                size="small"
+              />
+              {!captureGranted && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<GraphicEq />}
+                  onClick={handleRequestCapture}
+                >
+                  Allow
+                </Button>
+              )}
+            </Box>
+          </SettingsRow>
+          {captureGranted && (
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+              Select <strong>Playback Capture</strong> as the audio device above to use it.
+            </Typography>
+          )}
+        </Box>
+      )}
+
       {/* STEM SEPARATION MODEL */}
       {stemsEnabled && (
         <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
