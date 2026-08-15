@@ -56,7 +56,12 @@ export default function AndroidUpdateBanner({
                   ? 'Allow, then return'
                   : 'Install'}
             </Button>
-            <Button color="inherit" size="small" onClick={() => setDismissed(latestVersion)}>
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => setDismissed(latestVersion)}
+              disabled={downloading}
+            >
               Later
             </Button>
           </>

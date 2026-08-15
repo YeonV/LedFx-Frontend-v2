@@ -306,7 +306,13 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           // just agreed to it, rather than ambushing them with a system
           // settings screen halfway through their first update.
           requestUpdateGrantIfNeeded()
-          handleNext()
+          // The bridge call is fire-and-forget (a plain Activity Intent, no
+          // callback exists for "the native screen is now visible"), so
+          // advancing immediately made this slide change happen before the
+          // OS had visibly reacted at all. A short, deliberate wait beats
+          // proving nothing: enough for the transition to actually start
+          // before this dialog moves on underneath it.
+          setTimeout(handleNext, 400)
         }
       },
       askForNowPlaying && {
@@ -321,7 +327,8 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           // the switch reads nothing, and on its own the grant does nothing.
           onSystemSettingsChange('now_playing_enabled', true)
           requestNowPlayingGrantIfNeeded()
-          handleNext()
+          // Same fire-and-forget Intent, same race - see the 'updates' step.
+          setTimeout(handleNext, 400)
         }
       },
       {
@@ -358,11 +365,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       }}
     >
       <DialogContent
-        sx={
-          xsmall
-            ? { display: 'flex', flexDirection: 'column', px: 2, pb: 0 }
-            : undefined
-        }
+        sx={xsmall ? { display: 'flex', flexDirection: 'column', px: 2, pb: 0 } : undefined}
       >
         <Box
           sx={
