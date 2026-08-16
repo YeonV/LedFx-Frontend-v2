@@ -38,7 +38,6 @@ import {
 } from '@mui/icons-material'
 import {
   supportsPlaybackCapture,
-  hasPlaybackCapture,
   requestPlaybackCapture,
   alignedFrameRate
 } from '../../components/FireTv/android.bridge'
@@ -160,16 +159,53 @@ const AudioCard = ({ className }: any) => {
   // which is 8-bit and only refreshes ~20x a second. AudioPlaybackCapture reads
   // the same audio digitally and continuously, but Android gates it behind a
   // recording-consent dialog that only an Activity can show.
+  //
+  // State comes from the backend (GET /api/android/playback_capture), not the
+  // Android JS bridge's hasPlaybackCapture(). That check runs in the Activity
+  // process and reads PythonService's static consent fields there - but only
+  // PythonService's own broadcast receiver, running in the separate
+  // :service_ledfx process, ever sets them. Android does not share static
+  // state across process boundaries, so the bridge check can never reflect
+  // reality; it reads a copy that is never written. The real
+  // AndroidPlaybackCapture object lives entirely in the service process, so
+  // the backend endpoint asks it directly instead.
   const captureSupported = supportsPlaybackCapture()
-  const [captureGranted, setCaptureGranted] = useState(() => hasPlaybackCapture())
+  const [captureActive, setCaptureActive] = useState(false)
   const capturePollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // The consent dialog has no callback into the WebView - the approval crosses
-  // to the service process out of band. Re-check whenever this window regains
-  // focus, which is exactly when the user has finished with the dialog.
+  const fetchCaptureState = async (): Promise<boolean> => {
+    try {
+      const resp = await Ledfx('/api/android/playback_capture', 'GET', undefined, false)
+      return !!resp?.active
+    } catch {
+      return false
+    }
+  }
+
+  // Backstop poll, used both on mount and after requesting: the consent
+  // dialog has no callback into the WebView (approval crosses to the service
+  // process out of band), and consent may already have existed from an
+  // earlier session before this page ever mounted, with no native focus
+  // transition since to trigger a recheck.
+  const pollCaptureState = () => {
+    if (capturePollRef.current) clearInterval(capturePollRef.current)
+    let tries = 0
+    capturePollRef.current = setInterval(async () => {
+      tries += 1
+      const active = await fetchCaptureState()
+      if (active || tries > 20) {
+        setCaptureActive(active)
+        if (capturePollRef.current) clearInterval(capturePollRef.current)
+        capturePollRef.current = null
+      }
+    }, 1000)
+  }
+
   useEffect(() => {
     if (!captureSupported) return undefined
-    const recheck = () => setCaptureGranted(hasPlaybackCapture())
+    fetchCaptureState().then(setCaptureActive)
+    pollCaptureState()
+    const recheck = () => fetchCaptureState().then(setCaptureActive)
     window.addEventListener('focus', recheck)
     return () => {
       window.removeEventListener('focus', recheck)
@@ -204,17 +240,15 @@ const AudioCard = ({ className }: any) => {
     requestPlaybackCapture()
     // Focus alone is not always enough - on some launchers the WebView never
     // loses it. Poll briefly as a backstop, then give up rather than spin.
-    if (capturePollRef.current) clearInterval(capturePollRef.current)
-    let tries = 0
-    capturePollRef.current = setInterval(() => {
-      tries += 1
-      const granted = hasPlaybackCapture()
-      if (granted || tries > 20) {
-        setCaptureGranted(granted)
-        if (capturePollRef.current) clearInterval(capturePollRef.current)
-        capturePollRef.current = null
-      }
-    }, 1000)
+    pollCaptureState()
+  }
+
+  const handleRevokeCapture = async () => {
+    // Ends the real MediaProjection session (see the endpoint's own
+    // docstring) - the system clears its own status-bar indicator as a
+    // direct consequence, not because of anything this does locally.
+    await Ledfx('/api/android/playback_capture', 'DELETE', undefined, false)
+    setCaptureActive(false)
   }
 
   const refreshStemModel = async () => {
@@ -379,27 +413,22 @@ const AudioCard = ({ className }: any) => {
         <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
           <SettingsRow
             title="Capture App Audio"
-            info="Reads what other apps are playing digitally and without gaps. The default Android input samples the output roughly 20 times a second at 8-bit, so about half the audio is never seen. Android asks for recording consent; apps that opt out of capture stay silent."
+            info="Reads what other apps are playing digitally and without gaps. The default Android input samples the output roughly 20 times a second at 8-bit, so about half the audio is never seen. Android asks for recording consent; apps that opt out of capture stay silent. Revoke fully ends the session - the system's own status-bar recording indicator clears immediately - and resuming afterward needs a fresh consent dialog, unlike switching to a different input and back."
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Chip
-                label={captureGranted ? 'Allowed' : 'Not allowed'}
-                color={captureGranted ? 'success' : 'default'}
-                size="small"
-              />
-              {!captureGranted && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<GraphicEq />}
-                  onClick={handleRequestCapture}
-                >
-                  Allow
-                </Button>
-              )}
-            </Box>
+            {/* The button itself is the indicator: its label and color already
+                say whether capture is active, so a separate status chip next
+                to it would just repeat the same information twice. */}
+            <Button
+              variant="outlined"
+              size="small"
+              color={captureActive ? 'error' : 'primary'}
+              startIcon={<GraphicEq />}
+              onClick={captureActive ? handleRevokeCapture : handleRequestCapture}
+            >
+              {captureActive ? 'Revoke' : 'Allow'}
+            </Button>
           </SettingsRow>
-          {captureGranted && (
+          {captureActive && (
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
               Select <strong>Playback Capture</strong> as the audio device above to use it.
             </Typography>
