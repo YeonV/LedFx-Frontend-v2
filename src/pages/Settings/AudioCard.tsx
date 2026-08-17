@@ -3,6 +3,7 @@ import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
 import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
 import { Ledfx } from '../../api/ledfx'
+import { usePlaybackCapture } from '../../hooks/usePlaybackCapture'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 import {
   Dialog,
@@ -36,11 +37,7 @@ import {
   Hub as HubIcon,
   GraphicEq
 } from '@mui/icons-material'
-import {
-  supportsPlaybackCapture,
-  requestPlaybackCapture,
-  alignedFrameRate
-} from '../../components/FireTv/android.bridge'
+import { alignedFrameRate } from '../../components/FireTv/android.bridge'
 
 /** LedFx's own default; what a non-continuous input goes back to. */
 const DEFAULT_FRAME_RATE = 60
@@ -158,60 +155,10 @@ const AudioCard = ({ className }: any) => {
   // Android's default input taps the output mix through the Visualizer API,
   // which is 8-bit and only refreshes ~20x a second. AudioPlaybackCapture reads
   // the same audio digitally and continuously, but Android gates it behind a
-  // recording-consent dialog that only an Activity can show.
-  //
-  // State comes from the backend (GET /api/android/playback_capture), not the
-  // Android JS bridge's hasPlaybackCapture(). That check runs in the Activity
-  // process and reads PythonService's static consent fields there - but only
-  // PythonService's own broadcast receiver, running in the separate
-  // :service_ledfx process, ever sets them. Android does not share static
-  // state across process boundaries, so the bridge check can never reflect
-  // reality; it reads a copy that is never written. The real
-  // AndroidPlaybackCapture object lives entirely in the service process, so
-  // the backend endpoint asks it directly instead.
-  const captureSupported = supportsPlaybackCapture()
-  const [captureActive, setCaptureActive] = useState(false)
-  const capturePollRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  const fetchCaptureState = async (): Promise<boolean> => {
-    try {
-      const resp = await Ledfx('/api/android/playback_capture', 'GET', undefined, false)
-      return !!resp?.active
-    } catch {
-      return false
-    }
-  }
-
-  // Backstop poll, used both on mount and after requesting: the consent
-  // dialog has no callback into the WebView (approval crosses to the service
-  // process out of band), and consent may already have existed from an
-  // earlier session before this page ever mounted, with no native focus
-  // transition since to trigger a recheck.
-  const pollCaptureState = () => {
-    if (capturePollRef.current) clearInterval(capturePollRef.current)
-    let tries = 0
-    capturePollRef.current = setInterval(async () => {
-      tries += 1
-      const active = await fetchCaptureState()
-      if (active || tries > 20) {
-        setCaptureActive(active)
-        if (capturePollRef.current) clearInterval(capturePollRef.current)
-        capturePollRef.current = null
-      }
-    }, 1000)
-  }
-
-  useEffect(() => {
-    if (!captureSupported) return undefined
-    fetchCaptureState().then(setCaptureActive)
-    pollCaptureState()
-    const recheck = () => fetchCaptureState().then(setCaptureActive)
-    window.addEventListener('focus', recheck)
-    return () => {
-      window.removeEventListener('focus', recheck)
-      if (capturePollRef.current) clearInterval(capturePollRef.current)
-    }
-  }, [captureSupported])
+  // recording-consent dialog that only an Activity can show. State/actions
+  // are shared with the setup wizard via usePlaybackCapture.
+  const { captureSupported, captureActive, handleRequestCapture, handleRevokeCapture } =
+    usePlaybackCapture()
 
   /**
    * Keep sample_rate matched to the selected input's nature.
@@ -234,21 +181,6 @@ const AudioCard = ({ className }: any) => {
     const wanted = isContinuous ? aligned : DEFAULT_FRAME_RATE
     if (next.sample_rate === wanted) return next
     return { ...next, sample_rate: wanted }
-  }
-
-  const handleRequestCapture = () => {
-    requestPlaybackCapture()
-    // Focus alone is not always enough - on some launchers the WebView never
-    // loses it. Poll briefly as a backstop, then give up rather than spin.
-    pollCaptureState()
-  }
-
-  const handleRevokeCapture = async () => {
-    // Ends the real MediaProjection session (see the endpoint's own
-    // docstring) - the system clears its own status-bar indicator as a
-    // direct consequence, not because of anything this does locally.
-    await Ledfx('/api/android/playback_capture', 'DELETE', undefined, false)
-    setCaptureActive(false)
   }
 
   const refreshStemModel = async () => {
@@ -414,6 +346,7 @@ const AudioCard = ({ className }: any) => {
           <SettingsRow
             title="Capture App Audio"
             info="Reads what other apps are playing digitally and without gaps. The default Android input samples the output roughly 20 times a second at 8-bit, so about half the audio is never seen. Android asks for recording consent; apps that opt out of capture stay silent. Revoke fully ends the session - the system's own status-bar recording indicator clears immediately - and resuming afterward needs a fresh consent dialog, unlike switching to a different input and back."
+            style={{ height: 'auto', minHeight: 40, flexWrap: 'wrap', whiteSpace: 'nowrap' }}
           >
             {/* The button itself is the indicator: its label and color already
                 say whether capture is active, so a separate status chip next

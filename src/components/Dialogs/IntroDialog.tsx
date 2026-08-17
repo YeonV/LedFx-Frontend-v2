@@ -1,5 +1,5 @@
 import Dialog from '@mui/material/Dialog'
-import { useEffect, useState } from 'react'
+import { cloneElement, useEffect, useState } from 'react'
 import {
   Chip,
   DialogContent,
@@ -25,6 +25,11 @@ import wledLogo from '../../icons/png/wled.png'
 import openrgbLogo from '../../icons/png/openrgb.png'
 import launchpadLogo from '../../icons/png/launchpad.png'
 import BladeScene from '../../pages/Home/BladeScene'
+import IntroSlide1Hero from './IntroSlide1Hero'
+import IntroSlide2Hero from './IntroSlide2Hero'
+import IntroSlide3Hero from './IntroSlide3Hero'
+import IntroSlide4Hero from './IntroSlide4Hero'
+import IntroSlide5Hero from './IntroSlide5Hero'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { SettingsRow } from '../../pages/Settings/SettingsComponents'
@@ -376,150 +381,172 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                   flexGrow: 1,
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  position: 'relative'
                 }
               : { flexGrow: 1 }
           }
         >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              flexDirection: 'column'
-            }}
-          >
-            {!steps[activeStep].icon || steps[activeStep].icon === 'wled' ? (
-              <Stack direction="row">
-                <img
-                  width={activeStep === 0 ? (small ? 128 : 300) : 128}
-                  height="auto"
-                  src={
-                    activeStep === 0
-                      ? small
-                        ? logoCircle
-                        : banner
-                      : !steps[activeStep].icon
-                        ? logoCircle
-                        : wledLogo
-                  }
-                  alt="logo-circle"
+          {xsmall && steps[activeStep].key === 'setup' ? (
+            // Mobile portrait only, approved as its own component per step
+            // - see IntroSlide1Hero for why this is not more xsmall
+            // ternaries threaded through the shared step markup below.
+            // Keyed on the step's own identity, not activeStep's numeric
+            // index: 'wledScanning' is inserted into the steps array
+            // conditionally (only once the user answers "Yes" to scan),
+            // which shifts every later step's index - an index check here
+            // would silently render the wrong step's hero once that
+            // happens.
+            <IntroSlide1Hero title={steps[activeStep].title} />
+          ) : xsmall && steps[activeStep].key === 'gotWled' ? (
+            <IntroSlide2Hero title={steps[activeStep].title} />
+          ) : xsmall && steps[activeStep].key === 'bladeScene' ? (
+            <IntroSlide3Hero title={steps[activeStep].title} />
+          ) : xsmall && steps[activeStep].key === 'audio' ? (
+            <IntroSlide4Hero title={steps[activeStep].title} />
+          ) : xsmall && steps[activeStep].key === 'tour' ? (
+            <IntroSlide5Hero title={steps[activeStep].title} />
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                flexDirection: 'column'
+              }}
+            >
+              {!steps[activeStep].icon || steps[activeStep].icon === 'wled' ? (
+                <Stack direction="row">
+                  <img
+                    width={activeStep === 0 ? (small ? 128 : 300) : 128}
+                    height="auto"
+                    src={
+                      activeStep === 0
+                        ? small
+                          ? logoCircle
+                          : banner
+                        : !steps[activeStep].icon
+                          ? logoCircle
+                          : wledLogo
+                    }
+                    alt="logo-circle"
+                  />
+                  {activeStep === 0 ? (
+                    <Stack marginLeft={3}>
+                      <Chip
+                        sx={{
+                          justifyContent: 'flex-start',
+                          padding: '0 0.5rem',
+                          margin: '5px'
+                        }}
+                        icon={<CheckCircleOutlineOutlined />}
+                        label="Free"
+                        variant="filled"
+                      />
+                      <Chip
+                        sx={{
+                          justifyContent: 'flex-start',
+                          padding: '0 0.5rem',
+                          margin: '5px'
+                        }}
+                        avatar={<CheckCircleOutlineOutlined />}
+                        label="OpenSource"
+                        variant="filled"
+                      />
+                      <Chip
+                        sx={{
+                          justifyContent: 'flex-start',
+                          padding: '0 0.5rem',
+                          margin: '5px'
+                        }}
+                        avatar={<CheckCircleOutlineOutlined />}
+                        label="CrossPlatform"
+                        variant="filled"
+                      />
+                    </Stack>
+                  ) : null}
+                </Stack>
+              ) : (
+                <BladeIcon
+                  intro
+                  style={{ fontSize: xsmall ? 72 : 128 }}
+                  name={steps[activeStep].icon}
                 />
-                {activeStep === 0 ? (
-                  <Stack marginLeft={3}>
-                    <Chip
-                      sx={{
-                        justifyContent: 'flex-start',
-                        padding: '0 0.5rem',
-                        margin: '5px'
-                      }}
-                      icon={<CheckCircleOutlineOutlined />}
-                      label="Free"
-                      variant="filled"
-                    />
-                    <Chip
-                      sx={{
-                        justifyContent: 'flex-start',
-                        padding: '0 0.5rem',
-                        margin: '5px'
-                      }}
-                      avatar={<CheckCircleOutlineOutlined />}
-                      label="OpenSource"
-                      variant="filled"
-                    />
-                    <Chip
-                      sx={{
-                        justifyContent: 'flex-start',
-                        padding: '0 0.5rem',
-                        margin: '5px'
-                      }}
-                      avatar={<CheckCircleOutlineOutlined />}
-                      label="CrossPlatform"
-                      variant="filled"
-                    />
-                  </Stack>
-                ) : null}
-              </Stack>
-            ) : (
-              <BladeIcon
-                intro
-                style={{ fontSize: xsmall ? 72 : 128 }}
-                name={steps[activeStep].icon}
-              />
-            )}
+              )}
 
-            <div>
-              <Typography
-                marginLeft={0}
-                marginTop={xsmall ? 1 : 5}
-                marginBottom={0}
-                variant={xsmall ? 'h5' : 'h3'}
-                textAlign={small ? 'center' : 'left'}
-              >
-                {steps[activeStep].key === 'wledScanning' ? (
-                  <>
-                    New Devices found:
-                    <br />
-                  </>
-                ) : (
-                  steps[activeStep].title
-                )}
-              </Typography>
-              {steps[activeStep].key === 'wledScanning' && (
+              <div>
                 <Typography
                   marginLeft={0}
-                  marginTop={1}
-                  marginBottom={3}
-                  variant="h5"
+                  marginTop={xsmall ? 1 : 5}
+                  marginBottom={0}
+                  variant={xsmall ? 'h5' : 'h3'}
                   textAlign={small ? 'center' : 'left'}
                 >
-                  <span
-                    style={{
-                      textAlign: 'right',
-                      marginRight: '0.5rem',
-                      width: 30,
-                      display: 'inline-block'
-                    }}
-                  >
-                    {devices && Object.keys(devices)?.length}
-                  </span>
-                  <span>WLEDs</span>
-                  {openRgbDevices.length > 1 && (
+                  {steps[activeStep].key === 'wledScanning' ? (
                     <>
+                      New Devices found:
                       <br />
-                      <span
-                        style={{
-                          textAlign: 'right',
-                          marginRight: '0.5rem',
-                          width: 30,
-                          display: 'inline-block'
-                        }}
-                      >
-                        {openRgbDevices.length}
-                      </span>
-                      OpenRGB Devices
                     </>
-                  )}
-                  {launchpadDevice !== '' && (
-                    <>
-                      <br />
-                      <span
-                        style={{
-                          textAlign: 'right',
-                          marginRight: '0.5rem',
-                          width: 30,
-                          display: 'inline-block'
-                        }}
-                      >
-                        1
-                      </span>
-                      Launchpad
-                    </>
+                  ) : (
+                    steps[activeStep].title
                   )}
                 </Typography>
-              )}
-            </div>
-          </Box>
+                {steps[activeStep].key === 'wledScanning' && (
+                  <Typography
+                    marginLeft={0}
+                    marginTop={1}
+                    marginBottom={3}
+                    variant="h5"
+                    textAlign={small ? 'center' : 'left'}
+                  >
+                    <span
+                      style={{
+                        textAlign: 'right',
+                        marginRight: '0.5rem',
+                        width: 30,
+                        display: 'inline-block'
+                      }}
+                    >
+                      {devices && Object.keys(devices)?.length}
+                    </span>
+                    <span>WLEDs</span>
+                    {openRgbDevices.length > 1 && (
+                      <>
+                        <br />
+                        <span
+                          style={{
+                            textAlign: 'right',
+                            marginRight: '0.5rem',
+                            width: 30,
+                            display: 'inline-block'
+                          }}
+                        >
+                          {openRgbDevices.length}
+                        </span>
+                        OpenRGB Devices
+                      </>
+                    )}
+                    {launchpadDevice !== '' && (
+                      <>
+                        <br />
+                        <span
+                          style={{
+                            textAlign: 'right',
+                            marginRight: '0.5rem',
+                            width: 30,
+                            display: 'inline-block'
+                          }}
+                        >
+                          1
+                        </span>
+                        Launchpad
+                      </>
+                    )}
+                  </Typography>
+                )}
+              </div>
+            </Box>
+          )}
           {steps[activeStep].key === 'audio' && (
             <div
               style={{
@@ -834,6 +861,17 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               >
                 {steps[activeStep].label_right}
               </Button>
+            ) : xsmall && steps[activeStep].key === 'bladeScene' ? (
+              // Mobile portrait only: BladeScene carries its own large
+              // standalone styling (2rem font, 80vw width) built for its
+              // Home-page use as a floating action button - inconsistent
+              // with the plain "Skip" button beside it here. Override just
+              // the visual mismatch via cloneElement rather than touching
+              // BladeScene's own defaults (other callers depend on them) or
+              // the steps array (kept byte-for-byte otherwise).
+              cloneElement(steps[activeStep].label_right, {
+                sx: { fontSize: '1.1rem', borderRadius: '2rem', width: '100%' }
+              })
             ) : (
               steps[activeStep].label_right
             )}

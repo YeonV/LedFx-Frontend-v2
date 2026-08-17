@@ -1,7 +1,15 @@
 import { Button, useMediaQuery } from '@mui/material'
 import useStore from '../../store/useStore'
 
-const BladeScene = ({ onClick }: { onClick: () => void }) => {
+const BladeScene = ({
+  onClick,
+  sx = [],
+  label = 'Add Blade Scene'
+}: {
+  onClick: () => void
+  sx?: any
+  label?: string
+}) => {
   const vs = useStore((state) => state.virtuals)
   const autogenerating = Object.keys(vs)
     .filter((v: any) => vs[v].auto_generated)
@@ -108,10 +116,11 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
             }
           : {
               width: 'min(40vw, 550px)'
-            }
+            },
+        ...(Array.isArray(sx) ? sx : [sx])
       ]}
     >
-      Add Blade Scene
+      {label}
     </Button>
   )
 }
