@@ -41,7 +41,7 @@ const PixelGraphCanvasOffscreenWebGL = ({
   const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       const canvas = canvasRef.current
       if (!canvas || transferredRef.current) return
 
@@ -51,28 +51,37 @@ const PixelGraphCanvasOffscreenWebGL = ({
       transferredRef.current = true
 
       worker.postMessage({ canvas: offscreen }, [offscreen])
-
-      const handleWebsockets = (e: any) => {
-        if (e.detail.id === virtId) {
-          const pixels =
-            config.transmission_mode === 'compressed'
-              ? hexColor(e.detail.pixels, config.transmission_mode)
-              : e.detail.pixels
-          // const shape = e.detail.shape
-          const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-          const cols = Math.ceil(pixels.length / rows)
-
-          worker.postMessage({ pixels, rows, cols })
-        }
-      }
-
-      document.addEventListener('visualisation_update', handleWebsockets)
-      return () => {
-        document.removeEventListener('visualisation_update', handleWebsockets)
-        worker.terminate()
-      }
     }, 200)
+
+    const handleWebsockets = (e: any) => {
+      if (e.detail.id === virtId) {
+        const pixels =
+          config.transmission_mode === 'compressed'
+            ? hexColor(e.detail.pixels, config.transmission_mode)
+            : e.detail.pixels
+        // const shape = e.detail.shape
+        const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+        const cols = Math.ceil(pixels.length / rows)
+
+        workerRef.current?.postMessage({ pixels, rows, cols })
+      }
+    }
+
+    document.addEventListener('visualisation_update', handleWebsockets)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('visualisation_update', handleWebsockets)
+    }
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
+
+  useEffect(
+    () => () => {
+      workerRef.current?.terminate()
+      workerRef.current = null
+    },
+    []
+  )
 
   const render =
     (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) || virtuals[virtId]?.streaming

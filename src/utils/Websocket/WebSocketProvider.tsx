@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useRef, useCallback, useSt
 import Sockette from 'sockette'
 import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
+import parseVisBinaryFrame from './visBinaryFrame'
 import { initialSubscriptions, handlerConfig } from './websocket.config'
 
 export interface WebSocketApi {
@@ -27,6 +28,13 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   const [isConnected, setIsConnected] = useState(false)
   const [errorState, setErrorState] = useState<string | null>(null)
   const subscribers = useRef(new Map<string, Set<(_data: any) => void>>())
+  // Core version seen when this tab first connected. A tab left open across a
+  // core upgrade keeps running the JS it loaded, which can be older than the
+  // protocol the new core speaks - binary vis frames arrive as Blobs to a
+  // build that never set binaryType, JSON.parse chokes, and the graphs die
+  // until someone reloads. Reset per page load on purpose, so it is a
+  // reconnect-time comparison rather than persisted state.
+  const coreVersion = useRef<string | null>(null)
 
   const send = useCallback((data: any) => {
     ws.current?.send(JSON.stringify(data))
@@ -77,18 +85,54 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     ws.current = new Sockette(wsUrl, {
       timeout: 5e3,
       maxAttempts: 10,
-      onopen: () => {
+      onopen: (e: any) => {
+        // Binary vis frames arrive as ArrayBuffer rather than Blob. Sockette
+        // builds a fresh WebSocket on every reconnect, so this has to be set
+        // per-open, not once at construction.
+        try {
+          if (e?.target) e.target.binaryType = 'arraybuffer'
+        } catch {
+          /* non-fatal: falls back to the JSON path */
+        }
         setIsConnected(true)
         setErrorState(null) // Clear any previous errors on a successful connection
         useStore.getState().setDisconnected(false)
         // Refresh schemas and colors on reconnect (backend may have restarted with new plugins/effects/colors)
         useStore.getState().getSchemas(true)
         useStore.getState().getColors()
+        useStore
+          .getState()
+          .getInfo()
+          .then((resp: any) => {
+            const version = resp?.version
+            if (!version) return
+            if (coreVersion.current === null) {
+              coreVersion.current = version
+            } else if (coreVersion.current !== version) {
+              window.location.reload()
+            }
+          })
+          .catch(() => {
+            /* info unreachable - nothing to compare, leave the tab alone */
+          })
         initialSubscriptions.forEach((sub) => {
           send({ ...sub, type: 'subscribe_event' })
         })
       },
       onmessage: (event) => {
+        if (event.data instanceof ArrayBuffer) {
+          const frame = parseVisBinaryFrame(event.data)
+          if (!frame) return
+          const visId = useStore.getState().pixelGraphs[frame.subscriptionId]
+          if (!visId) return
+          dispatchToSubscribers('visualisation_update', {
+            id: visId,
+            shape: [frame.rows, frame.cols],
+            rgba: frame.rgba
+          })
+          return
+        }
+
         const data = JSON.parse(event.data)
         const eventType = data?.event_type
         if (!eventType) return

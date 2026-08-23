@@ -1,6 +1,7 @@
 import { PaletteMode } from '@mui/material'
 import { createTheme, Theme } from '@mui/material/styles'
 import isElectron from 'is-electron'
+import { isAndroidApp } from '../components/FireTv/android.bridge'
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -416,6 +417,6 @@ export const ledfxTheme =
       ? 'DarkBlue'
       : window.location.origin === 'https://my.ledfx.app'
         ? 'DarkGreen'
-        : isElectron()
+        : isElectron() || isAndroidApp()
           ? 'DarkBw'
           : 'DarkBlue') || 'DarkBlue'

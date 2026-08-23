@@ -48,13 +48,23 @@ const PixelGraphCanvas = ({
       const ctx = canvas?.getContext('2d')
       if (!canvas || !ctx) return
 
-      const { virtuals, config } = useStore.getState()
+      const { virtuals } = useStore.getState()
 
       ctx.imageSmoothingEnabled = false
 
+      if (eventData.rgba) {
+        const [srcRows, srcCols] = eventData.shape
+        const cols = showMatrix ? srcCols : srcRows * srcCols
+        const rows = showMatrix ? srcRows : 1
+        if (canvas.width !== cols) canvas.width = cols
+        if (canvas.height !== rows) canvas.height = rows
+        ctx.putImageData(new ImageData(eventData.rgba, cols, rows), 0, 0)
+        return
+      }
+
       const pixels =
-        config.transmission_mode === 'compressed'
-          ? hexColor(eventData.pixels, config.transmission_mode)
+        typeof eventData.pixels === 'string'
+          ? hexColor(eventData.pixels, 'compressed')
           : eventData.pixels
 
       const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1

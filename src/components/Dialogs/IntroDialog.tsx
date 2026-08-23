@@ -204,20 +204,20 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         },
         action_right: handleNext
       },
-      isCC && {
+      (isCC || isAndroidApp()) && {
         key: 'theme',
         title: 'Choose your Theme',
         label_left: 'Lightmode',
         label_right: 'Darkmode',
         action_left: () => {
           window.localStorage.setItem('ledfx-theme', 'LightBw')
-          window.api.send('toMain', { command: 'set-lightmode' })
+          window.api?.send('toMain', { command: 'set-lightmode' })
           reloadTheme()
           handleNext()
         },
         action_right: () => {
           window.localStorage.setItem('ledfx-theme', 'DarkBw')
-          window.api.send('toMain', { command: 'set-darkmode' })
+          window.api?.send('toMain', { command: 'set-darkmode' })
           reloadTheme()
           handleNext()
         }
