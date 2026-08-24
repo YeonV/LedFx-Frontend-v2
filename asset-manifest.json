@@ -1,10 +1,10 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.43913191.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.96849e7e.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.ab7e8295.js",
     "static/js/882.6322ae33.chunk.js": "/LedFx-Frontend-v2/static/js/882.6322ae33.chunk.js",
-    "static/js/429.b62d6362.chunk.js": "/LedFx-Frontend-v2/static/js/429.b62d6362.chunk.js",
-    "static/js/464.efa9ae26.chunk.js": "/LedFx-Frontend-v2/static/js/464.efa9ae26.chunk.js",
+    "static/js/429.fff95a68.chunk.js": "/LedFx-Frontend-v2/static/js/429.fff95a68.chunk.js",
+    "static/js/464.fddaa646.chunk.js": "/LedFx-Frontend-v2/static/js/464.fddaa646.chunk.js",
     "static/js/956.3a0efdd7.chunk.js": "/LedFx-Frontend-v2/static/js/956.3a0efdd7.chunk.js",
     "static/js/685.ac031951.chunk.js": "/LedFx-Frontend-v2/static/js/685.ac031951.chunk.js",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
@@ -46,6 +46,6 @@
   },
   "entrypoints": [
     "static/css/main.43913191.css",
-    "static/js/main.96849e7e.js"
+    "static/js/main.ab7e8295.js"
   ]
 }
