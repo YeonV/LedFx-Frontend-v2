@@ -17,7 +17,13 @@ interface UpdatePixelsMessage {
   cols: number
 }
 
-type WorkerMessage = InitCanvasMessage | UpdatePixelsMessage
+interface UpdateRgbaMessage {
+  rgba: Uint8ClampedArray<ArrayBuffer>
+  rows: number
+  cols: number
+}
+
+type WorkerMessage = InitCanvasMessage | UpdatePixelsMessage | UpdateRgbaMessage
 
 let canvas: OffscreenCanvas
 let ctx: OffscreenCanvasRenderingContext2D
@@ -27,6 +33,11 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
     canvas = event.data.canvas
     ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D
     ctx.imageSmoothingEnabled = false
+  } else if ('rgba' in event.data) {
+    const { rgba, rows, cols } = event.data
+    canvas.width = cols
+    canvas.height = rows
+    ctx.putImageData(new ImageData(rgba, cols, rows), 0, 0)
   } else if ('pixels' in event.data) {
     const { pixels, rows, cols } = event.data
     canvas.width = cols

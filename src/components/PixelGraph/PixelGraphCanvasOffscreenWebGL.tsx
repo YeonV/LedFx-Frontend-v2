@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const PixelGraphCanvasOffscreenWebGL = ({
   virtId,
@@ -53,27 +55,37 @@ const PixelGraphCanvasOffscreenWebGL = ({
       worker.postMessage({ canvas: offscreen }, [offscreen])
     }, 200)
 
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtId) {
-        const pixels =
-          config.transmission_mode === 'compressed'
-            ? hexColor(e.detail.pixels, config.transmission_mode)
-            : e.detail.pixels
-        // const shape = e.detail.shape
-        const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-        const cols = Math.ceil(pixels.length / rows)
-
-        workerRef.current?.postMessage({ pixels, rows, cols })
-      }
-    }
-
-    document.addEventListener('visualisation_update', handleWebsockets)
-
     return () => {
       clearTimeout(timeoutId)
-      document.removeEventListener('visualisation_update', handleWebsockets)
     }
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
+
+  const handleWebsockets = useCallback(
+    (eventData: any) => {
+      if (eventData.id !== virtId) return
+
+      if (eventData.rgba) {
+        const [srcRows, srcCols] = eventData.shape
+        const cols = showMatrix ? srcCols : srcRows * srcCols
+        const rows = showMatrix ? srcRows : 1
+
+        workerRef.current?.postMessage({ rgba: eventData.rgba, rows, cols })
+        return
+      }
+
+      const pixels =
+        config.transmission_mode === 'compressed'
+          ? hexColor(eventData.pixels, config.transmission_mode)
+          : eventData.pixels
+      const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+      const cols = Math.ceil(pixels.length / rows)
+
+      workerRef.current?.postMessage({ pixels, rows, cols })
+    },
+    [virtId, virtuals, config, showMatrix]
+  )
+
+  useSubscription('visualisation_update', handleWebsockets)
 
   useEffect(
     () => () => {

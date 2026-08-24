@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const PixelGraphBase = ({
   virtId,
@@ -31,9 +33,8 @@ const PixelGraphBase = ({
   const round = useStore((state) => state.uiPersist.pixelGraphSettings?.round)
   const space = useStore((state) => state.uiPersist.pixelGraphSettings?.space)
   const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
-  const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
+  const { virtuals, devices, graphs, config } = useStore(
     useShallow((state) => ({
-      pixelGraphs: state.pixelGraphs,
       virtuals: state.virtuals,
       devices: state.devices,
       graphs: state.graphs,
@@ -55,20 +56,33 @@ const PixelGraphBase = ({
       ? pixels && pixels.length && hexColor(pixels, config.transmission_mode)
       : pixels
   // console.timeEnd('hexColor');
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtId) {
-        setPixels(e.detail.pixels)
-        if (e.detail.shape[0] !== shape[0] && e.detail.shape[1] !== shape[1])
-          setShape(e.detail.shape)
+  const handleWebsockets = useCallback(
+    (eventData: any) => {
+      if (eventData.id !== virtId) return
+
+      if (eventData.rgba) {
+        const rgba = eventData.rgba
+        const n = rgba.length / 4
+        const r = new Array(n)
+        const g = new Array(n)
+        const b = new Array(n)
+        for (let i = 0, j = 0; i < n; i++, j += 4) {
+          r[i] = rgba[j]
+          g[i] = rgba[j + 1]
+          b[i] = rgba[j + 2]
+        }
+        setPixels([r, g, b])
+      } else {
+        setPixels(eventData.pixels)
       }
-    }
-    document.addEventListener('visualisation_update', handleWebsockets)
-    return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtuals, pixelGraphs, virtId])
+
+      if (eventData.shape[0] !== shape[0] && eventData.shape[1] !== shape[1])
+        setShape(eventData.shape)
+    },
+    [virtId, shape]
+  )
+
+  useSubscription('visualisation_update', handleWebsockets)
 
   const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
 

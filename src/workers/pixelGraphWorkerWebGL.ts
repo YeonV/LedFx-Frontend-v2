@@ -17,7 +17,13 @@ interface UpdateTextureMessage {
   cols: number
 }
 
-type WorkerMessageGL = InitWebGLMessage | UpdateTextureMessage
+interface UpdateTextureRgbaMessage {
+  rgba: Uint8ClampedArray
+  rows: number
+  cols: number
+}
+
+type WorkerMessageGL = InitWebGLMessage | UpdateTextureMessage | UpdateTextureRgbaMessage
 
 let canvasGL: OffscreenCanvas
 let gl: WebGLRenderingContext | null
@@ -40,6 +46,13 @@ self.onmessage = (event: MessageEvent<WorkerMessageGL>) => {
 
     // Initialize WebGL
     initWebGL()
+  } else if ('rgba' in event.data) {
+    const { rgba, rows, cols } = event.data
+    canvasGL.width = cols
+    canvasGL.height = rows
+    gl?.viewport(0, 0, cols, rows)
+
+    updateTextureRgba(rgba, rows, cols)
   } else if ('pixels' in event.data) {
     const { pixels, rows, cols } = event.data
     canvasGL.width = cols
@@ -152,6 +165,24 @@ const createProgram = (
     return null
   }
   return program
+}
+
+const updateTextureRgba = (rgba: Uint8ClampedArray, rows: number, cols: number) => {
+  gl!.bindTexture(gl!.TEXTURE_2D, texture)
+  gl!.texImage2D(
+    gl!.TEXTURE_2D,
+    0,
+    gl!.RGBA,
+    cols,
+    rows,
+    0,
+    gl!.RGBA,
+    gl!.UNSIGNED_BYTE,
+    new Uint8Array(rgba.buffer, rgba.byteOffset, rgba.length)
+  )
+
+  gl!.clear(gl!.COLOR_BUFFER_BIT)
+  gl!.drawArrays(gl!.TRIANGLES, 0, 6)
 }
 
 const updateTexture = (pixels: Pixel[], rows: number, cols: number) => {
