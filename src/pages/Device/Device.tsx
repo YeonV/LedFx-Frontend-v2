@@ -31,6 +31,7 @@ const Device = () => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const graphs = useStore((state) => state.graphs)
   const features = useStore((state) => state.features)
+  const schemas = useStore((state) => state.schemas)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -52,6 +53,9 @@ const Device = () => {
   const virtual = getV()
 
   const effectType = virtual && virtual.effect.type
+
+  const effectUsesMelbankRange =
+    schemas?.effects?.[effectType as string]?.uses_melbank_range !== false
 
   const addComlexDummy = async (
     virtual: Virtual,
@@ -316,7 +320,7 @@ const Device = () => {
             {features.transitions && (
               <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />
             )}
-            {features.frequencies && (
+            {features.frequencies && effectUsesMelbankRange && (
               <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />
             )}
             <VirtualDiag />
