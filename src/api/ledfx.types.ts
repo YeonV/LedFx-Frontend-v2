@@ -702,7 +702,10 @@ export interface FieldSchema {
   enum?: any[]
   format?: string
   anyOf?: FieldSchema[]
+  /** A one-value Literal. */
+  const?: any
   $ref?: string
+  'x-ledfx-enum-source'?: string
   [key: string]: any
 }
 

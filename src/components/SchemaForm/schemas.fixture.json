@@ -1,0 +1,2868 @@
+{
+  "audio": {
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": true,
+      "description": "Persisted audio section: input and analysis settings together.",
+      "properties": {
+        "pitch_method": {
+          "default": "yinfft",
+          "description": "Method to detect pitch",
+          "enum": [
+            "yinfft",
+            "yin",
+            "yinfast",
+            "schmitt",
+            "specacf"
+          ],
+          "title": "Pitch Method",
+          "type": "string"
+        },
+        "onset_method": {
+          "default": "hfc",
+          "description": "Method used to detect onsets",
+          "enum": [
+            "energy",
+            "hfc",
+            "complex",
+            "phase",
+            "wphase",
+            "specdiff",
+            "kl",
+            "mkl",
+            "specflux"
+          ],
+          "title": "Onset Method",
+          "type": "string"
+        },
+        "pitch_tolerance": {
+          "default": 0.8,
+          "description": "Pitch detection tolerance",
+          "maximum": 2,
+          "minimum": 0.0,
+          "title": "Pitch Tolerance",
+          "type": "number"
+        },
+        "sample_rate": {
+          "default": 60,
+          "readOnly": true,
+          "title": "Sample Rate",
+          "type": "integer"
+        },
+        "mic_rate": {
+          "default": 44100,
+          "readOnly": true,
+          "title": "Mic Rate",
+          "type": "integer"
+        },
+        "fft_size": {
+          "default": 4096,
+          "readOnly": true,
+          "title": "Fft Size",
+          "type": "integer"
+        },
+        "min_volume": {
+          "default": 0.2,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Min Volume",
+          "type": "number"
+        },
+        "audio_device": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Device",
+          "x-ledfx-enum-source": "audio_devices"
+        },
+        "audio_device_name": {
+          "default": "",
+          "readOnly": true,
+          "title": "Audio Device Name",
+          "type": "string"
+        },
+        "delay_ms": {
+          "default": 0,
+          "description": "Add a delay to LedFx's output to sync with your audio. Useful for Bluetooth devices which typically have a short audio lag.",
+          "maximum": 5000,
+          "minimum": 0,
+          "title": "Delay Ms",
+          "type": "integer"
+        }
+      },
+      "title": "AudioConfig",
+      "type": "object"
+    }
+  },
+  "virtuals": {
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Friendly name for the device",
+          "title": "Name",
+          "type": "string"
+        },
+        "mapping": {
+          "default": "span",
+          "description": "Span: Effect spans all segments. Copy: Effect copied on each segment",
+          "enum": [
+            "span",
+            "copy"
+          ],
+          "title": "Mapping",
+          "type": "string"
+        },
+        "complex_segments": {
+          "default": false,
+          "description": "Use complex segment mapping mode for performance",
+          "title": "Complex Segments",
+          "type": "boolean"
+        },
+        "grouping": {
+          "default": 1,
+          "description": "Number of physical pixels to combine into larger virtual pixel groups",
+          "minimum": 0,
+          "title": "Grouping",
+          "type": "integer"
+        },
+        "icon_name": {
+          "default": "mdi:led-strip-variant",
+          "description": "Icon for the device*",
+          "title": "Icon Name",
+          "type": "string"
+        },
+        "max_brightness": {
+          "default": 1.0,
+          "description": "Max brightness for the device",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Brightness",
+          "type": "number"
+        },
+        "center_offset": {
+          "default": 0,
+          "description": "Number of pixels from the perceived center of the device",
+          "title": "Center Offset",
+          "type": "integer"
+        },
+        "preview_only": {
+          "default": false,
+          "description": "Preview the pixels without updating the devices",
+          "title": "Preview Only",
+          "type": "boolean"
+        },
+        "transition_time": {
+          "default": 0.4,
+          "description": "Length of transition between effects",
+          "maximum": 5,
+          "minimum": 0,
+          "title": "Transition Time",
+          "type": "number"
+        },
+        "transition_mode": {
+          "default": "Add",
+          "description": "Type of transition between effects",
+          "enum": [
+            "Add",
+            "Dissolve",
+            "Push",
+            "Slide",
+            "Iris",
+            "Through White",
+            "Through Black",
+            "None"
+          ],
+          "title": "Transition Mode",
+          "type": "string"
+        },
+        "frequency_min": {
+          "default": 20,
+          "description": "Lowest frequency for this virtual's audio reactive effects",
+          "maximum": 15000,
+          "minimum": 20,
+          "title": "Frequency Min",
+          "type": "integer"
+        },
+        "frequency_max": {
+          "default": 15000,
+          "description": "Highest frequency for this virtual's audio reactive effects",
+          "maximum": 15000,
+          "minimum": 20,
+          "title": "Frequency Max",
+          "type": "integer"
+        },
+        "rows": {
+          "default": 1,
+          "description": "Amount of rows. > 1 if this virtual is a matrix",
+          "title": "Rows",
+          "type": "integer"
+        },
+        "rotate": {
+          "default": 0,
+          "description": "90 Degree rotations",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Rotate",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "VirtualConfig",
+      "type": "object"
+    }
+  },
+  "core": {
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$defs": {
+        "AudioConfig": {
+          "additionalProperties": true,
+          "description": "Persisted audio section: input and analysis settings together.",
+          "properties": {
+            "pitch_method": {
+              "default": "yinfft",
+              "description": "Method to detect pitch",
+              "enum": [
+                "yinfft",
+                "yin",
+                "yinfast",
+                "schmitt",
+                "specacf"
+              ],
+              "title": "Pitch Method",
+              "type": "string"
+            },
+            "onset_method": {
+              "default": "hfc",
+              "description": "Method used to detect onsets",
+              "enum": [
+                "energy",
+                "hfc",
+                "complex",
+                "phase",
+                "wphase",
+                "specdiff",
+                "kl",
+                "mkl",
+                "specflux"
+              ],
+              "title": "Onset Method",
+              "type": "string"
+            },
+            "pitch_tolerance": {
+              "default": 0.8,
+              "description": "Pitch detection tolerance",
+              "maximum": 2,
+              "minimum": 0.0,
+              "title": "Pitch Tolerance",
+              "type": "number"
+            },
+            "sample_rate": {
+              "default": 60,
+              "readOnly": true,
+              "title": "Sample Rate",
+              "type": "integer"
+            },
+            "mic_rate": {
+              "default": 44100,
+              "readOnly": true,
+              "title": "Mic Rate",
+              "type": "integer"
+            },
+            "fft_size": {
+              "default": 4096,
+              "readOnly": true,
+              "title": "Fft Size",
+              "type": "integer"
+            },
+            "min_volume": {
+              "default": 0.2,
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Min Volume",
+              "type": "number"
+            },
+            "audio_device": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Audio Device",
+              "x-ledfx-enum-source": "audio_devices"
+            },
+            "audio_device_name": {
+              "default": "",
+              "readOnly": true,
+              "title": "Audio Device Name",
+              "type": "string"
+            },
+            "delay_ms": {
+              "default": 0,
+              "description": "Add a delay to LedFx's output to sync with your audio. Useful for Bluetooth devices which typically have a short audio lag.",
+              "maximum": 5000,
+              "minimum": 0,
+              "title": "Delay Ms",
+              "type": "integer"
+            }
+          },
+          "title": "AudioConfig",
+          "type": "object"
+        },
+        "DeviceEntry": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "type": {
+              "title": "Type",
+              "type": "string"
+            },
+            "config": {
+              "additionalProperties": true,
+              "title": "Config",
+              "type": "object"
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "config"
+          ],
+          "title": "DeviceEntry",
+          "type": "object"
+        },
+        "EffectEntry": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "title": "Type",
+              "type": "string"
+            },
+            "config": {
+              "additionalProperties": true,
+              "default": {},
+              "title": "Config",
+              "type": "object"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "EffectEntry",
+          "type": "object"
+        },
+        "ImageCacheConfig": {
+          "additionalProperties": true,
+          "properties": {
+            "max_size_mb": {
+              "default": 500,
+              "title": "Max Size Mb",
+              "type": "integer"
+            },
+            "max_items": {
+              "default": 500,
+              "title": "Max Items",
+              "type": "integer"
+            }
+          },
+          "title": "ImageCacheConfig",
+          "type": "object"
+        },
+        "IntegrationEntry": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "type": {
+              "title": "Type",
+              "type": "string"
+            },
+            "active": {
+              "default": false,
+              "title": "Active",
+              "type": "boolean"
+            },
+            "data": {
+              "anyOf": [
+                {
+                  "items": {},
+                  "type": "array"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              ],
+              "default": {},
+              "title": "Data"
+            },
+            "config": {
+              "additionalProperties": true,
+              "default": {},
+              "title": "Config",
+              "type": "object"
+            }
+          },
+          "required": [
+            "id",
+            "type"
+          ],
+          "title": "IntegrationEntry",
+          "type": "object"
+        },
+        "Jitter": {
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "factor_min": {
+              "default": 1.0,
+              "minimum": 0.0,
+              "title": "Factor Min",
+              "type": "number"
+            },
+            "factor_max": {
+              "default": 1.0,
+              "minimum": 0.0,
+              "title": "Factor Max",
+              "type": "number"
+            }
+          },
+          "title": "Jitter",
+          "type": "object"
+        },
+        "MelbankCollectionEntry": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "config": {
+              "$ref": "#/$defs/MelbankConfig",
+              "title": "Config"
+            }
+          },
+          "required": [
+            "id",
+            "config"
+          ],
+          "title": "MelbankCollectionEntry",
+          "type": "object"
+        },
+        "MelbankConfig": {
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Name"
+            },
+            "min_frequency": {
+              "default": 20,
+              "maximum": 15000,
+              "minimum": 20,
+              "title": "Min Frequency",
+              "type": "integer"
+            },
+            "max_frequency": {
+              "default": 15000,
+              "maximum": 15000,
+              "minimum": 20,
+              "title": "Max Frequency",
+              "type": "integer"
+            }
+          },
+          "title": "MelbankConfig",
+          "type": "object"
+        },
+        "MelbanksConfig": {
+          "additionalProperties": true,
+          "properties": {
+            "samples": {
+              "default": 24,
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Samples",
+              "type": "integer"
+            },
+            "peak_isolation": {
+              "default": 0.4,
+              "title": "Peak Isolation",
+              "type": "number"
+            },
+            "coeffs_type": {
+              "default": "matt_mel",
+              "enum": [
+                "matt_mel",
+                "triangle",
+                "bark",
+                "mel",
+                "htk",
+                "scott",
+                "scott_mel"
+              ],
+              "title": "Coeffs Type",
+              "type": "string"
+            },
+            "max_frequencies": {
+              "default": [
+                350,
+                2000,
+                15000
+              ],
+              "items": {
+                "maximum": 15000,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "title": "Max Frequencies",
+              "type": "array"
+            },
+            "min_frequency": {
+              "default": 20,
+              "maximum": 15000,
+              "minimum": 0,
+              "title": "Min Frequency",
+              "type": "integer"
+            }
+          },
+          "title": "MelbanksConfig",
+          "type": "object"
+        },
+        "NowPlayingAlbumArt": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "duration": {
+              "default": 10,
+              "maximum": 60,
+              "minimum": 0,
+              "title": "Duration",
+              "type": "integer"
+            },
+            "virtual_ids": {
+              "default": [],
+              "items": {
+                "type": "string",
+                "x-ledfx-enum-source": "virtuals"
+              },
+              "title": "Virtual Ids",
+              "type": "array"
+            }
+          },
+          "title": "NowPlayingAlbumArt",
+          "type": "object"
+        },
+        "NowPlayingConfig": {
+          "additionalProperties": false,
+          "properties": {
+            "gradient": {
+              "$ref": "#/$defs/NowPlayingGradient",
+              "default": {
+                "enabled": false,
+                "variant": "led_punchy",
+                "virtual_ids": []
+              },
+              "title": "Gradient"
+            },
+            "track_text": {
+              "$ref": "#/$defs/NowPlayingTrackText",
+              "default": {
+                "enabled": true,
+                "duration": 60,
+                "virtual_ids": [],
+                "preset": ""
+              },
+              "title": "Track Text"
+            },
+            "album_art": {
+              "$ref": "#/$defs/NowPlayingAlbumArt",
+              "default": {
+                "enabled": true,
+                "duration": 10,
+                "virtual_ids": []
+              },
+              "title": "Album Art"
+            }
+          },
+          "title": "NowPlayingConfig",
+          "type": "object"
+        },
+        "NowPlayingGradient": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "variant": {
+              "default": "led_punchy",
+              "enum": [
+                "led_safe",
+                "led_punchy",
+                "led_max"
+              ],
+              "title": "Variant",
+              "type": "string"
+            },
+            "virtual_ids": {
+              "default": [],
+              "items": {
+                "type": "string",
+                "x-ledfx-enum-source": "virtuals"
+              },
+              "title": "Virtual Ids",
+              "type": "array"
+            }
+          },
+          "title": "NowPlayingGradient",
+          "type": "object"
+        },
+        "NowPlayingTrackText": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "duration": {
+              "default": 60,
+              "maximum": 60,
+              "minimum": 0,
+              "title": "Duration",
+              "type": "integer"
+            },
+            "virtual_ids": {
+              "default": [],
+              "items": {
+                "type": "string",
+                "x-ledfx-enum-source": "virtuals"
+              },
+              "title": "Virtual Ids",
+              "type": "array"
+            },
+            "preset": {
+              "default": "",
+              "title": "Preset",
+              "type": "string"
+            }
+          },
+          "title": "NowPlayingTrackText",
+          "type": "object"
+        },
+        "Playlist": {
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "items": {
+              "items": {
+                "$ref": "#/$defs/PlaylistItem"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "default_duration_ms": {
+              "default": 500,
+              "minimum": 500,
+              "title": "Default Duration Ms",
+              "type": "integer"
+            },
+            "mode": {
+              "default": "sequence",
+              "enum": [
+                "sequence",
+                "shuffle"
+              ],
+              "title": "Mode",
+              "type": "string"
+            },
+            "timing": {
+              "$ref": "#/$defs/PlaylistTiming",
+              "default": {
+                "jitter": {
+                  "enabled": false,
+                  "factor_max": 1.0,
+                  "factor_min": 1.0
+                }
+              },
+              "title": "Timing"
+            },
+            "tags": {
+              "default": [],
+              "items": {},
+              "title": "Tags",
+              "type": "array"
+            },
+            "image": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Wallpaper",
+              "title": "Image"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "items"
+          ],
+          "title": "Playlist",
+          "type": "object"
+        },
+        "PlaylistItem": {
+          "additionalProperties": false,
+          "properties": {
+            "scene_id": {
+              "title": "Scene Id",
+              "type": "string",
+              "x-ledfx-enum-source": "scenes"
+            },
+            "duration_ms": {
+              "anyOf": [
+                {
+                  "minimum": 500,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Duration Ms"
+            }
+          },
+          "required": [
+            "scene_id"
+          ],
+          "title": "PlaylistItem",
+          "type": "object"
+        },
+        "PlaylistTiming": {
+          "additionalProperties": true,
+          "properties": {
+            "jitter": {
+              "$ref": "#/$defs/Jitter",
+              "default": {
+                "enabled": false,
+                "factor_min": 1.0,
+                "factor_max": 1.0
+              }
+            }
+          },
+          "title": "PlaylistTiming",
+          "type": "object"
+        },
+        "Preset": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "config": {
+              "additionalProperties": true,
+              "default": {},
+              "title": "Config",
+              "type": "object"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "Preset",
+          "type": "object"
+        },
+        "Scene": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "scene_image": {
+              "default": "Wallpaper",
+              "title": "Scene Image",
+              "type": "string"
+            },
+            "scene_tags": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Scene Tags"
+            },
+            "scene_puturl": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Scene Puturl"
+            },
+            "scene_payload": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Scene Payload"
+            },
+            "scene_midiactivate": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Scene Midiactivate"
+            },
+            "virtuals": {
+              "additionalProperties": {
+                "$ref": "#/$defs/SceneVirtual"
+              },
+              "default": {},
+              "propertyNames": {
+                "x-ledfx-enum-source": "virtuals"
+              },
+              "title": "Virtuals",
+              "type": "object"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "Scene",
+          "type": "object"
+        },
+        "SceneVirtual": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Type"
+            },
+            "config": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Config"
+            },
+            "action": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Action"
+            },
+            "preset": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Preset"
+            }
+          },
+          "title": "SceneVirtual",
+          "type": "object"
+        },
+        "SendspinServerConfig": {
+          "additionalProperties": false,
+          "properties": {
+            "server_url": {
+              "default": "ws://192.168.1.12:8927/sendspin",
+              "title": "Server Url",
+              "type": "string"
+            },
+            "client_name": {
+              "default": "LedFx",
+              "title": "Client Name",
+              "type": "string"
+            }
+          },
+          "title": "SendspinServerConfig",
+          "type": "object"
+        },
+        "VirtualConfig": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "description": "Friendly name for the device",
+              "title": "Name",
+              "type": "string"
+            },
+            "mapping": {
+              "default": "span",
+              "description": "Span: Effect spans all segments. Copy: Effect copied on each segment",
+              "enum": [
+                "span",
+                "copy"
+              ],
+              "title": "Mapping",
+              "type": "string"
+            },
+            "complex_segments": {
+              "default": false,
+              "description": "Use complex segment mapping mode for performance",
+              "title": "Complex Segments",
+              "type": "boolean"
+            },
+            "grouping": {
+              "default": 1,
+              "description": "Number of physical pixels to combine into larger virtual pixel groups",
+              "minimum": 0,
+              "title": "Grouping",
+              "type": "integer"
+            },
+            "icon_name": {
+              "default": "mdi:led-strip-variant",
+              "description": "Icon for the device*",
+              "title": "Icon Name",
+              "type": "string"
+            },
+            "max_brightness": {
+              "default": 1.0,
+              "description": "Max brightness for the device",
+              "maximum": 1,
+              "minimum": 0,
+              "title": "Max Brightness",
+              "type": "number"
+            },
+            "center_offset": {
+              "default": 0,
+              "description": "Number of pixels from the perceived center of the device",
+              "title": "Center Offset",
+              "type": "integer"
+            },
+            "preview_only": {
+              "default": false,
+              "description": "Preview the pixels without updating the devices",
+              "title": "Preview Only",
+              "type": "boolean"
+            },
+            "transition_time": {
+              "default": 0.4,
+              "description": "Length of transition between effects",
+              "maximum": 5,
+              "minimum": 0,
+              "title": "Transition Time",
+              "type": "number"
+            },
+            "transition_mode": {
+              "default": "Add",
+              "description": "Type of transition between effects",
+              "enum": [
+                "Add",
+                "Dissolve",
+                "Push",
+                "Slide",
+                "Iris",
+                "Through White",
+                "Through Black",
+                "None"
+              ],
+              "title": "Transition Mode",
+              "type": "string"
+            },
+            "frequency_min": {
+              "default": 20,
+              "description": "Lowest frequency for this virtual's audio reactive effects",
+              "maximum": 15000,
+              "minimum": 20,
+              "title": "Frequency Min",
+              "type": "integer"
+            },
+            "frequency_max": {
+              "default": 15000,
+              "description": "Highest frequency for this virtual's audio reactive effects",
+              "maximum": 15000,
+              "minimum": 20,
+              "title": "Frequency Max",
+              "type": "integer"
+            },
+            "rows": {
+              "default": 1,
+              "description": "Amount of rows. > 1 if this virtual is a matrix",
+              "title": "Rows",
+              "type": "integer"
+            },
+            "rotate": {
+              "default": 0,
+              "description": "90 Degree rotations",
+              "maximum": 3,
+              "minimum": 0,
+              "title": "Rotate",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "VirtualConfig",
+          "type": "object"
+        },
+        "VirtualEntry": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "config": {
+              "$ref": "#/$defs/VirtualConfig",
+              "title": "Config"
+            },
+            "segments": {
+              "default": [],
+              "items": {
+                "items": {},
+                "type": "array"
+              },
+              "title": "Segments",
+              "type": "array"
+            },
+            "is_device": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "x-ledfx-enum-source": "devices"
+                },
+                {
+                  "const": false,
+                  "type": "boolean"
+                }
+              ],
+              "default": false,
+              "title": "Is Device"
+            },
+            "auto_generated": {
+              "default": false,
+              "title": "Auto Generated",
+              "type": "boolean"
+            },
+            "active": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Active"
+            },
+            "effect": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/EffectEntry"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effect"
+            },
+            "effects": {
+              "additionalProperties": {
+                "$ref": "#/$defs/EffectEntry"
+              },
+              "default": {},
+              "title": "Effects",
+              "type": "object"
+            },
+            "last_effect": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Last Effect"
+            }
+          },
+          "required": [
+            "id",
+            "config"
+          ],
+          "title": "VirtualEntry",
+          "type": "object"
+        },
+        "WledBoolSetting": {
+          "additionalProperties": false,
+          "properties": {
+            "setting": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Setting"
+            },
+            "user_enabled": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "User Enabled"
+            }
+          },
+          "title": "WledBoolSetting",
+          "type": "object"
+        },
+        "WledIntSetting": {
+          "additionalProperties": false,
+          "properties": {
+            "setting": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Setting"
+            },
+            "user_enabled": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "User Enabled"
+            }
+          },
+          "title": "WledIntSetting",
+          "type": "object"
+        },
+        "WledPreferences": {
+          "additionalProperties": false,
+          "properties": {
+            "wled_preferred_mode": {
+              "$ref": "#/$defs/WledStrSetting",
+              "default": {
+                "setting": "UDP",
+                "user_enabled": false
+              },
+              "title": "Wled Preferred Mode"
+            },
+            "realtime_gamma_enabled": {
+              "$ref": "#/$defs/WledBoolSetting",
+              "default": {
+                "setting": false,
+                "user_enabled": false
+              },
+              "title": "Realtime Gamma Enabled"
+            },
+            "force_max_brightness": {
+              "$ref": "#/$defs/WledBoolSetting",
+              "default": {
+                "setting": false,
+                "user_enabled": false
+              },
+              "title": "Force Max Brightness"
+            },
+            "realtime_dmx_mode": {
+              "$ref": "#/$defs/WledStrSetting",
+              "default": {
+                "setting": "MultiRGB",
+                "user_enabled": false
+              },
+              "title": "Realtime Dmx Mode"
+            },
+            "start_universe_setting": {
+              "$ref": "#/$defs/WledIntSetting",
+              "default": {
+                "setting": 1,
+                "user_enabled": false
+              },
+              "title": "Start Universe Setting"
+            },
+            "dmx_address_start": {
+              "$ref": "#/$defs/WledIntSetting",
+              "default": {
+                "setting": 1,
+                "user_enabled": false
+              },
+              "title": "Dmx Address Start"
+            },
+            "inactivity_timeout": {
+              "$ref": "#/$defs/WledIntSetting",
+              "default": {
+                "setting": 1,
+                "user_enabled": false
+              },
+              "title": "Inactivity Timeout"
+            }
+          },
+          "title": "WledPreferences",
+          "type": "object"
+        },
+        "WledStrSetting": {
+          "additionalProperties": false,
+          "properties": {
+            "setting": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Setting"
+            },
+            "user_enabled": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "User Enabled"
+            }
+          },
+          "title": "WledStrSetting",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The persisted config.json (minus schema_version/configuration_version).",
+      "properties": {
+        "host": {
+          "default": "0.0.0.0",
+          "title": "Host",
+          "type": "string"
+        },
+        "port": {
+          "default": 8888,
+          "title": "Port",
+          "type": "integer"
+        },
+        "port_s": {
+          "default": 8443,
+          "title": "Port S",
+          "type": "integer"
+        },
+        "dev_mode": {
+          "default": false,
+          "title": "Dev Mode",
+          "type": "boolean"
+        },
+        "devices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DeviceEntry"
+          },
+          "title": "Devices",
+          "type": "array"
+        },
+        "virtuals": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VirtualEntry"
+          },
+          "title": "Virtuals",
+          "type": "array"
+        },
+        "audio": {
+          "$ref": "#/$defs/AudioConfig",
+          "default": {
+            "pitch_method": "yinfft",
+            "tempo_method": "default",
+            "onset_method": "hfc",
+            "pitch_tolerance": 0.8,
+            "sample_rate": 60,
+            "mic_rate": 44100,
+            "fft_size": 4096,
+            "min_volume": 0.2,
+            "audio_device": null,
+            "audio_device_name": "",
+            "delay_ms": 0
+          },
+          "title": "Audio"
+        },
+        "melbank_collection": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/MelbankCollectionEntry"
+          },
+          "title": "Melbank Collection",
+          "type": "array"
+        },
+        "melbanks": {
+          "$ref": "#/$defs/MelbanksConfig",
+          "default": {
+            "samples": 24,
+            "peak_isolation": 0.4,
+            "coeffs_type": "matt_mel",
+            "max_frequencies": [
+              350,
+              2000,
+              15000
+            ],
+            "min_frequency": 20
+          },
+          "title": "Melbanks"
+        },
+        "user_presets": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Preset"
+            },
+            "type": "object"
+          },
+          "default": {},
+          "title": "User Presets",
+          "type": "object"
+        },
+        "scenes": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Scene"
+          },
+          "default": {},
+          "title": "Scenes",
+          "type": "object"
+        },
+        "playlists": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Playlist"
+          },
+          "default": {},
+          "title": "Playlists",
+          "type": "object"
+        },
+        "integrations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IntegrationEntry"
+          },
+          "title": "Integrations",
+          "type": "array"
+        },
+        "transmission_mode": {
+          "default": "compressed",
+          "enum": [
+            "compressed",
+            "uncompressed"
+          ],
+          "title": "Transmission Mode",
+          "type": "string"
+        },
+        "visualisation_fps": {
+          "default": 30,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Visualisation Fps",
+          "type": "integer"
+        },
+        "visualisation_maxlen": {
+          "default": 81,
+          "maximum": 65536,
+          "minimum": 5,
+          "title": "Visualisation Maxlen",
+          "type": "integer"
+        },
+        "global_transitions": {
+          "default": true,
+          "description": "Changes to any virtual's transitions apply to all other virtuals",
+          "title": "Global Transitions",
+          "type": "boolean"
+        },
+        "user_colors": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "User Colors",
+          "type": "object"
+        },
+        "user_gradients": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "User Gradients",
+          "type": "object"
+        },
+        "scan_on_startup": {
+          "default": false,
+          "title": "Scan On Startup",
+          "type": "boolean"
+        },
+        "create_segments": {
+          "default": false,
+          "title": "Create Segments",
+          "type": "boolean"
+        },
+        "flush_on_deactivate": {
+          "default": false,
+          "title": "Flush On Deactivate",
+          "type": "boolean"
+        },
+        "wled_preferences": {
+          "$ref": "#/$defs/WledPreferences",
+          "default": {
+            "wled_preferred_mode": {
+              "setting": "UDP",
+              "user_enabled": false
+            },
+            "realtime_gamma_enabled": {
+              "setting": false,
+              "user_enabled": false
+            },
+            "force_max_brightness": {
+              "setting": false,
+              "user_enabled": false
+            },
+            "realtime_dmx_mode": {
+              "setting": "MultiRGB",
+              "user_enabled": false
+            },
+            "start_universe_setting": {
+              "setting": 1,
+              "user_enabled": false
+            },
+            "dmx_address_start": {
+              "setting": 1,
+              "user_enabled": false
+            },
+            "inactivity_timeout": {
+              "setting": 1,
+              "user_enabled": false
+            }
+          },
+          "title": "Wled Preferences"
+        },
+        "global_brightness": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0,
+          "title": "Global Brightness",
+          "type": "number"
+        },
+        "ui_brightness_boost": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0,
+          "title": "Ui Brightness Boost",
+          "type": "number"
+        },
+        "startup_scene_id": {
+          "default": "",
+          "title": "Startup Scene Id",
+          "type": "string",
+          "x-ledfx-enum-source": "scenes"
+        },
+        "startup_playlist_id": {
+          "default": "",
+          "title": "Startup Playlist Id",
+          "type": "string",
+          "x-ledfx-enum-source": "playlists"
+        },
+        "lifx_broadcast_address": {
+          "default": "255.255.255.255",
+          "format": "ipv4",
+          "title": "Lifx Broadcast Address",
+          "type": "string"
+        },
+        "lifx_discovery_timeout": {
+          "default": 30,
+          "maximum": 120,
+          "minimum": 1,
+          "title": "Lifx Discovery Timeout",
+          "type": "integer"
+        },
+        "instance_id": {
+          "default": "",
+          "readOnly": true,
+          "title": "Instance Id",
+          "type": "string"
+        },
+        "sendspin_servers": {
+          "additionalProperties": {
+            "$ref": "#/$defs/SendspinServerConfig"
+          },
+          "default": {},
+          "title": "Sendspin Servers",
+          "type": "object"
+        },
+        "sendspin_always_on": {
+          "default": true,
+          "title": "Sendspin Always On",
+          "type": "boolean"
+        },
+        "now_playing": {
+          "$ref": "#/$defs/NowPlayingConfig",
+          "default": {
+            "gradient": {
+              "enabled": false,
+              "variant": "led_punchy",
+              "virtual_ids": []
+            },
+            "track_text": {
+              "duration": 60,
+              "enabled": true,
+              "preset": "",
+              "virtual_ids": []
+            },
+            "album_art": {
+              "duration": 10,
+              "enabled": true,
+              "virtual_ids": []
+            }
+          },
+          "title": "Now Playing"
+        },
+        "debug_asyncio": {
+          "default": false,
+          "readOnly": true,
+          "title": "Debug Asyncio",
+          "type": "boolean"
+        },
+        "image_cache": {
+          "$ref": "#/$defs/ImageCacheConfig",
+          "default": {
+            "max_size_mb": 500,
+            "max_items": 500
+          },
+          "title": "Image Cache"
+        }
+      },
+      "title": "LedFxConfig",
+      "type": "object"
+    }
+  },
+  "devices": {
+    "wled": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "description": "Friendly name for the device",
+            "title": "Name",
+            "type": "string"
+          },
+          "center_offset": {
+            "default": 0,
+            "description": "Number of pixels from the perceived center of the device",
+            "title": "Center Offset",
+            "type": "integer"
+          },
+          "refresh_rate": {
+            "default": 62,
+            "description": "Target rate that pixels are sent to the device",
+            "examples": [
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              37,
+              38,
+              40,
+              41,
+              43,
+              45,
+              47,
+              50,
+              52,
+              55,
+              58,
+              62,
+              66,
+              71,
+              76,
+              83,
+              90,
+              100,
+              111,
+              125
+            ],
+            "title": "Refresh Rate",
+            "type": "integer"
+          },
+          "ip_address": {
+            "description": "Hostname or IP address of the device",
+            "title": "Ip Address",
+            "type": "string"
+          },
+          "sync_mode": {
+            "default": "DDP",
+            "description": "Streaming protocol to WLED device. Recommended: DDP for 0.13 or later. Use UDP for older versions.",
+            "enum": [
+              "DDP",
+              "UDP",
+              "E131"
+            ],
+            "title": "Sync Mode",
+            "type": "string"
+          },
+          "timeout": {
+            "default": 1,
+            "description": "Time between LedFx effect off and WLED effect activate",
+            "maximum": 255,
+            "minimum": 0,
+            "title": "Timeout",
+            "type": "integer"
+          },
+          "create_segments": {
+            "default": false,
+            "description": "Import WLED segments into LedFx",
+            "title": "Create Segments",
+            "type": "boolean"
+          },
+          "icon_name": {
+            "default": "wled",
+            "description": "Icon for the device*",
+            "title": "Icon Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "ip_address"
+        ],
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "wled"
+    },
+    "artnet": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "description": "Friendly name for the device",
+            "title": "Name",
+            "type": "string"
+          },
+          "icon_name": {
+            "default": "mdi:led-strip",
+            "description": "https://material-ui.com/components/material-icons/",
+            "title": "Icon Name",
+            "type": "string"
+          },
+          "center_offset": {
+            "default": 0,
+            "description": "Number of pixels from the perceived center of the device",
+            "title": "Center Offset",
+            "type": "integer"
+          },
+          "refresh_rate": {
+            "default": 62,
+            "description": "Target rate that pixels are sent to the device",
+            "examples": [
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              37,
+              38,
+              40,
+              41,
+              43,
+              45,
+              47,
+              50,
+              52,
+              55,
+              58,
+              62,
+              66,
+              71,
+              76,
+              83,
+              90,
+              100,
+              111,
+              125
+            ],
+            "title": "Refresh Rate",
+            "type": "integer"
+          },
+          "ip_address": {
+            "description": "Hostname or IP address of the device",
+            "title": "Ip Address",
+            "type": "string"
+          },
+          "pixel_count": {
+            "default": 1,
+            "description": "Number of individual pixels",
+            "minimum": 1,
+            "title": "Pixel Count",
+            "type": "integer"
+          },
+          "universe": {
+            "default": 0,
+            "description": "DMX universe for the device",
+            "minimum": 0,
+            "title": "Universe",
+            "type": "integer"
+          },
+          "packet_size": {
+            "default": 510,
+            "description": "Size of each DMX universe",
+            "maximum": 512,
+            "minimum": 1,
+            "title": "Packet Size",
+            "type": "integer"
+          },
+          "pre_amble": {
+            "default": "",
+            "description": "Channel bytes to insert before the RGB data",
+            "title": "Pre Amble",
+            "type": "string"
+          },
+          "post_amble": {
+            "default": "",
+            "description": "Channel bytes to insert after the RGB data",
+            "title": "Post Amble",
+            "type": "string"
+          },
+          "pixels_per_device": {
+            "default": 0,
+            "description": "Number of pixels to consume per device. Pre and post ambles are repeated per device. By default (0) all pixels will be used by one instance",
+            "minimum": 0,
+            "title": "Pixels Per Device",
+            "type": "integer"
+          },
+          "dmx_start_address": {
+            "default": 1,
+            "description": "The start address within the universe",
+            "maximum": 512,
+            "minimum": 1,
+            "title": "Dmx Start Address",
+            "type": "integer"
+          },
+          "even_packet_size": {
+            "default": true,
+            "description": "Whether to use even packet size",
+            "title": "Even Packet Size",
+            "type": "boolean"
+          },
+          "rgb_order": {
+            "default": "RGB",
+            "description": "RGB data order mode, supported for physical hardware that just doesn't play by the rules",
+            "enum": [
+              "RGB",
+              "RBG",
+              "GRB",
+              "GBR",
+              "BRG",
+              "BGR"
+            ],
+            "title": "Rgb Order",
+            "type": "string"
+          },
+          "white_mode": {
+            "default": "None",
+            "description": "White channel handling mode, if RGB leave as None. Commonly written as RGBW or RGBA",
+            "enum": [
+              "None",
+              "Zero",
+              "Brighter",
+              "Accurate"
+            ],
+            "title": "White Mode",
+            "type": "string"
+          },
+          "port": {
+            "default": 6454,
+            "description": "port",
+            "title": "Port",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "ip_address"
+        ],
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "artnet"
+    },
+    "rpi_ws281x": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "description": "Friendly name for the device",
+            "title": "Name",
+            "type": "string"
+          },
+          "icon_name": {
+            "default": "mdi:led-strip",
+            "description": "https://material-ui.com/components/material-icons/",
+            "title": "Icon Name",
+            "type": "string"
+          },
+          "center_offset": {
+            "default": 0,
+            "description": "Number of pixels from the perceived center of the device",
+            "title": "Center Offset",
+            "type": "integer"
+          },
+          "refresh_rate": {
+            "default": 62,
+            "description": "Target rate that pixels are sent to the device",
+            "examples": [
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              37,
+              38,
+              40,
+              41,
+              43,
+              45,
+              47,
+              50,
+              52,
+              55,
+              58,
+              62,
+              66,
+              71,
+              76,
+              83,
+              90,
+              100,
+              111,
+              125
+            ],
+            "title": "Refresh Rate",
+            "type": "integer"
+          },
+          "pixel_count": {
+            "default": 1,
+            "description": "Number of individual pixels",
+            "minimum": 1,
+            "title": "Pixel Count",
+            "type": "integer"
+          },
+          "gpio_pin": {
+            "default": 10,
+            "description": "Raspberry Pi GPIO pin your LEDs are connected to",
+            "enum": [
+              10,
+              12,
+              13,
+              18,
+              21
+            ],
+            "title": "Gpio Pin",
+            "type": "integer"
+          },
+          "color_order": {
+            "default": "RGB",
+            "description": "RGB data order mode, supported for physical hardware that just doesn't play by the rules",
+            "enum": [
+              "RGB",
+              "RBG",
+              "GRB",
+              "GBR",
+              "BRG",
+              "BGR"
+            ],
+            "title": "Color Order",
+            "type": "string"
+          },
+          "white_mode": {
+            "default": "None",
+            "description": "White channel handling mode, if RGB leave as None. Commonly written as RGBW or RGBA",
+            "enum": [
+              "None",
+              "Zero",
+              "Brighter",
+              "Accurate"
+            ],
+            "title": "White Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "rpi_ws281x"
+    },
+    "adalight": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "description": "Friendly name for the device",
+            "title": "Name",
+            "type": "string"
+          },
+          "icon_name": {
+            "default": "mdi:led-strip",
+            "description": "https://material-ui.com/components/material-icons/",
+            "title": "Icon Name",
+            "type": "string"
+          },
+          "center_offset": {
+            "default": 0,
+            "description": "Number of pixels from the perceived center of the device",
+            "title": "Center Offset",
+            "type": "integer"
+          },
+          "refresh_rate": {
+            "default": 62,
+            "description": "Target rate that pixels are sent to the device",
+            "examples": [
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              37,
+              38,
+              40,
+              41,
+              43,
+              45,
+              47,
+              50,
+              52,
+              55,
+              58,
+              62,
+              66,
+              71,
+              76,
+              83,
+              90,
+              100,
+              111,
+              125
+            ],
+            "title": "Refresh Rate",
+            "type": "integer"
+          },
+          "com_port": {
+            "default": "",
+            "description": "COM port for Adalight compatible device",
+            "title": "Com Port",
+            "type": "string",
+            "x-ledfx-enum-source": "com_ports"
+          },
+          "baudrate": {
+            "default": 500000,
+            "description": "baudrate",
+            "minimum": 115200,
+            "title": "Baudrate",
+            "type": "integer"
+          },
+          "pixel_count": {
+            "default": 1,
+            "description": "Number of individual pixels",
+            "minimum": 1,
+            "title": "Pixel Count",
+            "type": "integer"
+          },
+          "color_order": {
+            "default": "RGB",
+            "description": "Color order",
+            "enum": [
+              "RGB",
+              "RBG",
+              "GRB",
+              "BRG",
+              "GBR",
+              "BGR"
+            ],
+            "title": "Color Order",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "adalight"
+    }
+  },
+  "integrations": {
+    "mqtt_hass": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "default": "Home Assistant",
+            "description": "Name of this HomeAssistant instance",
+            "title": "Name",
+            "type": "string"
+          },
+          "topic": {
+            "default": "homeassistant",
+            "description": "HomeAssistant's discovery prefix",
+            "title": "Topic",
+            "type": "string"
+          },
+          "ip_address": {
+            "default": "127.0.0.1",
+            "description": "MQTT ip address",
+            "title": "Ip Address",
+            "type": "string"
+          },
+          "port": {
+            "default": 1883,
+            "description": "MQTT port",
+            "maximum": 65535,
+            "minimum": 1,
+            "title": "Port",
+            "type": "integer"
+          },
+          "username": {
+            "default": "",
+            "description": "MQTT username",
+            "title": "Username",
+            "type": "string"
+          },
+          "password": {
+            "default": "",
+            "description": "MQTT password",
+            "title": "Password",
+            "type": "string"
+          },
+          "description": {
+            "default": "MQTT Integration with auto-discovery",
+            "description": "Internal Description",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "mqtt_hass",
+      "name": "Home Assistant MQTT",
+      "description": "MQTT Integration for Home Assistant",
+      "beta": true
+    }
+  },
+  "effects": {
+    "energy": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "flip": {
+            "default": false,
+            "description": "Flip the effect",
+            "title": "Flip",
+            "type": "boolean"
+          },
+          "brightness": {
+            "default": 1.0,
+            "description": "Brightness of strip",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Brightness",
+            "type": "number"
+          },
+          "background_color": {
+            "default": "#000000",
+            "description": "Apply a background color",
+            "format": "color",
+            "title": "Background Color",
+            "type": "string"
+          },
+          "background_brightness": {
+            "default": 1.0,
+            "description": "Brightness of the background color",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Background Brightness",
+            "type": "number"
+          },
+          "diag": {
+            "default": false,
+            "description": "Enable diagnostic logging",
+            "title": "Diag",
+            "type": "boolean"
+          },
+          "advanced": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Advanced"
+          },
+          "blur": {
+            "default": 4.0,
+            "description": "Amount to blur the effect",
+            "maximum": 10,
+            "minimum": 0.0,
+            "title": "Blur",
+            "type": "number"
+          },
+          "mirror": {
+            "default": true,
+            "description": "Mirror the effect",
+            "title": "Mirror",
+            "type": "boolean"
+          },
+          "color_cycler": {
+            "default": false,
+            "description": "Change colors in time with the beat",
+            "title": "Color Cycler",
+            "type": "boolean"
+          },
+          "color_lows": {
+            "default": "#FF0000",
+            "description": "Color of low, bassy sounds",
+            "format": "color",
+            "title": "Color Lows",
+            "type": "string"
+          },
+          "color_mids": {
+            "default": "#00FF00",
+            "description": "Color of midrange sounds",
+            "format": "color",
+            "title": "Color Mids",
+            "type": "string"
+          },
+          "color_high": {
+            "default": "#0000FF",
+            "description": "Color of high sounds",
+            "format": "color",
+            "title": "Color High",
+            "type": "string"
+          },
+          "sensitivity": {
+            "default": 0.6,
+            "description": "Responsiveness to changes in sound",
+            "maximum": 0.99,
+            "minimum": 0.3,
+            "title": "Sensitivity",
+            "type": "number"
+          },
+          "mixing_mode": {
+            "default": "additive",
+            "description": "Mode of combining each frequencies' colors",
+            "enum": [
+              "additive",
+              "overlap"
+            ],
+            "title": "Mixing Mode",
+            "type": "string"
+          }
+        },
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "energy",
+      "name": "Energy",
+      "category": "Classic",
+      "uses_melbank_range": true,
+      "advanced_keys": [
+        "diag"
+      ]
+    },
+    "blender": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "blur": {
+            "default": 0.0,
+            "description": "Amount to blur the effect",
+            "maximum": 10,
+            "minimum": 0.0,
+            "title": "Blur",
+            "type": "number"
+          },
+          "flip": {
+            "default": false,
+            "description": "Flip the effect",
+            "title": "Flip",
+            "type": "boolean"
+          },
+          "mirror": {
+            "default": false,
+            "description": "Mirror the effect",
+            "title": "Mirror",
+            "type": "boolean"
+          },
+          "brightness": {
+            "default": 1.0,
+            "description": "Brightness of strip",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Brightness",
+            "type": "number"
+          },
+          "background_color": {
+            "default": "#000000",
+            "description": "Apply a background color",
+            "format": "color",
+            "title": "Background Color",
+            "type": "string"
+          },
+          "background_brightness": {
+            "default": 1.0,
+            "description": "Brightness of the background color",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Background Brightness",
+            "type": "number"
+          },
+          "diag": {
+            "default": false,
+            "description": "Enable diagnostic logging",
+            "title": "Diag",
+            "type": "boolean"
+          },
+          "advanced": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Advanced"
+          },
+          "mask_stretch": {
+            "default": "2d full",
+            "description": "How to stretch the mask source pixles to the effect pixels",
+            "enum": [
+              "2d full",
+              "2d tile"
+            ],
+            "title": "Mask Stretch",
+            "type": "string"
+          },
+          "background_stretch": {
+            "default": "2d full",
+            "description": "How to stretch the background source pixles to the effect pixels",
+            "enum": [
+              "2d full",
+              "2d tile"
+            ],
+            "title": "Background Stretch",
+            "type": "string"
+          },
+          "foreground_stretch": {
+            "default": "2d full",
+            "description": "How to stretch the foreground source pixles to the effect pixels",
+            "enum": [
+              "2d full",
+              "2d tile"
+            ],
+            "title": "Foreground Stretch",
+            "type": "string"
+          },
+          "mask": {
+            "default": "",
+            "description": "The virtual from which to source the mask",
+            "title": "Mask",
+            "type": "string",
+            "x-ledfx-enum-source": "virtuals"
+          },
+          "foreground": {
+            "default": "",
+            "description": "The virtual from which to source the foreground",
+            "title": "Foreground",
+            "type": "string",
+            "x-ledfx-enum-source": "virtuals"
+          },
+          "background": {
+            "default": "",
+            "description": "The virtual from which to source the background",
+            "title": "Background",
+            "type": "string",
+            "x-ledfx-enum-source": "virtuals"
+          },
+          "invert_mask": {
+            "default": false,
+            "description": "Switch Foreground and Background",
+            "title": "Invert Mask",
+            "type": "boolean"
+          },
+          "mask_cutoff": {
+            "default": 1.0,
+            "description": "1 default = luminance as alpha, anything below 1 is mask cutoff",
+            "maximum": 1.0,
+            "minimum": 0.01,
+            "title": "Mask Cutoff",
+            "type": "number"
+          }
+        },
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "blender",
+      "name": "Blender",
+      "category": "Matrix",
+      "uses_melbank_range": false,
+      "hidden_keys": [
+        "background_color",
+        "background_brightness",
+        "blur"
+      ],
+      "advanced_keys": [
+        "diag"
+      ]
+    },
+    "radial": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "blur": {
+            "default": 0.0,
+            "description": "Amount to blur the effect",
+            "maximum": 10,
+            "minimum": 0.0,
+            "title": "Blur",
+            "type": "number"
+          },
+          "flip": {
+            "default": false,
+            "description": "Flip the effect",
+            "title": "Flip",
+            "type": "boolean"
+          },
+          "mirror": {
+            "default": false,
+            "description": "Mirror the effect",
+            "title": "Mirror",
+            "type": "boolean"
+          },
+          "brightness": {
+            "default": 1.0,
+            "description": "Brightness of strip",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Brightness",
+            "type": "number"
+          },
+          "background_color": {
+            "default": "#000000",
+            "description": "Apply a background color",
+            "format": "color",
+            "title": "Background Color",
+            "type": "string"
+          },
+          "background_brightness": {
+            "default": 1.0,
+            "description": "Brightness of the background color",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Background Brightness",
+            "type": "number"
+          },
+          "diag": {
+            "default": false,
+            "description": "Enable diagnostic logging",
+            "title": "Diag",
+            "type": "boolean"
+          },
+          "advanced": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Advanced"
+          },
+          "flip_horizontal": {
+            "default": false,
+            "description": "flip the image horizontally",
+            "title": "Flip Horizontal",
+            "type": "boolean"
+          },
+          "flip_vertical": {
+            "default": false,
+            "description": "flip the image vertically",
+            "title": "Flip Vertical",
+            "type": "boolean"
+          },
+          "rotate": {
+            "default": 0,
+            "description": "90 Degree rotations",
+            "maximum": 3,
+            "minimum": 0,
+            "title": "Rotate",
+            "type": "integer"
+          },
+          "test": {
+            "default": false,
+            "description": "ignore audio input",
+            "title": "Test",
+            "type": "boolean"
+          },
+          "dump": {
+            "default": false,
+            "description": "dump image",
+            "title": "Dump",
+            "type": "boolean"
+          },
+          "background_mode": {
+            "default": "additive",
+            "enum": [
+              "additive",
+              "overwrite"
+            ],
+            "title": "Background Mode",
+            "type": "string"
+          },
+          "source_virtual": {
+            "default": "unknown",
+            "description": "The virtual from which to source the 1d pixels",
+            "title": "Source Virtual",
+            "type": "string",
+            "x-ledfx-enum-source": "virtuals"
+          },
+          "edges": {
+            "default": 0,
+            "description": "Edges count of mapping",
+            "maximum": 8,
+            "minimum": 0,
+            "title": "Edges",
+            "type": "integer"
+          },
+          "x_offset": {
+            "default": 0.5,
+            "description": "X offset for center point",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "X Offset",
+            "type": "number"
+          },
+          "y_offset": {
+            "default": 0.5,
+            "description": "Y offset for center point",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Y Offset",
+            "type": "number"
+          },
+          "twist": {
+            "default": 0,
+            "description": "twist that thing",
+            "maximum": 4,
+            "minimum": -4,
+            "title": "Twist",
+            "type": "number"
+          },
+          "polygon": {
+            "default": true,
+            "description": "Use polygonal or radial lobes",
+            "title": "Polygon",
+            "type": "boolean"
+          },
+          "rotation": {
+            "default": 0,
+            "description": "static rotation",
+            "maximum": 0.5,
+            "minimum": -0.5,
+            "title": "Rotation",
+            "type": "number"
+          },
+          "spin": {
+            "default": 0.0,
+            "description": "Spin the radial effect to the audio impulse",
+            "maximum": 1.0,
+            "minimum": -1.0,
+            "title": "Spin",
+            "type": "number"
+          },
+          "frequency_range": {
+            "default": "Lows (beat+bass)",
+            "description": "Frequency range for the spin impulse",
+            "enum": [
+              "Beat",
+              "Bass",
+              "Lows (beat+bass)",
+              "Mids",
+              "High"
+            ],
+            "title": "Frequency Range",
+            "type": "string"
+          },
+          "star": {
+            "default": 0.0,
+            "description": "pull polygon points to star shape",
+            "maximum": 1.0,
+            "minimum": -1.0,
+            "title": "Star",
+            "type": "number"
+          }
+        },
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "radial",
+      "name": "Radial",
+      "category": "Matrix",
+      "uses_melbank_range": false,
+      "hidden_keys": [
+        "mirror",
+        "flip",
+        "blur",
+        "dump",
+        "test",
+        "background_color",
+        "background_brightness",
+        "background_mode"
+      ],
+      "advanced_keys": [
+        "diag",
+        "dump",
+        "test",
+        "flip_horizontal",
+        "flip_vertical",
+        "background_mode"
+      ]
+    },
+    "gradient": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "blur": {
+            "default": 0.0,
+            "description": "Amount to blur the effect",
+            "maximum": 10,
+            "minimum": 0.0,
+            "title": "Blur",
+            "type": "number"
+          },
+          "flip": {
+            "default": false,
+            "description": "Flip the effect",
+            "title": "Flip",
+            "type": "boolean"
+          },
+          "mirror": {
+            "default": false,
+            "description": "Mirror the effect",
+            "title": "Mirror",
+            "type": "boolean"
+          },
+          "brightness": {
+            "default": 1.0,
+            "description": "Brightness of strip",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Brightness",
+            "type": "number"
+          },
+          "background_color": {
+            "default": "#000000",
+            "description": "Apply a background color",
+            "format": "color",
+            "title": "Background Color",
+            "type": "string"
+          },
+          "background_brightness": {
+            "default": 1.0,
+            "description": "Brightness of the background color",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Background Brightness",
+            "type": "number"
+          },
+          "diag": {
+            "default": false,
+            "description": "Enable diagnostic logging",
+            "title": "Diag",
+            "type": "boolean"
+          },
+          "advanced": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Advanced"
+          },
+          "modulate": {
+            "default": false,
+            "description": "Brightness modulation",
+            "title": "Modulate",
+            "type": "boolean"
+          },
+          "modulation_effect": {
+            "default": "sine",
+            "description": "Choose an animation",
+            "enum": [
+              "sine",
+              "breath"
+            ],
+            "title": "Modulation Effect",
+            "type": "string"
+          },
+          "modulation_speed": {
+            "default": 0.5,
+            "description": "Animation speed",
+            "maximum": 1,
+            "minimum": 0.01,
+            "title": "Modulation Speed",
+            "type": "number"
+          },
+          "gradient": {
+            "default": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)",
+            "description": "Color gradient to display",
+            "format": "gradient",
+            "title": "Gradient",
+            "type": "string"
+          },
+          "gradient_roll": {
+            "default": 0,
+            "description": "Amount to shift the gradient",
+            "maximum": 10,
+            "minimum": 0,
+            "title": "Gradient Roll",
+            "type": "number"
+          },
+          "speed": {
+            "default": 1.0,
+            "description": "Speed of the effect",
+            "maximum": 10,
+            "minimum": 0.1,
+            "title": "Speed",
+            "type": "number"
+          }
+        },
+        "title": "Config",
+        "type": "object"
+      },
+      "id": "gradient",
+      "name": "Gradient",
+      "category": "Non-Reactive",
+      "uses_melbank_range": false,
+      "advanced_keys": [
+        "diag"
+      ]
+    }
+  }
+}

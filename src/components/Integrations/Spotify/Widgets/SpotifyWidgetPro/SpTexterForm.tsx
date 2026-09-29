@@ -13,6 +13,7 @@ import {
 import { ExpandMore } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
+import { enumOptions } from '../../../../SchemaForm/fields'
 
 import useStore from '../../../../../store/useStore'
 import useEngineRow from '../../../../../hooks/useEngineRow'
@@ -208,9 +209,9 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
                     value={spotifyTexter.font}
                     onChange={(e) => setSpTexterFont(e.target.value)}
                   >
-                    {schemas.effects?.texter2d?.schema.properties?.font?.enum?.map((f: string) => (
-                      <MenuItem key={f} value={f}>
-                        {f}
+                    {enumOptions(schemas.effects?.texter2d?.schema.properties?.font)?.map((f) => (
+                      <MenuItem key={f.label} value={f.value as string}>
+                        {f.label}
                       </MenuItem>
                     ))}
                   </Select>
@@ -223,10 +224,10 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
                     value={spotifyTexter.text_effect}
                     onChange={(e) => setSpTexterTextEffect(e.target.value)}
                   >
-                    {schemas.effects?.texter2d?.schema.properties?.text_effect?.enum?.map(
-                      (f: string) => (
-                        <MenuItem key={f} value={f}>
-                          {f}
+                    {enumOptions(schemas.effects?.texter2d?.schema.properties?.text_effect)?.map(
+                      (f) => (
+                        <MenuItem key={f.label} value={f.value as string}>
+                          {f.label}
                         </MenuItem>
                       )
                     )}

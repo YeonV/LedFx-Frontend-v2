@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Slider from '@mui/material/Slider'
 import useStore from '../../store/useStore'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import { enumOptions } from '../../components/SchemaForm/fields'
 
 const TransitionCard = ({ virtual, style }: any) => {
   const schemas = useStore(
@@ -77,9 +78,9 @@ const TransitionCard = ({ virtual, style }: any) => {
               })
             }}
           >
-            {schemas?.transition_mode?.enum?.map((mode: string, i: number) => (
-              <MenuItem key={i} value={mode}>
-                {mode}
+            {enumOptions(schemas?.transition_mode)?.map((mode, i) => (
+              <MenuItem key={i} value={mode.value as string}>
+                {mode.label}
               </MenuItem>
             ))}
           </Select>
