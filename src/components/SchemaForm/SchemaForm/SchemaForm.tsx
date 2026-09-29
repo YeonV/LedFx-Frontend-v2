@@ -121,7 +121,11 @@ const SchemaForm = ({
                     model={model}
                     model_id={s.id}
                     required={s.required}
-                    style={{ margin: '0.5rem 0', flexBasis: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      flexBasis: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     schema={s}
                     onClick={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
@@ -137,13 +141,12 @@ const SchemaForm = ({
                 const group: any = {}
                 let audio_groups: any = []
                 if (s.id === 'audio_device') {
-                  // eslint-disable-next-line
                   for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
                     if (typeof value === 'string') {
                       if (!group[value?.split(':')[0]]) {
                         group[value.split(':')[0]] = {}
                       }
-                      // eslint-disable-next-line
+
                       group[value.split(':')[0]][key] = value.split(':')[1]
                     }
                   }
@@ -271,7 +274,11 @@ const SchemaForm = ({
                     textfield={false}
                     marks={undefined}
                     index={undefined}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
@@ -307,7 +314,11 @@ const SchemaForm = ({
                     required={s.required}
                     schema={s}
                     textfield={false}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
@@ -329,7 +340,11 @@ const SchemaForm = ({
                     required={s.required}
                     schema={s}
                     textfield={false}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
@@ -348,7 +363,11 @@ const SchemaForm = ({
                     title={s.title}
                     index={i}
                     isGradient={s.isGradient || false}
-                    wrapperStyle={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    wrapperStyle={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     colors={undefined}
                     handleAddGradient={() => {}}
                     sendColorToVirtuals={(color: string) => {
