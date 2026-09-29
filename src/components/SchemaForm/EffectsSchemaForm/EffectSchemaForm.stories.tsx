@@ -1,5 +1,7 @@
 import { Card, CardContent } from '@mui/material'
 import { StoryFn, Meta } from '@storybook/react-webpack5'
+import fixture from '../schemas.fixture.json'
+import { withStore } from '../SchemaForm/storySeed'
 // eslint-disable-next-line
 import EffectSchemaForm from './EffectSchemaForm';
 
@@ -156,3 +158,65 @@ EffectForm.args = {
     return true
   }
 }
+
+// blender's layers and radial's source are marked `virtuals`: the picker lists the store's virtuals
+const virtual = (id: string, name: string) => ({ id, is_device: id, config: { name } })
+const withVirtuals = withStore({
+  virtuals: {
+    strip: virtual('strip', 'Desk strip'),
+    matrix: virtual('matrix', 'Wall matrix')
+  },
+  automagic: false
+})
+const props = (schema: Record<string, any>) =>
+  Object.entries<any>(schema.properties).map(([id, p]) => ({ ...p, id }))
+
+export const BlenderForm = Template.bind({})
+BlenderForm.args = {
+  schemaProperties: props(fixture.effects.blender.schema),
+  selectedType: 'blender',
+  model: { mask: 'strip', foreground: 'matrix', background: '' },
+  virtId: 'strip',
+  descriptions: 'Hide'
+}
+BlenderForm.decorators = [withVirtuals]
+
+export const RadialForm = Template.bind({})
+RadialForm.args = {
+  schemaProperties: props(fixture.effects.radial.schema),
+  selectedType: 'radial',
+  model: { source_virtual: 'matrix' },
+  virtId: 'strip',
+  descriptions: 'Hide'
+}
+RadialForm.decorators = [withVirtuals]
+
+// a layer pointing at a virtual that was deleted stays shown, as unavailable
+export const BlenderDeletedVirtual = Template.bind({})
+BlenderDeletedVirtual.args = {
+  ...BlenderForm.args,
+  model: { mask: 'strip', foreground: 'deleted-virtual', background: '' }
+}
+BlenderDeletedVirtual.decorators = [withVirtuals]
+
+// radial's default source, 'unknown', means "none": a blank select, not an unavailable virtual
+export const RadialNoSource = Template.bind({})
+RadialNoSource.args = { ...RadialForm.args, model: { source_virtual: 'unknown' } }
+RadialNoSource.decorators = [withVirtuals]
+
+// a layer on a virtual the picker doesn't list (automagic's `<name>-mask`) still shows its name
+export const BlenderHiddenVirtual = Template.bind({})
+BlenderHiddenVirtual.args = {
+  ...BlenderForm.args,
+  model: { mask: 'smoke-mask', foreground: 'matrix', background: '' }
+}
+BlenderHiddenVirtual.decorators = [
+  withStore({
+    virtuals: {
+      strip: virtual('strip', 'Desk strip'),
+      matrix: virtual('matrix', 'Wall matrix'),
+      'smoke-mask': { id: 'smoke-mask', is_device: '', config: { name: 'Smoke mask' } }
+    },
+    automagic: false
+  })
+]
