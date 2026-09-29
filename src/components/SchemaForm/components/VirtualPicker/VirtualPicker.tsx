@@ -15,6 +15,17 @@ const VirtualPicker = ({
 }) => {
   const virtuals = useStore((state) => state.virtuals)
   const complex = ['mask', 'foreground', 'background']
+  // device-backed virtuals only; a layer may still point at one this hides (automagic's
+  // `<name>-mask`), which then gets its own entry below
+  const listed = Object.keys(virtuals).filter((v) =>
+    showAll
+      ? true
+      : typeof virtuals[v].is_device === 'string' &&
+        virtuals[v].is_device !== '' &&
+        v &&
+        !complex.some((c) => v.endsWith(c)) &&
+        !v.startsWith('gap-')
+  )
   return (
     <BladeFrame
       title={title}
@@ -29,27 +40,20 @@ const VirtualPicker = ({
           const c = e.target.value
           return onChange && onChange(c)
         }}
-        value={value}
+        value={value ?? ''}
         fullWidth
         disableUnderline
       >
-        {Object.keys(virtuals)
-          .filter((v) =>
-            showAll
-              ? true
-              : typeof virtuals[v].is_device === 'string' &&
-                virtuals[v].is_device !== '' &&
-                v &&
-                !complex.some((c) => v.endsWith(c)) &&
-                !v.startsWith('gap-')
+        {value && !listed.includes(value) && (
+          <MenuItem value={value}>{virtuals[value]?.config?.name ?? value}</MenuItem>
+        )}
+        {listed.map((v) => {
+          return (
+            <MenuItem key={virtuals[v].id} value={virtuals[v].id}>
+              {virtuals[v].config.name}
+            </MenuItem>
           )
-          .map((v) => {
-            return (
-              <MenuItem key={virtuals[v].id} value={virtuals[v].id}>
-                {virtuals[v].config.name}
-              </MenuItem>
-            )
-          })}
+        })}
       </Select>
     </BladeFrame>
   )

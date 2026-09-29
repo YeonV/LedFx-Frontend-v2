@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
@@ -31,7 +32,8 @@ const EffectSchemaForm = ({
   virtId,
   handleEffectConfig,
   descriptions,
-  selectedType
+  selectedType,
+  errors
 }: EffectSchemaFormProps) => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   return (
@@ -43,6 +45,7 @@ const EffectSchemaForm = ({
             case 'multiselect':
               return (
                 <BladeMultiSelect
+                  error={errors?.[s.id]}
                   key={s.id}
                   index={i}
                   model={model}
@@ -59,7 +62,8 @@ const EffectSchemaForm = ({
             case 'boolean':
               return (
                 <BladeBoolean
-                  key={i}
+                  error={errors?.[s.id]}
+                  key={s.id}
                   index={i}
                   model={model}
                   model_id={s.id}
@@ -81,6 +85,7 @@ const EffectSchemaForm = ({
                 )
                   return (
                     <VirtualPickerSchemaForm
+                      key={s.id}
                       title={s.title}
                       id={s.id}
                       model={model}
@@ -91,11 +96,12 @@ const EffectSchemaForm = ({
               }
               return (
                 <BladeSelect
+                  error={errors?.[s.id]}
                   model={model}
                   schema={s}
                   wrapperStyle={{ width: '49%' }}
                   model_id={s.id}
-                  key={i}
+                  key={s.id}
                   index={i}
                   hideDesc={descriptions === 'Hide'}
                   onChange={(model_id: string, value: any) => {
@@ -109,7 +115,8 @@ const EffectSchemaForm = ({
             case 'number':
               return (
                 <BladeSlider
-                  key={i}
+                  error={errors?.[s.id]}
+                  key={s.id}
                   index={i}
                   hideDesc={descriptions !== 'Show'}
                   model_id={s.id}
@@ -126,8 +133,9 @@ const EffectSchemaForm = ({
             case 'integer':
               return (
                 <BladeSlider
+                  error={errors?.[s.id]}
                   step={1}
-                  key={i}
+                  key={s.id}
                   index={i}
                   hideDesc={descriptions !== 'Show'}
                   model_id={s.id}
@@ -145,7 +153,7 @@ const EffectSchemaForm = ({
               return (
                 <GradientPickerWrapper
                   pickerBgColor={model[s.id]}
-                  key={i}
+                  key={s.id}
                   index={i}
                   title={s.id}
                   hideDesc={descriptions === 'Hide'}
@@ -157,6 +165,7 @@ const EffectSchemaForm = ({
             case 'virtual':
               return (
                 <VirtualPickerSchemaForm
+                  key={s.id}
                   title={s.title}
                   id={s.id}
                   model={model}
@@ -166,10 +175,10 @@ const EffectSchemaForm = ({
               )
             default:
               return (
-                <>
+                <Fragment key={s.id}>
                   Unsupported type:--
                   {s.type}
-                </>
+                </Fragment>
               )
           }
         })}

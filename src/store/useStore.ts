@@ -30,7 +30,8 @@ import storeUIPersist from './ui-persist/storeUIpersist'
 import storeUIPersistActions from './ui-persist/storeUIpersistActions'
 import storeSongDectector from './ui/storeSongDectector'
 import { log } from '../utils/helpers'
-import { frontendConfig, migrations, MigrationState } from './migrate'
+import { frontendConfig } from './frontendConfig'
+import { migrations, MigrationState } from './migrate'
 import storeMatrix from './ui/storeMatrix'
 import storePlaylist from './api/storePlaylist'
 import storeAssets from './api/storeAssets'
@@ -122,7 +123,8 @@ const useStore = create(
                   // to a file that no longer exists, and the player renders a
                   // 404 instead of its fallback.
                   'thumbnailPath',
-                  'albumArtCacheBuster'
+                  'albumArtCacheBuster',
+                  'configError'
                 ].includes(key)
             )
           )

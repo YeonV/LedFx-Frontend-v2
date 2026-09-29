@@ -269,7 +269,9 @@ const DeviceCard = ({
                           ? stems.map((s2: string) => s2.charAt(0).toUpperCase()).join('+')
                           : stems[0]) + (stemBand && stemBand !== 'full' ? ` ${stemBand}` : '')
                       }
-                      title={stems.join(', ') + (stemBand && stemBand !== 'full' ? ` (${stemBand})` : '')}
+                      title={
+                        stems.join(', ') + (stemBand && stemBand !== 'full' ? ` (${stemBand})` : '')
+                      }
                       sx={{
                         // the chevron is a sibling column, so the row ends short
                         // of it; pull the chip across to sit under it

@@ -4,7 +4,6 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
-export const frontendConfig = 52
 
 export interface MigrationState {
   [key: string]: any

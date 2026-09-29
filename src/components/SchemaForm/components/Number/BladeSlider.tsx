@@ -1,8 +1,9 @@
-import { useCallback } from 'react'
-import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material'
+import { useCallback, useId } from 'react'
+import { Slider, Input, TextField, Typography, useTheme, Box, FormHelperText } from '@mui/material'
 import useStyles from './BladeSlider.styles'
 import { BladeSliderInnerProps, BladeSliderProps } from './BladeSlider.props'
 import { useNumericInput } from '../../../../hooks/useNumericInput'
+import { errorAria } from '../BladeFrame'
 
 const BladeSliderInner = ({
   schema = undefined,
@@ -15,10 +16,16 @@ const BladeSliderInner = ({
   disabled = undefined,
   marks = undefined,
   hideDesc = undefined,
-  full = undefined
+  full = undefined,
+  aria = undefined
 }: BladeSliderInnerProps) => {
   const classes = useStyles()
   const theme = useTheme()
+  // an enum schema is its own list of marks when the caller passes none
+  const enumMarks = marks ?? schema.enum
+  // the track sets marginTop/Bottom itself: a shorthand `margin` beside them makes React warn
+  const trackStyle = { ...style }
+  delete trackStyle.margin
 
   const computedValue =
     model_id && typeof model[model_id] === 'number'
@@ -58,7 +65,7 @@ const BladeSliderInner = ({
 
   return typeof schema.maximum === 'number' && !textfield ? (
     <>
-      <div style={{ width: '100%' }}>
+      <div style={{ flex: '1 1 0', minWidth: 0 }}>
         <Slider
           aria-labelledby="input-slider"
           valueLabelDisplay="auto"
@@ -71,9 +78,10 @@ const BladeSliderInner = ({
           onChange={handleSliderChange}
           className={`slider-${full ? 'full' : 'half'}`}
           onChangeCommitted={(_e, b) => handleUpstream(b as number)}
+          slotProps={{ input: aria }}
           style={{
             color: '#aaa',
-            ...style,
+            ...trackStyle,
             width: '100%',
             marginBottom: 0.5,
             marginTop: 0.5
@@ -107,7 +115,8 @@ const BladeSliderInner = ({
           min: schema.minimum || 0,
           max: schema.maximum,
           type: 'number',
-          'aria-labelledby': 'input-slider'
+          'aria-labelledby': 'input-slider',
+          ...aria
         }}
       />
     </>
@@ -116,16 +125,17 @@ const BladeSliderInner = ({
       aria-labelledby="input-slider"
       valueLabelDisplay="auto"
       disabled={disabled}
-      marks={marks.map((m: any, i: number) => ({
+      marks={enumMarks.map((m: any, i: number) => ({
         value: m,
-        label: i === 0 || i === marks.length - 1 ? m : ''
+        label: i === 0 || i === enumMarks.length - 1 ? m : ''
       }))}
       step={null}
-      min={marks[0]}
-      max={marks[marks.length - 1]}
+      min={enumMarks[0]}
+      max={enumMarks[enumMarks.length - 1]}
       value={computedValue}
       onChange={handleSliderChange}
       onChangeCommitted={(_e, b) => handleUpstream(b as number)}
+      slotProps={{ input: aria }}
       style={{ ...style, width: '100%' }}
     />
   ) : (
@@ -133,6 +143,7 @@ const BladeSliderInner = ({
       disabled={disabled}
       variant="standard"
       slotProps={{
+        htmlInput: aria,
         input: {
           disableUnderline: true,
           endAdornment: model_id === 'delay_ms' ? 'ms' : null
@@ -178,10 +189,14 @@ const BladeSlider = ({
   disabled = false,
   hideDesc = false,
   style = {},
-  full = false
+  full = false,
+  error = undefined
 }: BladeSliderProps) => {
   const classes = useStyles()
   const theme = useTheme()
+  const errorId = useId()
+  // a marks slider (see BladeSliderInner) draws its labels below the track: leave room for them
+  const hasMarks = !textfield && !(typeof schema.maximum === 'number') && !!schema.enum
   return variant === 'outlined' ? (
     <Box
       className={`${classes.wrapper} step-effect-${index}`}
@@ -205,7 +220,9 @@ const BladeSlider = ({
             }
           : {
               width: style.width
-            }
+            },
+        error ? { flexWrap: 'wrap' } : {},
+        hasMarks ? { pb: '28px' } : {}
       ]}
     >
       <label
@@ -228,7 +245,13 @@ const BladeSlider = ({
         textfield={textfield}
         marks={marks}
         hideDesc={hideDesc}
+        aria={errorAria(errorId, error)}
       />
+      {error && (
+        <FormHelperText id={errorId} error sx={{ flexBasis: '100%', m: 0 }}>
+          {error}
+        </FormHelperText>
+      )}
     </Box>
   ) : (
     <BladeSliderInner
