@@ -15,7 +15,7 @@ import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
 import SpeakerIcon from '@mui/icons-material/Speaker'
 import HubIcon from '@mui/icons-material/Hub'
-import { orderFormProperties } from '../fields'
+import { audioDeviceName, orderFormProperties } from '../fields'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
@@ -272,17 +272,17 @@ const SchemaForm = ({
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
+                      const device = audioDeviceName(
+                        schema.properties.audio_device,
+                        model?.audio_device
+                      )
                       if (
                         model_id === 'delay_ms' &&
                         usePerDeviceDelay &&
-                        model.audio_device &&
-                        value !==
-                          perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]]
+                        device &&
+                        value !== perDeviceDelay[device]
                       ) {
-                        setPerDeviceDelay({
-                          ...perDeviceDelay,
-                          [schema.properties.audio_device?.enum[model.audio_device]]: value
-                        })
+                        setPerDeviceDelay({ ...perDeviceDelay, [device]: value })
                       }
                       if (onModelChange) {
                         return onModelChange(c)

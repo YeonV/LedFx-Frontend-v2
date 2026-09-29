@@ -2,7 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   orderFormProperties,
-  orderEffectProperties
+  orderEffectProperties,
+  audioDeviceName
 } from '../../src/components/SchemaForm/fields.ts'
 
 test('orderFormProperties: name, then required, then the rest in schema order', () => {
@@ -81,4 +82,11 @@ test('orderEffectProperties drops hidden keys, and advanced keys unless advanced
     ['b', 'c']
   )
   assert.deepEqual(orderEffectProperties(undefined), [])
+})
+
+test('audioDeviceName finds device index 0', () => {
+  const field = { type: 'string', enum: { 0: 'MME: Mic', 1: 'MME: Line' } }
+  assert.equal(audioDeviceName(field, 0), 'MME: Mic')
+  assert.equal(audioDeviceName(field, 1), 'MME: Line')
+  assert.equal(audioDeviceName(field, undefined), undefined)
 })

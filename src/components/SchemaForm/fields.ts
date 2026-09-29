@@ -72,3 +72,7 @@ export const orderEffectProperties = (
     })
     .map(({ p }) => p)
 }
+
+/** The label of an audio device index in the audio_device `{index: "Host: Name"}` enum. */
+export const audioDeviceName = (field: Field | undefined, index: unknown): string | undefined =>
+  typeof index === 'number' ? field?.enum?.[index] : undefined
