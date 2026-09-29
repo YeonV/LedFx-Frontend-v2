@@ -71,7 +71,8 @@ const AddIntegrationDialog = () => {
   const [integrationType, setIntegrationType] = useState('')
   const [model, setModel] = useState({})
 
-  const currentSchema = integrationType ? integrationsTypes[integrationType].schema : {}
+  // a type the loaded schemas don't list (or no schemas yet) has no form
+  const currentSchema = integrationsTypes?.[integrationType]?.schema ?? {}
 
   const handleClose = () => {
     setDialogOpenAddIntegration(false)

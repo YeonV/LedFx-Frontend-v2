@@ -70,7 +70,8 @@ const AddDeviceDialog = () => {
   const [deviceType, setDeviceType] = useState('')
   const [model, setModel] = useState<any>({})
 
-  const currentSchema = deviceType ? deviceTypes[deviceType].schema : {}
+  // a type the loaded schemas don't list (or no schemas yet) has no form
+  const currentSchema = deviceTypes?.[deviceType]?.schema ?? {}
 
   const handleClose = () => {
     setDialogOpenAddDevice(false)
