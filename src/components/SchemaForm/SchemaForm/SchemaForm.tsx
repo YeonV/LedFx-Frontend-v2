@@ -69,9 +69,9 @@ const Root = styled('div')(({ theme }) => ({
 }))
 
 /**
- * Dynamically render Forms based on a `schema` <br />
- * most schemas retrived from ledfx/api/schema are read-only <br />
- * to enable write, please provide the key `permitted_keys`
+ * Dynamically render a form from a `schema`: a /api/schemas object schema, or a hand-built one.
+ * A field the schema marks `readOnly` is shown but disabled, as is a field missing from
+ * `permitted_keys` when the schema lists them.
  */
 const SchemaForm = ({
   schema,
@@ -106,7 +106,7 @@ const SchemaForm = ({
           const w = widgetFor(s, s.id, type, Boolean(schema?.$schema))
           // the widgets read id, title, enum, ... from the unwrapped field
           const f: FieldSchema = { ...w.field, id: s.id }
-          const disabled = !s.permitted
+          const disabled = !s.permitted || w.readonly
           const error = errors?.[s.id]
           switch (w.kind) {
             case 'hidden':

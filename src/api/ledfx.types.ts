@@ -706,6 +706,8 @@ export interface FieldSchema {
   const?: any
   $ref?: string
   'x-ledfx-enum-source'?: string
+  /** Standard JSON Schema: shown, not editable. */
+  readOnly?: boolean
   [key: string]: any
 }
 

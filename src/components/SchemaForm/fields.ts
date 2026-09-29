@@ -18,6 +18,7 @@ export type WidgetKind =
 export interface Widget {
   kind: WidgetKind
   nullable: boolean
+  readonly: boolean
   /** The field with `anyOf [T, null]` folded into T. */
   field: FieldSchema
 }
@@ -262,6 +263,7 @@ export const widgetFor = (
   return {
     kind: override(id, formType) ?? kindOf(field, backend),
     nullable,
+    readonly: !!field.readOnly,
     field
   }
 }

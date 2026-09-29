@@ -175,6 +175,51 @@ test('a backend form without a form type (audio, virtuals) gets the backend widg
   assert.equal(widgetFor(color, 'x', 'energy', false).kind, 'text')
 })
 
+test('widgetFor reports the standard readOnly, and not the old x-ledfx-readonly', () => {
+  assert.equal(widgetFor({ type: 'string', readOnly: true }, 'x').readonly, true)
+  assert.equal(widgetFor({ type: 'string' }, 'x').readonly, false)
+  assert.equal(widgetFor({ type: 'string', 'x-ledfx-readonly': true }, 'x').readonly, false)
+  // through a nullable wrapper
+  assert.equal(
+    widgetFor({ anyOf: [{ type: 'string' }, { type: 'null' }], readOnly: true }, 'x').readonly,
+    true
+  )
+})
+
+test('a backend form: readOnly fields are disabled, the others editable', () => {
+  // the audio schema has no permitted_keys: everything is permitted, readOnly decides
+  const editable = (schema: any) =>
+    Object.fromEntries(
+      orderFormProperties(schema).map((f) => [
+        f.id,
+        f.permitted && !widgetFor(f, f.id, undefined, true).readonly
+      ])
+    )
+  const audio = editable(schemas.audio.schema)
+  for (const id of ['sample_rate', 'mic_rate', 'fft_size', 'audio_device_name'])
+    assert.equal(audio[id], false, id)
+  for (const id of ['audio_device', 'delay_ms', 'min_volume']) assert.equal(audio[id], true, id)
+  const core = editable(schemas.core.schema)
+  assert.equal(core.instance_id, false)
+  assert.equal(core.debug_asyncio, false)
+  assert.equal(core.host, true)
+})
+
+test("an effect's permitted_keys still decide, and readOnly adds to them", () => {
+  const schema = {
+    properties: {
+      a: { type: 'string' },
+      b: { type: 'string' },
+      c: { type: 'string', readOnly: true }
+    },
+    permitted_keys: ['a', 'c']
+  }
+  const f = Object.fromEntries(
+    orderFormProperties(schema).map((p) => [p.id, [p.permitted, widgetFor(p, p.id).readonly]])
+  )
+  assert.deepEqual(f, { a: [true, false], b: [false, false], c: [true, true] })
+})
+
 test('every field of every fixture form has a widget', () => {
   const forms: [string, any][] = [
     ['audio', schemas.audio],

@@ -181,6 +181,7 @@ const BladeSelect = ({
           <>
             <TextField
               variant="standard"
+              disabled={disabled}
               helperText={!hideDesc && schema.description}
               slotProps={{
                 htmlInput: aria,
@@ -212,6 +213,7 @@ const BladeSelect = ({
         <>
           <TextField
             variant="standard"
+            disabled={disabled}
             inputRef={inputRef}
             type={schema.description?.includes('password') ? 'password' : 'unset'}
             helperText={!hideDesc && schema.description}
