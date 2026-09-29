@@ -31,24 +31,115 @@ export const nullOption = (field?: FieldSchema): EnumOption => ({
 })
 
 /**
- * The choices of an enum field: pydantic's `enum`, or a single `const`. A `nullable` field (see
+ * The choices of an enum field: pydantic's `enum`, or a single `const`, or `sourced` options
+ * (see instanceOptions) when the field's choices are live instances. A `nullable` field (see
  * unwrapNullable) gets a trailing null option. Undefined when the field is not an enum.
  */
-export const enumOptions = (field?: FieldSchema, nullable = false): EnumOption[] | undefined => {
+export const enumOptions = (
+  field?: FieldSchema,
+  nullable = false,
+  sourced?: EnumOption[]
+): EnumOption[] | undefined => {
   const values = Array.isArray(field?.enum)
     ? field.enum
     : field && 'const' in field
       ? [field.const]
       : undefined
-  const options = values?.map((v): EnumOption => ({ value: v, label: String(v) }))
+  const options = sourced ?? values?.map((v): EnumOption => ({ value: v, label: String(v) }))
   if (!options) return undefined
   return nullable ? [...options, nullOption(field)] : options
 }
+
+/**
+ * The options of a select over live instances, for the value it holds now. A stored value the
+ * store doesn't know (unplugged device, deleted scene or virtual) stays selectable as
+ * "<value> (unavailable)", for this field only. The schema's default is a "none" value
+ * (radial's source_virtual 'unknown'), never a lost instance: it gets a blank option. An optional
+ * scene or playlist whose schema allows "" (default "") gets a "None" option that clears it.
+ */
+export const sourcedOptions = (
+  field: FieldSchema,
+  options: EnumOption[] | undefined,
+  current: unknown,
+  required = false,
+  loaded = true
+): EnumOption[] | undefined => {
+  if (!options) return undefined
+  let out = options
+  const source = sourceOf(field)
+  if (!required && field.default === '' && (source === 'scenes' || source === 'playlists'))
+    out = [{ value: '', label: 'None' }, ...out]
+  const missing =
+    current !== null &&
+    current !== undefined &&
+    current !== '' &&
+    !out.some((o) => o.value === current)
+  // before the first load a missing index is just not loaded yet: it isn't offered as a bare number
+  if (missing && (loaded || current === field.default || typeof current !== 'number'))
+    out = [
+      ...out,
+      {
+        value: current as string | number,
+        label: unlistedLabel(current, undefined, field.default, loaded)
+      }
+    ]
+  return out
+}
+
+/**
+ * The label of a stored value a select doesn't list: blank for the schema's default (a "none"
+ * value, like radial's source_virtual 'unknown'); the instance's `name` when it exists but the
+ * select filters it out; "<value> (unavailable)" once the source has loaded; else the raw value.
+ */
+export const unlistedLabel = (
+  value: unknown,
+  name: string | undefined,
+  def: unknown,
+  loaded: boolean
+): string => (value === def ? '' : (name ?? (loaded ? `${value} (unavailable)` : String(value))))
 
 /** The slider marks of an integer field: its `enum` (hand-built `int`), else its `examples`. */
 export const sliderMarks = (field: FieldSchema): EnumOption['value'][] | undefined =>
   enumOptions(field)?.map((o) => o.value) ??
   (field.type === 'integer' && Array.isArray(field.examples) ? field.examples : undefined)
+
+export interface InstanceState {
+  virtuals?: Record<string, { id: string; config?: { name?: string } }>
+  com_ports?: string[]
+  scenes?: Record<string, { name?: string }>
+  playlists?: Record<string, { name?: string }>
+  devices?: Record<string, { config?: { name?: string } }>
+}
+
+const named = <T>(
+  rec: Record<string, T> | undefined,
+  name: (v: T) => string | undefined
+): EnumOption[] => Object.entries(rec ?? {}).map(([id, v]) => ({ value: id, label: name(v) || id }))
+
+/**
+ * The options of a field whose choices are live instances (its `x-ledfx-enum-source`), read
+ * from the store. Undefined for an unknown source. The schema holds no values, so it is never
+ * patched: components ask here.
+ */
+export const instanceOptions = (
+  source: string | undefined,
+  state: InstanceState
+): EnumOption[] | undefined => {
+  switch (source) {
+    case 'virtuals':
+      return named(state.virtuals, (v) => v.config?.name)
+    case 'com_ports':
+      return (state.com_ports ?? []).map((p) => ({ value: p, label: p }))
+    case 'scenes':
+      return named(state.scenes, (v) => v.name)
+    case 'playlists':
+      return named(state.playlists, (v) => v.name)
+    case 'devices':
+      return named(state.devices, (v) => v.config?.name)
+    default:
+      return undefined
+  }
+}
 
 /** A select's stand-in for the `null` option: MUI Select can't hold `null` as a value. */
 export const NULL_OPTION = '__null__'

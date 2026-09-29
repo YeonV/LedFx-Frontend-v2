@@ -78,6 +78,16 @@ const storeConfig = (set: any) => ({
   schemas: {} as Partial<Schemas>,
   /** Set when the backend has no /api/schemas: it predates this frontend. */
   schemasMissing: false,
+  /** Sources (`x-ledfx-enum-source`) whose getter has resolved once: until then, "not in the list" means "not loaded yet". */
+  instanceLoaded: {} as Record<string, boolean>,
+  markInstanceLoaded: (source: string) =>
+    set(
+      produce((state: IStore) => {
+        state.instanceLoaded[source] = true
+      }),
+      false,
+      'api/instanceLoaded'
+    ),
   getSchemas: async (forceRefresh = false) => {
     // Cache check: skip if already loaded (unless force refresh). `schemas` is
     // persisted, so a copy of the legacy /api/schema (no $schema) doesn't count.

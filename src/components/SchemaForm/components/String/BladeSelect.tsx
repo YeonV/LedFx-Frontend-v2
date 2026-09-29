@@ -19,7 +19,15 @@ import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
-import { enumOptions, fromSelectValue, NULL_OPTION, toSelectValue } from '../../fields'
+import {
+  enumOptions,
+  fromSelectValue,
+  NULL_OPTION,
+  sourcedOptions,
+  sourceOf,
+  toSelectValue
+} from '../../fields'
+import { useInstanceLoaded, useInstanceOptions } from '../../useInstanceOptions'
 
 /**
  * ## String
@@ -49,8 +57,14 @@ const BladeSelect = ({
   const errorId = useId()
   const aria = errorAria(errorId, error)
   const [showReserved, setShowReserved] = useState(false)
+  const instances = useInstanceOptions(sourceOf(schema))
+  const loaded = useInstanceLoaded(sourceOf(schema))
   const current = model && model_id ? model[model_id] : undefined
-  const options = enumOptions(schema, nullable)
+  const options = enumOptions(
+    schema,
+    nullable,
+    sourcedOptions(schema, instances, current, required, loaded)
+  )
   const [icon, setIcon] = useState(
     schema.id === 'icon_name' ? (model && model_id && model[model_id]) || options?.[0]?.value : ''
   )

@@ -125,7 +125,9 @@ const useStore = create(
                   'thumbnailPath',
                   'albumArtCacheBuster',
                   'configError',
-                  'schemasMissing'
+                  'schemasMissing',
+                  'comPorts',
+                  'instanceLoaded'
                 ].includes(key)
             )
           )

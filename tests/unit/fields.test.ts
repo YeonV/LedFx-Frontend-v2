@@ -7,13 +7,17 @@ import {
   orderFormProperties,
   orderEffectProperties,
   audioDeviceName,
+  instanceOptions,
   sliderMarks,
+  sourcedOptions,
+  unlistedLabel,
   enumOptions,
   nullOption,
   NULL_OPTION,
   toSelectValue,
   fromSelectValue
 } from '../../src/components/SchemaForm/fields.ts'
+import { loadSource } from '../../src/components/SchemaForm/loadSource.ts'
 
 const schemas = JSON.parse(
   readFileSync(
@@ -69,6 +73,11 @@ test('enumOptions adds the null option for a nullable field, labelled by source'
     enumOptions(dev)?.map((o) => o.value),
     [1, 3, 4]
   )
+  // sourced options replace the schema's own and get the null option too
+  assert.deepEqual(enumOptions({ type: 'string' }, true, [{ value: 'a', label: 'A' }]), [
+    { value: 'a', label: 'A' },
+    { value: null, label: 'None' }
+  ])
   assert.deepEqual(enumOptions({ type: 'string', enum: ['a'] }, true)?.at(-1), {
     value: null,
     label: 'None'
@@ -319,6 +328,75 @@ test('a marked field orders like a plain string, an unknown marker like its base
   )
 })
 
+test('no "(unavailable)" before the source has loaded', () => {
+  const scene = { type: 'string', 'x-ledfx-enum-source': 'scenes' }
+  const audio = { 'x-ledfx-enum-source': 'audio_devices' }
+  // not loaded: the stored id shows plain, a bare index isn't offered at all
+  assert.deepEqual(sourcedOptions(scene, [], 'gone', false, false), [
+    { value: 'gone', label: 'gone' }
+  ])
+  assert.deepEqual(sourcedOptions(audio, [], 2, false, false), [])
+  // loaded: the suffix
+  assert.deepEqual(sourcedOptions(scene, [], 'gone', false, true), [
+    { value: 'gone', label: 'gone (unavailable)' }
+  ])
+  assert.deepEqual(sourcedOptions(audio, [], 2, false, true), [
+    { value: 2, label: '2 (unavailable)' }
+  ])
+})
+
+test('sourcedOptions keeps an unknown stored value, and adds None to optional scenes', () => {
+  const opts = [{ value: 's1', label: 'Chill' }]
+  const scene = { type: 'string', default: '', 'x-ledfx-enum-source': 'scenes' }
+  assert.deepEqual(sourcedOptions(scene, opts, 's1'), [
+    { value: '', label: 'None' },
+    { value: 's1', label: 'Chill' }
+  ])
+  assert.deepEqual(sourcedOptions(scene, opts, 'gone')?.at(-1), {
+    value: 'gone',
+    label: 'gone (unavailable)'
+  })
+  // index 0 is a value; null and '' are not stored values
+  assert.deepEqual(sourcedOptions({ 'x-ledfx-enum-source': 'audio_devices' }, [], 0), [
+    { value: 0, label: '0 (unavailable)' }
+  ])
+  assert.deepEqual(sourcedOptions({ 'x-ledfx-enum-source': 'audio_devices' }, [], null), [])
+  // required, or a default that isn't "": no None option; not sourced: nothing
+  assert.equal(sourcedOptions(scene, opts, 's1', true)?.length, 1)
+  assert.equal(sourcedOptions({ ...scene, default: undefined }, opts, 's1')?.length, 1)
+  assert.equal(sourcedOptions(scene, undefined, 's1'), undefined)
+  // the unavailable entry belongs to the one call: another field's options are untouched
+  assert.equal(sourcedOptions(scene, opts, 's1')?.length, 2)
+})
+
+test("the schema's default is a none value: blank, never unavailable", () => {
+  const radial = schemas.effects.radial.schema.properties.source_virtual
+  assert.equal(radial.default, 'unknown')
+  const opts = [{ value: 'v1', label: 'Strip' }]
+  assert.deepEqual(sourcedOptions(radial, opts, 'unknown')?.at(-1), { value: 'unknown', label: '' })
+  assert.deepEqual(sourcedOptions(radial, opts, 'unknown', false, false)?.at(-1), {
+    value: 'unknown',
+    label: ''
+  })
+  // any other stored id the store doesn't know is still unavailable
+  assert.deepEqual(sourcedOptions(radial, opts, 'gone')?.at(-1), {
+    value: 'gone',
+    label: 'gone (unavailable)'
+  })
+})
+
+test('unlistedLabel: default blank, a filtered-out instance by name, else unavailable or raw', () => {
+  // radial's default 'unknown' is "none", loaded or not
+  assert.equal(unlistedLabel('unknown', undefined, 'unknown', true), '')
+  assert.equal(unlistedLabel('unknown', undefined, 'unknown', false), '')
+  // an existing virtual the picker hides (automagic's smoke-mask) shows its name
+  assert.equal(unlistedLabel('smoke-mask', 'Smoke mask', 'unknown', true), 'Smoke mask')
+  assert.equal(unlistedLabel('smoke-mask', 'Smoke mask', 'unknown', false), 'Smoke mask')
+  // missing: unavailable once loaded, the raw id before
+  assert.equal(unlistedLabel('gone', undefined, 'unknown', true), 'gone (unavailable)')
+  assert.equal(unlistedLabel('gone', undefined, 'unknown', false), 'gone')
+})
+
 test('orderEffectProperties drops hidden keys, and advanced keys unless advanced', () => {
   const schema = {
     properties: { a: { type: 'number' }, b: { type: 'number' }, c: { type: 'number' } }
@@ -421,4 +499,94 @@ test('an integer with examples is a slider with marks at the examples', () => {
   assert.equal(sliderMarks({ type: 'integer' }), undefined)
   // examples on a number don't make marks
   assert.equal(sliderMarks({ type: 'number', examples: [1, 2] }), undefined)
+})
+
+const STATE = {
+  virtuals: { v1: { id: 'v1', config: { name: 'Strip' } }, v2: { id: 'v2', config: {} } },
+  scenes: { s1: { name: 'Chill' } },
+  playlists: { p1: { id: 'p1', name: 'Party' } },
+  devices: { d1: { id: 'd1', config: { name: 'WLED' } } },
+  com_ports: ['/dev/ttyUSB0', 'COM3']
+}
+
+test('instanceOptions builds the options of each source from the store', () => {
+  // virtuals: id -> name, the id when there is no name
+  assert.deepEqual(instanceOptions('virtuals', STATE), [
+    { value: 'v1', label: 'Strip' },
+    { value: 'v2', label: 'v2' }
+  ])
+  assert.deepEqual(instanceOptions('com_ports', STATE), [
+    { value: '/dev/ttyUSB0', label: '/dev/ttyUSB0' },
+    { value: 'COM3', label: 'COM3' }
+  ])
+  assert.deepEqual(instanceOptions('scenes', STATE), [{ value: 's1', label: 'Chill' }])
+  assert.deepEqual(instanceOptions('playlists', STATE), [{ value: 'p1', label: 'Party' }])
+  assert.deepEqual(instanceOptions('devices', STATE), [{ value: 'd1', label: 'WLED' }])
+})
+
+test('instanceOptions: empty sources are empty, unknown sources are undefined', () => {
+  for (const s of ['virtuals', 'com_ports', 'scenes', 'playlists', 'devices']) {
+    assert.deepEqual(instanceOptions(s, {}), [], s)
+    assert.deepEqual(instanceOptions(s, { [s]: s === 'com_ports' ? [] : {} }), [], s)
+  }
+  assert.equal(instanceOptions('nope', STATE), undefined)
+  assert.equal(instanceOptions(undefined, STATE), undefined)
+})
+
+test('loadSource calls the getter once and marks the source loaded, however it ends', async () => {
+  const marked: string[] = []
+  const mark = (s: string) => void marked.push(s)
+  let calls = 0
+  // success, a 404 (the getter resolves to nothing), and a throw (it rejects)
+  const ok = async () => void calls++
+  const notFound = async () => void calls++ || undefined
+  const boom = async () => {
+    calls++
+    throw new Error('network')
+  }
+  await loadSource('a', { a: ok }, mark)
+  await loadSource('b', { b: notFound }, mark)
+  await loadSource('c', { c: boom }, mark)
+  assert.equal(calls, 3)
+  assert.deepEqual(marked, ['a', 'b', 'c'])
+  // a synchronous throw counts too
+  await loadSource(
+    'd',
+    {
+      d: () => {
+        throw new Error('x')
+      }
+    },
+    mark
+  )
+  assert.equal(marked.at(-1), 'd')
+})
+
+test('loadSource ignores an unknown source', async () => {
+  const marked: string[] = []
+  await loadSource('nope', { a: async () => {} }, (s) => void marked.push(s))
+  await loadSource('a', {}, (s) => void marked.push(s))
+  assert.deepEqual(marked, [])
+})
+
+test('loadSource shares one request per source while it is pending, then fetches again', async () => {
+  let calls = 0
+  let release = () => {}
+  const load = () => {
+    calls++
+    return new Promise<void>((r) => (release = r))
+  }
+  const marked: string[] = []
+  const mark = (s: string) => void marked.push(s)
+  const first = loadSource('x', { x: load }, mark)
+  const second = loadSource('x', { x: load }, mark)
+  assert.equal(calls, 1)
+  assert.equal(first, second)
+  release()
+  await first
+  assert.deepEqual(marked, ['x'])
+  const third = loadSource('x', { x: load }, mark)
+  assert.equal(calls, 2)
+  release()
+  await third
 })

@@ -84,6 +84,7 @@ const EffectSchemaForm = ({
                   title={f.title ?? s.id}
                   id={s.id}
                   model={model}
+                  defaultValue={f.default}
                   // hand-built `virtual` fields and blender's layers follow blender automagic
                   hide={blenderAutomagic && (s.type === 'virtual' || selectedType === 'blender')}
                   handleEffectConfig={handleEffectConfig}
