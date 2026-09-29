@@ -14,6 +14,8 @@ import {
 } from '@mui/material'
 import { GridOn, GridOff, Settings } from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import { fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import { orderEffectProperties } from '../../components/SchemaForm/fields'
@@ -61,8 +63,10 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     if (v) setVirtual(v)
   }, [JSON.stringify(virtuals[virtId] ?? {})])
 
+  const [errors, setErrors] = useState<FieldErrors>({})
   const effectType = virtual && virtual.effect?.type
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
+  useEffect(() => setErrors({}), [effectType, virtId])
   const effect = effectType ? effects?.[effectType] : undefined
   const orderedProperties = orderEffectProperties(
     effect?.schema,
@@ -76,7 +80,8 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     setTheModel((prev: any) => ({ ...prev, ...config }))
 
     if (updateEffect && getVirtuals !== undefined && effectType) {
-      updateEffect(vId, effectType, config, false).then(() => {
+      updateEffect(vId, effectType, config, false).then((resp: any) => {
+        setErrors(fieldErrors(resp))
         getVirtuals()
         getDevices()
       })
@@ -234,6 +239,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
                 </BladeFrame>
               )}
               <BladeEffectSchemaForm
+                errors={errors}
                 handleEffectConfig={(e: any) => handleEffectConfig(e, virtId)}
                 virtId={virtId}
                 schemaProperties={orderedProperties}

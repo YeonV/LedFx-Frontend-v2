@@ -9,4 +9,5 @@ export interface BBooleanProps {
   title?: string
   description?: string
   hideDesc?: boolean
+  error?: string
 }

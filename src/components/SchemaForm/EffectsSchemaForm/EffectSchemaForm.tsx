@@ -32,7 +32,8 @@ const EffectSchemaForm = ({
   virtId,
   handleEffectConfig,
   descriptions,
-  selectedType
+  selectedType,
+  errors
 }: EffectSchemaFormProps) => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   return (
@@ -44,6 +45,7 @@ const EffectSchemaForm = ({
             case 'multiselect':
               return (
                 <BladeMultiSelect
+                  error={errors?.[s.id]}
                   key={s.id}
                   index={i}
                   model={model}
@@ -60,6 +62,7 @@ const EffectSchemaForm = ({
             case 'boolean':
               return (
                 <BladeBoolean
+                  error={errors?.[s.id]}
                   key={s.id}
                   index={i}
                   model={model}
@@ -93,6 +96,7 @@ const EffectSchemaForm = ({
               }
               return (
                 <BladeSelect
+                  error={errors?.[s.id]}
                   model={model}
                   schema={s}
                   wrapperStyle={{ width: '49%' }}
@@ -111,6 +115,7 @@ const EffectSchemaForm = ({
             case 'number':
               return (
                 <BladeSlider
+                  error={errors?.[s.id]}
                   key={s.id}
                   index={i}
                   hideDesc={descriptions !== 'Show'}
@@ -128,6 +133,7 @@ const EffectSchemaForm = ({
             case 'integer':
               return (
                 <BladeSlider
+                  error={errors?.[s.id]}
                   step={1}
                   key={s.id}
                   index={i}

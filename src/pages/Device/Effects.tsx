@@ -22,6 +22,8 @@ import {
   Stop
 } from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import { fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
@@ -82,9 +84,11 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (v) setVirtual(v)
   }, [JSON.stringify(virtuals[virtId])])
 
+  const [errors, setErrors] = useState<FieldErrors>({})
   const effectType = virtual && virtual.effect.type
   const lastEffect = virtual && virtual.last_effect
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
+  useEffect(() => setErrors({}), [effectType, virtId])
   const effect = effectType ? effects?.[effectType] : undefined
   const orderedProperties = orderEffectProperties(
     effect?.schema,
@@ -118,7 +122,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
       // No need to refetch - WebSocket event will update state, and parent already has presets
-      updateEffect(virtId, effectType, config, false)
+      updateEffect(virtId, effectType, config, false).then((resp: any) =>
+        setErrors(fieldErrors(resp))
+      )
     }
   }
 
@@ -340,6 +346,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 {theModel && effectType && (
                   <div>
                     <BladeEffectSchemaForm
+                      errors={errors}
                       handleEffectConfig={handleEffectConfig}
                       virtId={virtual.id}
                       schemaProperties={orderedProperties}

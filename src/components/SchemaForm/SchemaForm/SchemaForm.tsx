@@ -63,7 +63,8 @@ const SchemaForm = ({
   model,
   hideToggle,
   onModelChange,
-  type
+  type,
+  errors
 }: SchemaFormProps): ReactElement<any, any> => {
   const [hideDesc, setHideDesc] = useState(true)
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
@@ -84,6 +85,7 @@ const SchemaForm = ({
               case 'multiselect':
                 return (
                   <BladeMultiSelect
+                    error={errors?.[s.id]}
                     key={s.id}
                     index={i}
                     model={model}
@@ -105,6 +107,7 @@ const SchemaForm = ({
               case 'boolean':
                 return (
                   <BladeBoolean
+                    error={errors?.[s.id]}
                     hideDesc={hideDesc}
                     key={s.id}
                     index={i}
@@ -147,7 +150,13 @@ const SchemaForm = ({
                 }
 
                 return audio_groups?.length ? (
-                  <BladeFrame key={s.id} style={{ order: -1 }} title="Audio Device" full>
+                  <BladeFrame
+                    key={s.id}
+                    style={{ order: -1 }}
+                    title="Audio Device"
+                    full
+                    error={errors?.[s.id]}
+                  >
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
@@ -195,6 +204,7 @@ const SchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
+                      error={errors?.[s.id]}
                       children={undefined}
                       hideDesc={hideDesc}
                       type={type}
@@ -230,6 +240,7 @@ const SchemaForm = ({
               case 'number':
                 return (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     step={undefined}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
@@ -252,6 +263,7 @@ const SchemaForm = ({
               case 'integer':
                 return (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     full={s.id === 'delay_ms'}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
@@ -294,6 +306,7 @@ const SchemaForm = ({
               case 'int':
                 return s?.enum?.length > 10 ? (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
                     marks={s?.enum}
@@ -320,6 +333,7 @@ const SchemaForm = ({
                   />
                 ) : (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
                     marks={s?.enum}

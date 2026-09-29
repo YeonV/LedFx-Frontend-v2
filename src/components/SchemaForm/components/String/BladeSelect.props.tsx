@@ -17,4 +17,5 @@ export interface BladeSelectProps {
   hideDesc?: boolean
   children?: ReactNode
   type?: string
+  error?: string
 }

@@ -14,11 +14,13 @@ const BladeBoolean = ({
   schema,
   model,
   hideDesc = false,
-  model_id
+  model_id,
+  error
 }: BladeBooleanProps) => {
   const checked = !!(model?.[model_id] ?? schema.default)
   return (
     <BBoolean
+      error={error}
       index={index}
       required={required}
       style={style}

@@ -12,9 +12,9 @@ import {
   Box,
   Divider
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
-import BladeFrame from '../BladeFrame'
+import BladeFrame, { errorAria } from '../BladeFrame'
 import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
@@ -40,9 +40,12 @@ const BladeSelect = ({
   menuItemStyle = {},
   hideDesc = false,
   children,
-  type
+  type,
+  error
 }: BladeSelectProps) => {
   const inputRef = useRef<any>(null)
+  const errorId = useId()
+  const aria = errorAria(errorId, error)
   const [showReserved, setShowReserved] = useState(false)
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
@@ -57,6 +60,8 @@ const BladeSelect = ({
   // console.log(schema, model)
   return (
     <BladeFrame
+      error={error}
+      errorId={errorId}
       title={schema.title}
       tooltip={
         schema.title === 'Icon Name' ? (
@@ -139,6 +144,7 @@ const BladeSelect = ({
           <Select
             variant="filled"
             disabled={disabled}
+            SelectDisplayProps={aria}
             style={{
               flexGrow: 'unset',
               ...(selectStyle as any)
@@ -160,6 +166,7 @@ const BladeSelect = ({
               variant="standard"
               helperText={!hideDesc && schema.description}
               slotProps={{
+                htmlInput: aria,
                 input: { disableUnderline: true }
               }}
               defaultValue={current ?? schema.default ?? ''}
@@ -173,6 +180,7 @@ const BladeSelect = ({
           variant="standard"
           disableUnderline
           disabled={disabled}
+          SelectDisplayProps={aria}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
             ...(selectStyle as any)
@@ -224,6 +232,7 @@ const BladeSelect = ({
             type={schema.description?.includes('password') ? 'password' : 'unset'}
             helperText={!hideDesc && schema.description}
             slotProps={{
+              htmlInput: aria,
               input:
                 schema.id === 'icon_name'
                   ? {
