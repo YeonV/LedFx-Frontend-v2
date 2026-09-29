@@ -60,7 +60,7 @@ const EffectSchemaForm = ({
             case 'boolean':
               return (
                 <BladeBoolean
-                  key={i}
+                  key={s.id}
                   index={i}
                   model={model}
                   model_id={s.id}
@@ -97,7 +97,7 @@ const EffectSchemaForm = ({
                   schema={s}
                   wrapperStyle={{ width: '49%' }}
                   model_id={s.id}
-                  key={i}
+                  key={s.id}
                   index={i}
                   hideDesc={descriptions === 'Hide'}
                   onChange={(model_id: string, value: any) => {
@@ -111,7 +111,7 @@ const EffectSchemaForm = ({
             case 'number':
               return (
                 <BladeSlider
-                  key={i}
+                  key={s.id}
                   index={i}
                   hideDesc={descriptions !== 'Show'}
                   model_id={s.id}
@@ -129,7 +129,7 @@ const EffectSchemaForm = ({
               return (
                 <BladeSlider
                   step={1}
-                  key={i}
+                  key={s.id}
                   index={i}
                   hideDesc={descriptions !== 'Show'}
                   model_id={s.id}
@@ -147,7 +147,7 @@ const EffectSchemaForm = ({
               return (
                 <GradientPickerWrapper
                   pickerBgColor={model[s.id]}
-                  key={i}
+                  key={s.id}
                   index={i}
                   title={s.id}
                   hideDesc={descriptions === 'Hide'}
