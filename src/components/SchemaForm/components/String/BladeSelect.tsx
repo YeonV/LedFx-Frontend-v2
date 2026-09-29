@@ -50,10 +50,10 @@ const BladeSelect = ({
       : ''
   )
   useEffect(() => {
-    if (model && model_id && model[model_id] && inputRef.current) {
-      inputRef.current.value = model[model_id]
-    }
+    const v = model && model_id ? model[model_id] : undefined
+    if (v != null && inputRef.current) inputRef.current.value = v
   }, [model, model_id])
+  const current = model && model_id ? model[model_id] : undefined
   // console.log(schema, model)
   return (
     <BladeFrame
@@ -144,7 +144,7 @@ const BladeSelect = ({
               ...(selectStyle as any)
             }}
             defaultValue={schema.default}
-            value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
+            value={current ?? schema.default ?? schema.enum[0]}
             onChange={(e) => onChange(model_id, e.target.value)}
           >
             {children ||
@@ -162,12 +162,7 @@ const BladeSelect = ({
               slotProps={{
                 input: { disableUnderline: true }
               }}
-              defaultValue={
-                (model && model_id && model[model_id]) ||
-                (schema.enum && schema.enum[0]) ||
-                schema.default ||
-                ''
-              }
+              defaultValue={current ?? schema.default ?? ''}
               onBlur={(e) => onChange(model_id, e.target.value)}
               style={textStyle as any}
             />
@@ -183,7 +178,7 @@ const BladeSelect = ({
             ...(selectStyle as any)
           }}
           defaultValue={schema.default}
-          value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
+          value={current ?? schema.default ?? schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
@@ -246,12 +241,7 @@ const BladeSelect = ({
                 ? `beat_frames-${model?.beat_frames || 'empty'}`
                 : undefined
             }
-            defaultValue={
-              (model && model_id && model[model_id]) ||
-              (schema.enum && schema.enum[0]) ||
-              schema.default ||
-              ''
-            }
+            defaultValue={current ?? schema.default ?? ''}
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
