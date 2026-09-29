@@ -15,6 +15,7 @@ import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
 import SpeakerIcon from '@mui/icons-material/Speaker'
 import HubIcon from '@mui/icons-material/Hub'
+import { orderFormProperties } from '../fields'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
@@ -68,18 +69,7 @@ const SchemaForm = ({
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
   const setPerDeviceDelay = useStore((state) => state.setPerDeviceDelay)
   const usePerDeviceDelay = useStore((state) => state?.usePerDeviceDelay)
-  const yzSchema =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk,
-        required: schema.required && schema.required.indexOf(sk) !== -1,
-        permitted: schema.permitted_keys ? schema.permitted_keys.indexOf(sk) > -1 : true
-      }))
-      .sort((a, _b) => (a.required ? -1 : 1))
-      .sort((a, _b) => (a.id === 'name' ? -1 : 1))
+  const yzSchema = orderFormProperties(schema)
 
   function onlyUnique(value: string, index: number, self: any) {
     return self.indexOf(value) === index

@@ -128,6 +128,7 @@
     "test": "npm-run-all --parallel test:types test:lint",
     "test:types": "tsc --noEmit",
     "test:lint": "eslint src/ --max-warnings 0",
+    "test:unit": "node --test 'tests/unit/**/*.test.ts'",
     "test:pw": "playwright test -c playwright/playwright.config.ts",
     "test:video-to-webp": "node playwright/scripts/video-to-webp.cjs",
     "predocs": "node playwright/scripts/video-to-webp.cjs",
