@@ -12,9 +12,9 @@ import {
   Box,
   Divider
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
-import BladeFrame from '../BladeFrame'
+import BladeFrame, { errorAria } from '../BladeFrame'
 import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
@@ -40,9 +40,12 @@ const BladeSelect = ({
   menuItemStyle = {},
   hideDesc = false,
   children,
-  type
+  type,
+  error
 }: BladeSelectProps) => {
   const inputRef = useRef<any>(null)
+  const errorId = useId()
+  const aria = errorAria(errorId, error)
   const [showReserved, setShowReserved] = useState(false)
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
@@ -50,13 +53,15 @@ const BladeSelect = ({
       : ''
   )
   useEffect(() => {
-    if (model && model_id && model[model_id] && inputRef.current) {
-      inputRef.current.value = model[model_id]
-    }
+    const v = model && model_id ? model[model_id] : undefined
+    if (v != null && inputRef.current) inputRef.current.value = v
   }, [model, model_id])
+  const current = model && model_id ? model[model_id] : undefined
   // console.log(schema, model)
   return (
     <BladeFrame
+      error={error}
+      errorId={errorId}
       title={schema.title}
       tooltip={
         schema.title === 'Icon Name' ? (
@@ -139,12 +144,13 @@ const BladeSelect = ({
           <Select
             variant="filled"
             disabled={disabled}
+            SelectDisplayProps={aria}
             style={{
               flexGrow: 'unset',
               ...(selectStyle as any)
             }}
             defaultValue={schema.default}
-            value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
+            value={current ?? schema.default ?? schema.enum[0]}
             onChange={(e) => onChange(model_id, e.target.value)}
           >
             {children ||
@@ -160,14 +166,10 @@ const BladeSelect = ({
               variant="standard"
               helperText={!hideDesc && schema.description}
               slotProps={{
+                htmlInput: aria,
                 input: { disableUnderline: true }
               }}
-              defaultValue={
-                (model && model_id && model[model_id]) ||
-                (schema.enum && schema.enum[0]) ||
-                schema.default ||
-                ''
-              }
+              defaultValue={current ?? schema.default ?? ''}
               onBlur={(e) => onChange(model_id, e.target.value)}
               style={textStyle as any}
             />
@@ -178,12 +180,13 @@ const BladeSelect = ({
           variant="standard"
           disableUnderline
           disabled={disabled}
+          SelectDisplayProps={aria}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
             ...(selectStyle as any)
           }}
           defaultValue={schema.default}
-          value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
+          value={current ?? schema.default ?? schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
@@ -229,6 +232,7 @@ const BladeSelect = ({
             type={schema.description?.includes('password') ? 'password' : 'unset'}
             helperText={!hideDesc && schema.description}
             slotProps={{
+              htmlInput: aria,
               input:
                 schema.id === 'icon_name'
                   ? {
@@ -246,12 +250,7 @@ const BladeSelect = ({
                 ? `beat_frames-${model?.beat_frames || 'empty'}`
                 : undefined
             }
-            defaultValue={
-              (model && model_id && model[model_id]) ||
-              (schema.enum && schema.enum[0]) ||
-              schema.default ||
-              ''
-            }
+            defaultValue={current ?? schema.default ?? ''}
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
@@ -330,10 +329,12 @@ const BladeSelect = ({
                 }}
                 onClick={async () => {
                   if (model.ip_address === undefined || model.ip_address === '') return
-                  const { auth_token } = await Ledfx('/api/get_nanoleaf_token', 'POST', {
+                  const res = await Ledfx('/api/get_nanoleaf_token', 'POST', {
                     ip_address: model.ip_address,
                     port: model.port || 16021
                   })
+                  const auth_token = res?.auth_token
+                  if (!auth_token) return
                   onChange(model_id, auth_token)
                   inputRef.current.value = auth_token
                 }}

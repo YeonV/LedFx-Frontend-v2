@@ -1,4 +1,5 @@
 import { InfoRounded } from '@mui/icons-material'
+import { FormHelperText } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { ReactElement, ReactNode } from 'react'
 import Tooltip from './Tooltip'
@@ -47,7 +48,15 @@ interface BladeFrameProps {
   labelStyle?: any
   onClick?: any | undefined
   tooltip?: ReactNode
+  /** validation message shown under the field */
+  error?: string
+  /** id of that message: the input names it in aria-describedby (see errorAria) */
+  errorId?: string
 }
+
+/** The aria props that tie an input to its error caption (BladeFrame's `errorId`). */
+export const errorAria = (errorId: string, error?: string) =>
+  error ? { 'aria-invalid': true, 'aria-describedby': errorId } : {}
 
 const BladeFrame = ({
   index = undefined,
@@ -64,14 +73,17 @@ const BladeFrame = ({
   disabled = undefined,
   labelStyle = undefined,
   onClick = undefined,
-  tooltip = undefined
+  tooltip = undefined,
+  error = undefined,
+  errorId = undefined
 }: BladeFrameProps): ReactElement<any, any> => {
   return variant === 'outlined' ? (
     <Root
       className={className || ''}
       style={{
         ...style,
-        width: full ? '100%' : style.width
+        width: full ? '100%' : style.width,
+        ...(error ? { flexWrap: 'wrap' } : {})
       }}
       onClick={onClick}
     >
@@ -88,6 +100,11 @@ const BladeFrame = ({
         ) : null}
       </label>
       {children}
+      {error && (
+        <FormHelperText id={errorId} error sx={{ flexBasis: '100%', m: 0 }}>
+          {error}
+        </FormHelperText>
+      )}
     </Root>
   ) : (
     children

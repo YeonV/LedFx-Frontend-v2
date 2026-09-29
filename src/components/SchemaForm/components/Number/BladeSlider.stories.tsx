@@ -51,3 +51,10 @@ Number.args = {
   index: undefined,
   style: {}
 }
+
+export const EnumWithoutMarks = Template.bind({})
+EnumWithoutMarks.args = {
+  schema: { title: 'Refresh Rate', enum: [10, 30, 60, 120], default: 60 },
+  model: {},
+  model_id: 'refresh_rate'
+}

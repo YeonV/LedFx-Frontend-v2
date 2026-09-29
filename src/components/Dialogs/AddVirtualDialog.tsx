@@ -10,6 +10,8 @@ import {
 } from '@mui/material'
 import { Tune } from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import { clearFieldErrors, fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import EditVirtuals from '../../pages/Devices/EditVirtuals/EditVirtuals'
 import SeeDocs from '../SeeDocs/SeeDocs'
@@ -41,10 +43,12 @@ const AddVirtualDialog = () => {
   const virtualsSchemas = useStore((state) => state.schemas?.virtuals)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const [model, setModel] = useState<any>({})
+  const [errors, setErrors] = useState<FieldErrors>({})
 
   const currentSchema = (virtualsSchemas && virtualsSchemas.schema) || {}
 
   const handleClose = () => {
+    setErrors({})
     setDialogOpenAddVirtual(false)
     setCurrentVirtual(null)
     setModel({})
@@ -70,8 +74,9 @@ const AddVirtualDialog = () => {
       addVirtual({
         config: { ...defaultModel, ...cleanedModel }
       }).then((res) => {
+        setErrors(fieldErrors(res))
         // console.log(res);
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddVirtual(false)
           getDevices()
           getVirtuals()
@@ -86,8 +91,9 @@ const AddVirtualDialog = () => {
         id: virtId,
         config: { ...model }
       }).then((res) => {
+        setErrors(fieldErrors(res))
         // console.log(res);
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddVirtual(false)
           getDevices()
           getVirtuals()
@@ -101,6 +107,7 @@ const AddVirtualDialog = () => {
 
   const handleModelChange = (config: any) => {
     setModel({ ...model, ...config })
+    setErrors((e) => clearFieldErrors(e, config))
   }
 
   useEffect(() => {
@@ -140,6 +147,7 @@ const AddVirtualDialog = () => {
 
           <BladeSchemaForm
             schema={currentSchema}
+            errors={errors}
             model={addNew ? model : { ...initial.config, ...model }}
             onModelChange={handleModelChange}
           />

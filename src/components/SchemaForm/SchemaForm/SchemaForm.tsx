@@ -15,6 +15,7 @@ import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
 import SpeakerIcon from '@mui/icons-material/Speaker'
 import HubIcon from '@mui/icons-material/Hub'
+import { audioDeviceName, orderFormProperties } from '../fields'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
@@ -62,24 +63,14 @@ const SchemaForm = ({
   model,
   hideToggle,
   onModelChange,
-  type
+  type,
+  errors
 }: SchemaFormProps): ReactElement<any, any> => {
   const [hideDesc, setHideDesc] = useState(true)
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
   const setPerDeviceDelay = useStore((state) => state.setPerDeviceDelay)
   const usePerDeviceDelay = useStore((state) => state?.usePerDeviceDelay)
-  const yzSchema =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk,
-        required: schema.required && schema.required.indexOf(sk) !== -1,
-        permitted: schema.permitted_keys ? schema.permitted_keys.indexOf(sk) > -1 : true
-      }))
-      .sort((a, _b) => (a.required ? -1 : 1))
-      .sort((a, _b) => (a.id === 'name' ? -1 : 1))
+  const yzSchema = orderFormProperties(schema)
 
   function onlyUnique(value: string, index: number, self: any) {
     return self.indexOf(value) === index
@@ -94,6 +85,7 @@ const SchemaForm = ({
               case 'multiselect':
                 return (
                   <BladeMultiSelect
+                    error={errors?.[s.id]}
                     key={s.id}
                     index={i}
                     model={model}
@@ -115,13 +107,18 @@ const SchemaForm = ({
               case 'boolean':
                 return (
                   <BladeBoolean
+                    error={errors?.[s.id]}
                     hideDesc={hideDesc}
                     key={s.id}
                     index={i}
                     model={model}
                     model_id={s.id}
                     required={s.required}
-                    style={{ margin: '0.5rem 0', flexBasis: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      flexBasis: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     schema={s}
                     onClick={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
@@ -137,13 +134,12 @@ const SchemaForm = ({
                 const group: any = {}
                 let audio_groups: any = []
                 if (s.id === 'audio_device') {
-                  // eslint-disable-next-line
                   for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
                     if (typeof value === 'string') {
                       if (!group[value?.split(':')[0]]) {
                         group[value.split(':')[0]] = {}
                       }
-                      // eslint-disable-next-line
+
                       group[value.split(':')[0]][key] = value.split(':')[1]
                     }
                   }
@@ -154,7 +150,13 @@ const SchemaForm = ({
                 }
 
                 return audio_groups?.length ? (
-                  <BladeFrame key={s.id} style={{ order: -1 }} title="Audio Device" full>
+                  <BladeFrame
+                    key={s.id}
+                    style={{ order: -1 }}
+                    title="Audio Device"
+                    full
+                    error={errors?.[s.id]}
+                  >
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
@@ -202,6 +204,7 @@ const SchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
+                      error={errors?.[s.id]}
                       children={undefined}
                       hideDesc={hideDesc}
                       type={type}
@@ -237,6 +240,7 @@ const SchemaForm = ({
               case 'number':
                 return (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     step={undefined}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
@@ -259,6 +263,7 @@ const SchemaForm = ({
               case 'integer':
                 return (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     full={s.id === 'delay_ms'}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
@@ -271,21 +276,25 @@ const SchemaForm = ({
                     textfield={false}
                     marks={undefined}
                     index={undefined}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
+                      const device = audioDeviceName(
+                        schema.properties.audio_device,
+                        model?.audio_device
+                      )
                       if (
                         model_id === 'delay_ms' &&
                         usePerDeviceDelay &&
-                        model.audio_device &&
-                        value !==
-                          perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]]
+                        device &&
+                        value !== perDeviceDelay[device]
                       ) {
-                        setPerDeviceDelay({
-                          ...perDeviceDelay,
-                          [schema.properties.audio_device?.enum[model.audio_device]]: value
-                        })
+                        setPerDeviceDelay({ ...perDeviceDelay, [device]: value })
                       }
                       if (onModelChange) {
                         return onModelChange(c)
@@ -297,6 +306,7 @@ const SchemaForm = ({
               case 'int':
                 return s?.enum?.length > 10 ? (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
                     marks={s?.enum}
@@ -307,7 +317,11 @@ const SchemaForm = ({
                     required={s.required}
                     schema={s}
                     textfield={false}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
@@ -319,6 +333,7 @@ const SchemaForm = ({
                   />
                 ) : (
                   <BladeSlider
+                    error={errors?.[s.id]}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
                     marks={s?.enum}
@@ -329,7 +344,11 @@ const SchemaForm = ({
                     required={s.required}
                     schema={s}
                     textfield={false}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    style={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
@@ -348,7 +367,11 @@ const SchemaForm = ({
                     title={s.title}
                     index={i}
                     isGradient={s.isGradient || false}
-                    wrapperStyle={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
+                    wrapperStyle={{
+                      margin: '0.5rem 0',
+                      width: '49%',
+                      order: s.id.startsWith('stem') ? 1 : 0
+                    }}
                     colors={undefined}
                     handleAddGradient={() => {}}
                     sendColorToVirtuals={(color: string) => {

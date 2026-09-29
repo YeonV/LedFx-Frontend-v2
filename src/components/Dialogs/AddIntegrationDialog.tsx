@@ -12,6 +12,8 @@ import {
   Divider
 } from '@mui/material'
 import useStore from '../../store/useStore'
+import { clearFieldErrors, fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 
 const PREFIX = 'AddIntegrationDialog'
@@ -70,10 +72,13 @@ const AddIntegrationDialog = () => {
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const [integrationType, setIntegrationType] = useState('')
   const [model, setModel] = useState({})
+  const [errors, setErrors] = useState<FieldErrors>({})
 
-  const currentSchema = integrationType ? integrationsTypes[integrationType].schema : {}
+  // a type the loaded schemas don't list (or no schemas yet) has no form
+  const currentSchema = integrationsTypes?.[integrationType]?.schema ?? {}
 
   const handleClose = () => {
+    setErrors({})
     setDialogOpenAddIntegration(false)
   }
   const handleAddDevice = () => {
@@ -104,7 +109,8 @@ const AddIntegrationDialog = () => {
         type: integrationType,
         config: { ...defaultModel, ...cleanedModel }
       }).then((res) => {
-        if (res !== 'failed') {
+        setErrors(fieldErrors(res))
+        if (res && res.status !== 'failed') {
           setDialogOpenAddIntegration(false)
           getIntegrations()
         }
@@ -116,7 +122,8 @@ const AddIntegrationDialog = () => {
         type: integrationType,
         config: { ...model }
       }).then((res) => {
-        if (res !== 'failed') {
+        setErrors(fieldErrors(res))
+        if (res && res.status !== 'failed') {
           setDialogOpenAddIntegration(false)
           getIntegrations()
         }
@@ -124,11 +131,13 @@ const AddIntegrationDialog = () => {
     }
   }
   const handleTypeChange = (value: string, init = {}) => {
+    setErrors({})
     setIntegrationType(value)
     setModel(init)
   }
   const handleModelChange = (config: any) => {
     setModel({ ...model, ...config })
+    setErrors((e) => clearFieldErrors(e, config))
   }
 
   useEffect(() => {
@@ -178,6 +187,7 @@ const AddIntegrationDialog = () => {
             hideToggle={!integrationType}
             type={integrationType}
             schema={currentSchema}
+            errors={errors}
             model={model}
             onModelChange={handleModelChange}
           />

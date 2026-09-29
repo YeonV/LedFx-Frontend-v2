@@ -13,6 +13,8 @@ import {
   Alert
 } from '@mui/material'
 import useStore from '../../store/useStore'
+import { clearFieldErrors, fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import SeeDocs from '../SeeDocs/SeeDocs'
 
@@ -69,10 +71,13 @@ const AddDeviceDialog = () => {
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const [deviceType, setDeviceType] = useState('')
   const [model, setModel] = useState<any>({})
+  const [errors, setErrors] = useState<FieldErrors>({})
 
-  const currentSchema = deviceType ? deviceTypes[deviceType].schema : {}
+  // a type the loaded schemas don't list (or no schemas yet) has no form
+  const currentSchema = deviceTypes?.[deviceType]?.schema ?? {}
 
   const handleClose = () => {
+    setErrors({})
     setDialogOpenAddDevice(false)
   }
   const handleAddDevice = () => {
@@ -100,7 +105,8 @@ const AddDeviceDialog = () => {
         type: deviceType,
         config: { ...defaultModel, ...cleanedModel }
       }).then((res: any) => {
-        if (res !== 'failed') {
+        setErrors(fieldErrors(res))
+        if (res && res.status !== 'failed') {
           if (deviceType === 'wled') {
             const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
             const newDevices = [] as { name: string; ip_address: string }[]
@@ -123,7 +129,8 @@ const AddDeviceDialog = () => {
     } else {
       // console.log("EDITING");
       updateDevice(deviceId, { config: model }).then((res) => {
-        if (res !== 'failed') {
+        setErrors(fieldErrors(res))
+        if (res && res.status !== 'failed') {
           setDialogOpenAddDevice(false)
           getDevices()
           getVirtuals()
@@ -132,11 +139,13 @@ const AddDeviceDialog = () => {
     }
   }
   const handleTypeChange = (value: string, init = {}) => {
+    setErrors({})
     setDeviceType(value)
     setModel(init)
   }
   const handleModelChange = (config: any) => {
     setModel({ ...model, ...config })
+    setErrors((e) => clearFieldErrors(e, config))
   }
 
   function filterObject(obj: any, callback: any) {
@@ -216,6 +225,7 @@ const AddDeviceDialog = () => {
                         )
                   }
             }
+            errors={errors}
             model={
               initial.config &&
               Object.keys(initial.config).length === 0 &&

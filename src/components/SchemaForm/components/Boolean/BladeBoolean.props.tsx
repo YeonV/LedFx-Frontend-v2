@@ -8,4 +8,5 @@ export interface BladeBooleanProps {
   model?: Record<string, unknown>
   hideDesc?: boolean
   model_id: string
+  error?: string
 }

@@ -22,6 +22,7 @@ import isElectron from 'is-electron'
 import OneEffect from '../components/Gamepad/OneEffect'
 import BottomBar from '../components/Bars/BarBottom'
 import SmartBar from '../components/Dialogs/SmartBar'
+import ConfigBanner from '../components/ConfigBanner'
 import useStore from '../store/useStore'
 import Devices from './Devices/Devices'
 import LeftBar from '../components/Bars/BarLeft'
@@ -52,6 +53,7 @@ const Routings = () => {
       {!display && <TopBar />}
       {!display && <LeftBar />}
       <MainContentWrapper isDisplayMode={display}>
+        {!display && <ConfigBanner />}
         <Routes>
           {locked && isElect ? (
             <Route path="*" element={<Lock />} />
