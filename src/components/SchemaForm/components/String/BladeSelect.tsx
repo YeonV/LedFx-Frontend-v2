@@ -12,23 +12,33 @@ import {
   Box,
   Divider
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
-import BladeFrame from '../BladeFrame'
+import BladeFrame, { errorAria } from '../BladeFrame'
 import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
+import {
+  enumOptions,
+  fromSelectValue,
+  NULL_OPTION,
+  sourcedOptions,
+  sourceOf,
+  toSelectValue
+} from '../../fields'
+import { useInstanceLoaded, useInstanceOptions } from '../../useInstanceOptions'
 
 /**
  * ## String
  * ### render as `input field` or `select`
- * Renders select if schema.enum is defined properly
+ * Renders select if the schema is an enum (`enum`, or a single `const`); `nullable` adds a null option
  */
 const BladeSelect = ({
   variant = 'outlined',
   disabled = false,
   schema,
+  nullable = false,
   model,
   model_id,
   onChange,
@@ -40,23 +50,46 @@ const BladeSelect = ({
   menuItemStyle = {},
   hideDesc = false,
   children,
-  type
+  type,
+  error
 }: BladeSelectProps) => {
   const inputRef = useRef<any>(null)
+  const errorId = useId()
+  const aria = errorAria(errorId, error)
   const [showReserved, setShowReserved] = useState(false)
+  const instances = useInstanceOptions(sourceOf(schema))
+  const loaded = useInstanceLoaded(sourceOf(schema))
+  const current = model && model_id ? model[model_id] : undefined
+  const options = enumOptions(
+    schema,
+    nullable,
+    sourcedOptions(schema, instances, current, required, loaded)
+  )
   const [icon, setIcon] = useState(
-    schema.id === 'icon_name'
-      ? (model && model_id && model[model_id]) || (schema.enum && schema.enum[0])
-      : ''
+    schema.id === 'icon_name' ? (model && model_id && model[model_id]) || options?.[0]?.value : ''
   )
   useEffect(() => {
-    if (model && model_id && model[model_id] && inputRef.current) {
-      inputRef.current.value = model[model_id]
-    }
+    const v = model && model_id ? model[model_id] : undefined
+    if (v != null && inputRef.current) inputRef.current.value = v
   }, [model, model_id])
+  // MUI Select can't hold null: a null option (and a null value, when there is one) is NULL_OPTION
+  const selectValue = toSelectValue(options, current, schema.default)
+  const pick = (v: unknown) => onChange(model_id, fromSelectValue(v))
+  const items = (style?: any) =>
+    options?.map((o, i) => (
+      <MenuItem
+        key={`${o.value}-${i}`}
+        value={(o.value === null ? NULL_OPTION : o.value) as any}
+        style={style}
+      >
+        {o.label}
+      </MenuItem>
+    ))
   // console.log(schema, model)
   return (
     <BladeFrame
+      error={error}
+      errorId={errorId}
       title={schema.title}
       tooltip={
         schema.title === 'Icon Name' ? (
@@ -119,13 +152,7 @@ const BladeSelect = ({
         )
       }
       className={`step-effect-${index}`}
-      full={
-        !(
-          schema.enum &&
-          schema.enum.length &&
-          Object.values(schema.enum).every((a: any) => a?.length < 20)
-        )
-      }
+      full={!(options?.length && options.every((o) => o.label.length < 20))}
       required={required}
       style={{
         // default first, caller last: a wrapperStyle asking for a full-width
@@ -135,100 +162,63 @@ const BladeSelect = ({
       }}
     >
       {variant === 'contained' ? (
-        schema.enum ? (
+        options ? (
           <Select
             variant="filled"
             disabled={disabled}
+            SelectDisplayProps={aria}
             style={{
               flexGrow: 'unset',
               ...(selectStyle as any)
             }}
             defaultValue={schema.default}
-            value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
-            onChange={(e) => onChange(model_id, e.target.value)}
+            value={selectValue}
+            onChange={(e) => pick(e.target.value)}
           >
-            {children ||
-              schema.enum.map((item: any, i: number) => (
-                <MenuItem key={`enum-${item}-${i}`} value={item}>
-                  {item}
-                </MenuItem>
-              ))}
+            {children || items()}
           </Select>
         ) : (
           <>
             <TextField
               variant="standard"
+              disabled={disabled}
               helperText={!hideDesc && schema.description}
               slotProps={{
+                htmlInput: aria,
                 input: { disableUnderline: true }
               }}
-              defaultValue={
-                (model && model_id && model[model_id]) ||
-                (schema.enum && schema.enum[0]) ||
-                schema.default ||
-                ''
-              }
+              defaultValue={current ?? schema.default ?? ''}
               onBlur={(e) => onChange(model_id, e.target.value)}
               style={textStyle as any}
             />
           </>
         )
-      ) : schema.enum && Array.isArray(schema.enum) ? (
+      ) : options ? (
         <Select
           variant="standard"
           disableUnderline
           disabled={disabled}
+          SelectDisplayProps={aria}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
             ...(selectStyle as any)
           }}
           defaultValue={schema.default}
-          value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
-          onChange={(e) => onChange(model_id, e.target.value)}
+          value={selectValue}
+          onChange={(e) => pick(e.target.value)}
         >
-          {schema.enum.map((item: any, i: number) => (
-            <MenuItem key={`${item}-${i}`} value={item} style={menuItemStyle as any}>
-              {item}
-            </MenuItem>
-          ))}
-        </Select>
-      ) : schema.enum && !Array.isArray(schema.enum) ? (
-        <Select
-          variant="standard"
-          disableUnderline
-          disabled={disabled}
-          style={{
-            flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...(selectStyle as any)
-          }}
-          defaultValue={schema.default}
-          value={
-            (model && model_id && schema.enum[model[model_id]]) || schema.default || schema.enum[0]
-          }
-          onChange={(e) =>
-            onChange(
-              model_id,
-              parseInt(
-                Object.keys(schema.enum).find((en) => schema.enum[en] === e.target.value) || '0',
-                10
-              )
-            )
-          }
-        >
-          {Object.keys(schema.enum).map((item, i) => (
-            <MenuItem key={`${item}-${i}`} value={schema.enum[item]}>
-              {schema.enum[item]}
-            </MenuItem>
-          ))}
+          {items(menuItemStyle)}
         </Select>
       ) : (
         <>
           <TextField
             variant="standard"
+            disabled={disabled}
             inputRef={inputRef}
             type={schema.description?.includes('password') ? 'password' : 'unset'}
             helperText={!hideDesc && schema.description}
             slotProps={{
+              htmlInput: aria,
               input:
                 schema.id === 'icon_name'
                   ? {
@@ -246,12 +236,7 @@ const BladeSelect = ({
                 ? `beat_frames-${model?.beat_frames || 'empty'}`
                 : undefined
             }
-            defaultValue={
-              (model && model_id && model[model_id]) ||
-              (schema.enum && schema.enum[0]) ||
-              schema.default ||
-              ''
-            }
+            defaultValue={current ?? schema.default ?? ''}
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
@@ -330,10 +315,12 @@ const BladeSelect = ({
                 }}
                 onClick={async () => {
                   if (model.ip_address === undefined || model.ip_address === '') return
-                  const { auth_token } = await Ledfx('/api/get_nanoleaf_token', 'POST', {
+                  const res = await Ledfx('/api/get_nanoleaf_token', 'POST', {
                     ip_address: model.ip_address,
                     port: model.port || 16021
                   })
+                  const auth_token = res?.auth_token
+                  if (!auth_token) return
                   onChange(model_id, auth_token)
                   inputRef.current.value = auth_token
                 }}

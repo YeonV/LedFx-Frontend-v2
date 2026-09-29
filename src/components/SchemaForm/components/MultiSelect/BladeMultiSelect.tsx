@@ -1,5 +1,8 @@
+import { useId } from 'react'
 import { Autocomplete, Chip, TextField } from '@mui/material'
-import BladeFrame from '../BladeFrame'
+import BladeFrame, { errorAria } from '../BladeFrame'
+import { enumOptions, sourceOf } from '../../fields'
+import { useInstanceLoaded, useInstanceOptions } from '../../useInstanceOptions'
 
 export interface BladeMultiSelectProps {
   schema: any
@@ -11,6 +14,7 @@ export interface BladeMultiSelectProps {
   disabled?: boolean
   hideDesc?: boolean
   wrapperStyle?: any
+  error?: string
 }
 
 /**
@@ -30,15 +34,37 @@ const BladeMultiSelect = ({
   required = false,
   disabled = false,
   hideDesc = false,
-  wrapperStyle = { margin: '0.5rem 0', width: '100%' }
+  wrapperStyle = { margin: '0.5rem 0', width: '100%' },
+  error
 }: BladeMultiSelectProps) => {
-  const options: string[] = schema.enum || []
+  const errorId = useId()
+  // an array of instance ids (`items` carries the marker) takes its options from the store
+  const sourced = useInstanceOptions(sourceOf(schema))
+  const loaded = useInstanceLoaded(sourceOf(schema))
   const raw = model && model_id ? model[model_id] : undefined
   // Tolerate a scalar or a missing value so a half-migrated config still renders
   const value: string[] = Array.isArray(raw) ? raw : raw ? [raw] : []
+  // a stored id the store no longer knows stays listed, as unavailable; an id in the schema's
+  // default is a "none" value, not a lost instance, and stays hidden as before
+  const def: unknown[] = Array.isArray(schema.default) ? schema.default : []
+  const all =
+    enumOptions(
+      schema.items?.enum ? schema.items : schema,
+      false,
+      sourced && [
+        ...sourced,
+        ...value
+          .filter((v) => !sourced.some((o) => o.value === v) && !def.includes(v))
+          .map((v) => ({ value: v, label: loaded ? `${v} (unavailable)` : String(v) }))
+      ]
+    ) ?? []
+  const options = all.map((o) => o.value) as string[]
+  const labels = Object.fromEntries(all.map((o) => [String(o.value), o.label]))
 
   return (
     <BladeFrame
+      error={error}
+      errorId={errorId}
       title={schema.title}
       required={required}
       disabled={disabled}
@@ -53,12 +79,13 @@ const BladeMultiSelect = ({
         fullWidth
         disabled={disabled}
         options={options}
+        getOptionLabel={(v) => labels[v] ?? v}
         value={value.filter((v) => options.includes(v))}
         onChange={(_e, newValue) => onChange(model_id, newValue as string[])}
         renderTags={(tagValue, getTagProps) =>
           tagValue.map((option, i) => {
             const { key, ...tagProps } = getTagProps({ index: i })
-            return <Chip key={key} label={option} size="small" {...tagProps} />
+            return <Chip key={key} label={labels[option] ?? option} size="small" {...tagProps} />
           })
         }
         renderInput={(params) => (
@@ -68,6 +95,7 @@ const BladeMultiSelect = ({
             placeholder={value.length ? '' : 'Full mix'}
             helperText={!hideDesc && schema.description ? schema.description : undefined}
             slotProps={{
+              htmlInput: { ...params.inputProps, ...errorAria(errorId, error) },
               input: { ...params.InputProps, disableUnderline: true }
             }}
           />

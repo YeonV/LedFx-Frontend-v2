@@ -93,7 +93,7 @@ const storeAssets = (set: any) => ({
   deleteAsset: async (filename: string) => {
     const encodedFilename = encodeURIComponent(filename)
     const resp = await Ledfx(`/api/assets?path=${encodedFilename}`, 'DELETE')
-    if (resp) {
+    if (resp?.status === 'success') {
       console.log('Asset deleted:', filename)
       set(
         produce((state: IStore) => {

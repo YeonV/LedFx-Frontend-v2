@@ -11,6 +11,8 @@ export interface BladeSliderInnerProps {
   hideDesc?: boolean
   disableUnderline?: boolean
   full?: boolean
+  /** aria props tying the inputs to the error caption (see errorAria) */
+  aria?: Record<string, unknown>
 }
 
 export interface BladeSliderProps {
@@ -22,7 +24,7 @@ export interface BladeSliderProps {
    * Renders slider if:
    *
    *  - schema.maximum && !textfield
-   *  - schema.enum && !textfield
+   *  - the schema is an enum (`enum`) && !textfield
    *
    * Else: renders input field
    */
@@ -50,4 +52,6 @@ export interface BladeSliderProps {
   hideDesc?: boolean
   style?: any
   full?: boolean
+  /** validation message shown under the field */
+  error?: string
 }

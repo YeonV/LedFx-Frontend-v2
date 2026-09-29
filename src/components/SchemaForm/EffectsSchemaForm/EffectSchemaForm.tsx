@@ -1,3 +1,6 @@
+import { Fragment } from 'react'
+import type { FieldSchema } from '../../../api/ledfx.types'
+import { sliderMarks, widgetFor } from '../fields'
 import { styled } from '@mui/material/styles'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
@@ -31,15 +34,23 @@ const EffectSchemaForm = ({
   virtId,
   handleEffectConfig,
   descriptions,
-  selectedType
+  selectedType,
+  errors
 }: EffectSchemaFormProps) => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
+  const change = (id: string, value: unknown) =>
+    handleEffectConfig && handleEffectConfig({ [id]: value })
   return (
     <Root className={classes.bladeSchemaForm}>
       {schemaProperties &&
         model &&
-        schemaProperties.map((s: any, i: number) => {
-          switch (s.type) {
+        schemaProperties.map((s, i) => {
+          const w = widgetFor(s, s.id, selectedType, true)
+          const f: FieldSchema = { ...w.field, id: s.id }
+          const error = errors?.[s.id]
+          switch (w.kind) {
+            case 'hidden':
+              return null
             case 'multiselect':
               return (
                 <BladeMultiSelect
@@ -47,130 +58,112 @@ const EffectSchemaForm = ({
                   index={i}
                   model={model}
                   model_id={s.id}
-                  schema={s}
+                  schema={f}
                   hideDesc={descriptions !== 'Show'}
-                  onChange={(model_id: string, value: string[]) => {
-                    const c: Record<string, unknown> = {}
-                    c[model_id] = value
-                    return handleEffectConfig && handleEffectConfig(c)
-                  }}
+                  error={error}
+                  onChange={change}
                 />
               )
             case 'boolean':
               return (
                 <BladeBoolean
-                  key={i}
+                  key={s.id}
                   index={i}
                   model={model}
                   model_id={s.id}
-                  schema={s}
+                  schema={f}
                   hideDesc={descriptions !== 'Show'}
-                  onClick={(model_id: string, value: any) => {
-                    const c: Record<string, unknown> = {}
-                    c[model_id] = value
-                    return handleEffectConfig && handleEffectConfig(c)
-                  }}
-                />
-              )
-            case 'string':
-              {
-                const complex = ['mask', 'foreground', 'background']
-                if (
-                  (selectedType === 'blender' && complex.includes(s.id)) ||
-                  (selectedType === 'radial' && s.id === 'source_virtual')
-                )
-                  return (
-                    <VirtualPickerSchemaForm
-                      title={s.title}
-                      id={s.id}
-                      model={model}
-                      hide={selectedType === 'blender' && blenderAutomagic}
-                      handleEffectConfig={handleEffectConfig}
-                    />
-                  )
-              }
-              return (
-                <BladeSelect
-                  model={model}
-                  schema={s}
-                  wrapperStyle={{ width: '49%' }}
-                  model_id={s.id}
-                  key={i}
-                  index={i}
-                  hideDesc={descriptions === 'Hide'}
-                  onChange={(model_id: string, value: any) => {
-                    const c: Record<string, unknown> = {}
-                    c[model_id] = value
-                    return handleEffectConfig && handleEffectConfig(c)
-                  }}
-                />
-              )
-
-            case 'number':
-              return (
-                <BladeSlider
-                  key={i}
-                  index={i}
-                  hideDesc={descriptions !== 'Show'}
-                  model_id={s.id}
-                  model={model}
-                  schema={s}
-                  onChange={(model_id: string, value: any) => {
-                    const c: Record<string, unknown> = {}
-                    c[model_id] = value
-                    return handleEffectConfig && handleEffectConfig(c)
-                  }}
-                />
-              )
-
-            case 'integer':
-              return (
-                <BladeSlider
-                  step={1}
-                  key={i}
-                  index={i}
-                  hideDesc={descriptions !== 'Show'}
-                  model_id={s.id}
-                  model={model}
-                  schema={s}
-                  style={{ margin: '0.5rem 0' }}
-                  onChange={(model_id: string, value: any) => {
-                    const c: Record<string, unknown> = {}
-                    c[model_id] = value
-                    return handleEffectConfig && handleEffectConfig(c)
-                  }}
-                />
-              )
-            case 'color':
-              return (
-                <GradientPickerWrapper
-                  pickerBgColor={model[s.id]}
-                  key={i}
-                  index={i}
-                  title={s.id}
-                  hideDesc={descriptions === 'Hide'}
-                  virtId={virtId}
-                  wrapperStyle={{ width: '49%' }}
-                  isGradient={s.gradient}
+                  error={error}
+                  onClick={change}
                 />
               )
             case 'virtual':
               return (
                 <VirtualPickerSchemaForm
-                  title={s.title}
+                  key={s.id}
+                  title={f.title ?? s.id}
                   id={s.id}
                   model={model}
-                  hide={blenderAutomagic}
+                  defaultValue={f.default}
+                  // hand-built `virtual` fields and blender's layers follow blender automagic
+                  hide={blenderAutomagic && (s.type === 'virtual' || selectedType === 'blender')}
                   handleEffectConfig={handleEffectConfig}
                 />
               )
-            default:
+            case 'text':
+            case 'select':
               return (
-                <>
-                  Unsupported type:--
-                  {s.type}
-                </>
+                <BladeSelect
+                  model={model}
+                  schema={f}
+                  nullable={w.nullable}
+                  wrapperStyle={{ width: '49%' }}
+                  model_id={s.id}
+                  key={s.id}
+                  index={i}
+                  hideDesc={descriptions === 'Hide'}
+                  error={error}
+                  onChange={change}
+                />
               )
+            case 'slider':
+              return (
+                <BladeSlider
+                  key={s.id}
+                  index={i}
+                  hideDesc={descriptions !== 'Show'}
+                  model_id={s.id}
+                  model={model}
+                  schema={f}
+                  error={error}
+                  onChange={change}
+                />
+              )
+            case 'integerSlider': {
+              const marks = sliderMarks(f)
+              return (
+                <BladeSlider
+                  step={marks ? undefined : 1}
+                  marks={marks}
+                  key={s.id}
+                  index={i}
+                  hideDesc={descriptions !== 'Show'}
+                  model_id={s.id}
+                  model={model}
+                  schema={f}
+                  style={{ margin: '0.5rem 0' }}
+                  error={error}
+                  onChange={change}
+                />
+              )
+            }
+            case 'color':
+            case 'gradient':
+              return (
+                <GradientPickerWrapper
+                  pickerBgColor={model[s.id]}
+                  key={s.id}
+                  index={i}
+                  title={s.id}
+                  hideDesc={descriptions === 'Hide'}
+                  virtId={virtId}
+                  wrapperStyle={{ width: '49%' }}
+                  isGradient={w.kind === 'gradient'}
+                />
+              )
+            case 'audioDevice':
+            case 'autocomplete':
+            case 'unsupported':
+              return (
+                <Fragment key={s.id}>
+                  Unsupported type:--
+                  {f.type}
+                </Fragment>
+              )
+            default: {
+              const _exhaustive: never = w.kind
+              return _exhaustive
+            }
           }
         })}
     </Root>

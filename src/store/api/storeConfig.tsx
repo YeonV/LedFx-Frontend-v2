@@ -1,16 +1,8 @@
 import { produce } from 'immer'
-import { Ledfx } from '../../api/ledfx'
+import { Ledfx, api } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 import useStore from '../useStore'
-import { EffectConfig } from '../../api/ledfx.types'
-
-export interface Schema {
-  type: string
-  title: string
-  properties: any
-  required: string[]
-  order: string[]
-}
+import type { EffectConfig, Schemas } from '../../api/ledfx.types'
 
 export interface Intergration {
   active: boolean
@@ -83,23 +75,50 @@ export interface ISystemConfig {
 }
 
 const storeConfig = (set: any) => ({
-  schemas: {} as any,
+  schemas: {} as Partial<Schemas>,
+  /** Set when the backend has no /api/schemas: it predates this frontend. */
+  schemasMissing: false,
+  /** /api/audio/devices: device index -> "Host: Name". Names live here, not in the schema. */
+  audioDevices: {} as Record<string, string>,
+  /** Sources (`x-ledfx-enum-source`) whose getter has resolved once: until then, "not in the list" means "not loaded yet". */
+  instanceLoaded: {} as Record<string, boolean>,
+  markInstanceLoaded: (source: string) =>
+    set(
+      produce((state: IStore) => {
+        state.instanceLoaded[source] = true
+      }),
+      false,
+      'api/instanceLoaded'
+    ),
   getSchemas: async (forceRefresh = false) => {
-    // Cache check: skip if already loaded (unless force refresh)
+    // Cache check: skip if already loaded (unless force refresh). `schemas` is
+    // persisted, so a copy of the legacy /api/schema (no $schema) doesn't count.
     const currentSchemas = useStore.getState().schemas
-    if (!forceRefresh && currentSchemas && Object.keys(currentSchemas).length > 0) {
-      return
-    }
+    if (!forceRefresh && currentSchemas?.virtuals?.schema?.$schema) return
 
-    const resp = await Ledfx('/api/schema')
-    if (resp) {
+    try {
+      const { data } = await api.get('/api/schemas')
       set(
         produce((s: IStore) => {
-          s.schemas = resp
+          s.schemas = data
+          s.schemasMissing = false
         }),
         false,
         'gotSchemas'
       )
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        set(
+          produce((s: IStore) => {
+            s.schemas = {}
+            s.schemasMissing = true
+          }),
+          false,
+          'schemasMissing'
+        )
+      } else {
+        useStore.getState().ui.showSnackbar('error', error.message)
+      }
     }
   },
 
@@ -190,10 +209,7 @@ const storeConfig = (set: any) => ({
     if (resp && resp.devices !== undefined && resp.active_device_index !== undefined) {
       set(
         produce((state: IStore) => {
-          // Update the audio device list in the schema
-          if (state.schemas?.audio?.schema?.properties?.audio_device) {
-            state.schemas.audio.schema.properties.audio_device.enum = resp.devices
-          }
+          state.audioDevices = resp.devices
           // Update the active device index in the config
           if (state.config?.audio) {
             state.config.audio.audio_device = resp.active_device_index

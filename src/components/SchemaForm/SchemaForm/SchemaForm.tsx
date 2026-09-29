@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { Fragment, ReactElement, useId, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import {
   DialogContentText,
@@ -15,14 +15,30 @@ import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
 import SpeakerIcon from '@mui/icons-material/Speaker'
 import HubIcon from '@mui/icons-material/Hub'
+import type { FieldSchema } from '../../../api/ledfx.types'
+import {
+  audioDeviceName,
+  enumOptions,
+  fromSelectValue,
+  groupAudioDevices,
+  NULL_OPTION,
+  nullOption,
+  orderFormProperties,
+  sourcedOptions,
+  sourceOf,
+  unwrapNullable,
+  sliderMarks,
+  widgetFor
+} from '../fields'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
-import BladeFrame from '../components/BladeFrame'
+import BladeFrame, { errorAria } from '../components/BladeFrame'
 import GradientPicker from '../components/GradientPicker/GradientPicker'
 import BladeMultiSelect from '../components/MultiSelect/BladeMultiSelect'
 import { SchemaFormProps } from './SchemaForm.props'
 import useStore from '../../../store/useStore'
+import { useInstanceLoaded, useInstanceOptions } from '../useInstanceOptions'
 
 const PREFIX = 'SchemaForm'
 
@@ -53,365 +69,284 @@ const Root = styled('div')(({ theme }) => ({
 }))
 
 /**
- * Dynamically render Forms based on a `schema` <br />
- * most schemas retrived from ledfx/api/schema are read-only <br />
- * to enable write, please provide the key `permitted_keys`
+ * Dynamically render a form from a `schema`: a /api/schemas object schema, or a hand-built one.
+ * A field the schema marks `readOnly` is shown but disabled, as is a field missing from
+ * `permitted_keys` when the schema lists them.
  */
 const SchemaForm = ({
   schema,
   model,
   hideToggle,
   onModelChange,
-  type
+  type,
+  errors
 }: SchemaFormProps): ReactElement<any, any> => {
   const [hideDesc, setHideDesc] = useState(true)
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
   const setPerDeviceDelay = useStore((state) => state.setPerDeviceDelay)
   const usePerDeviceDelay = useStore((state) => state?.usePerDeviceDelay)
-  const yzSchema =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk,
-        required: schema.required && schema.required.indexOf(sk) !== -1,
-        permitted: schema.permitted_keys ? schema.permitted_keys.indexOf(sk) > -1 : true
-      }))
-      .sort((a, _b) => (a.required ? -1 : 1))
-      .sort((a, _b) => (a.id === 'name' ? -1 : 1))
+  const audioDevices = useStore((state) => state.audioDevices)
+  // only a form with an audio field loads (and follows) the devices
+  const audioSource = Object.values(schema?.properties ?? {}).some(
+    (p) => sourceOf(unwrapNullable(p).field) === 'audio_devices'
+  )
+    ? 'audio_devices'
+    : undefined
+  const audioOptions = useInstanceOptions(audioSource)
+  const audioLoaded = useInstanceLoaded(audioSource)
+  const audioErrorId = useId()
 
-  function onlyUnique(value: string, index: number, self: any) {
-    return self.indexOf(value) === index
-  }
+  const change = (id: string, value: unknown) => onModelChange?.({ [id]: value })
+  const order = (id: string) => (id.startsWith('stem') ? 1 : 0)
 
   return (
     <Root>
       <div className={classes.bladeSchemaForm}>
-        {yzSchema &&
-          yzSchema.map((s: any, i: number) => {
-            switch (s.type) {
-              case 'multiselect':
-                return (
-                  <BladeMultiSelect
-                    key={s.id}
-                    index={i}
-                    model={model}
-                    model_id={s.id}
-                    schema={s}
-                    disabled={!s.permitted}
-                    required={s.required}
-                    hideDesc={hideDesc}
-                    onChange={(model_id: string, value: string[]) => {
-                      const c: Record<string, unknown> = {}
-                      c[model_id] = value
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
+        {orderFormProperties(schema).map((s, i) => {
+          const w = widgetFor(s, s.id, type, Boolean(schema?.$schema))
+          // the widgets read id, title, enum, ... from the unwrapped field
+          const f: FieldSchema = { ...w.field, id: s.id }
+          const disabled = !s.permitted || w.readonly
+          const error = errors?.[s.id]
+          switch (w.kind) {
+            case 'hidden':
+              return null
+            case 'multiselect':
+              return (
+                <BladeMultiSelect
+                  key={s.id}
+                  index={i}
+                  model={model}
+                  model_id={s.id}
+                  schema={f}
+                  disabled={disabled}
+                  required={s.required}
+                  hideDesc={hideDesc}
+                  error={error}
+                  onChange={change}
+                />
+              )
+            case 'boolean':
+              return (
+                <BladeBoolean
+                  hideDesc={hideDesc}
+                  key={s.id}
+                  index={i}
+                  model={model}
+                  model_id={s.id}
+                  required={s.required}
+                  style={{ margin: '0.5rem 0', flexBasis: '49%', order: order(s.id) }}
+                  schema={f}
+                  error={error}
+                  onClick={change}
+                />
+              )
+            case 'audioDevice': {
+              // "System default", when the field is nullable (also with no devices, no enum)
+              const none = w.nullable ? nullOption(f) : undefined
+              const current = model?.[s.id]
+              // the known devices, plus a stored one the store doesn't list (unplugged) once loaded
+              const options = sourcedOptions(
+                f,
+                audioOptions ?? [],
+                current,
+                s.required,
+                audioLoaded
+              )
+              const extra = options?.filter((o) => !audioOptions?.includes(o)) ?? []
+              // before the devices load a stored index has no option yet: empty, not out of range
+              const value = options?.some((o) => o.value === current)
+                ? current
+                : current == null && none
+                  ? NULL_OPTION
+                  : ''
+              return (
+                <BladeFrame
+                  key={s.id}
+                  style={{ order: -1 }}
+                  title="Audio Device"
+                  full
+                  error={error}
+                  errorId={audioErrorId}
+                >
+                  <Select
+                    value={value}
+                    SelectDisplayProps={errorAria(audioErrorId, error)}
+                    fullWidth
+                    onChange={(e: any) => {
+                      const v = fromSelectValue(e.target.value)
+                      change(s.id, v === null ? null : Number(v))
                     }}
-                  />
-                )
-              case 'boolean':
-                return (
-                  <BladeBoolean
-                    hideDesc={hideDesc}
-                    key={s.id}
-                    index={i}
-                    model={model}
-                    model_id={s.id}
-                    required={s.required}
-                    style={{ margin: '0.5rem 0', flexBasis: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
-                    schema={s}
-                    onClick={(model_id: string, value: any) => {
-                      const c: Record<string, unknown> = {}
-                      c[model_id] = value
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
-                    }}
-                  />
-                )
-              case 'string': {
-                const group: any = {}
-                let audio_groups: any = []
-                if (s.id === 'audio_device') {
-                  // eslint-disable-next-line
-                  for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
-                    if (typeof value === 'string') {
-                      if (!group[value?.split(':')[0]]) {
-                        group[value.split(':')[0]] = {}
-                      }
-                      // eslint-disable-next-line
-                      group[value.split(':')[0]][key] = value.split(':')[1]
-                    }
-                  }
-
-                  audio_groups = Object.values(schema.properties.audio_device?.enum)
-                    .map((d: any) => d.split(':')[0])
-                    .filter(onlyUnique)
-                }
-
-                return audio_groups?.length ? (
-                  <BladeFrame key={s.id} style={{ order: -1 }} title="Audio Device" full>
-                    <Select
-                      value={(model && model.audio_device) || 0}
-                      fullWidth
-                      onChange={(e: any) => {
-                        const c: Record<string, unknown> = {}
-                        c.audio_device = parseInt(e.target.value, 10)
-                        if (onModelChange) {
-                          return onModelChange(c)
-                        }
-                        return null
-                      }}
-                      className={classes.bladeSelect}
-                      id="grouped-select"
-                    >
-                      {audio_groups?.flatMap((c: string, ind: number) => [
-                        <ListSubheader
-                          key={`audio-header-${ind}`}
-                          className={classes.FormListHeaders}
-                          color="primary"
-                        >
-                          {c}
-                        </ListSubheader>,
-                        ...Object.keys(group[c]).map((e) => (
-                          <MenuItem
-                            key={e}
-                            value={e}
-                            // disabled={group[c][e].indexOf('[Loopback]') > -1}
-                          >
-                            {c.toLowerCase() === 'sendspin' ? (
-                              <HubIcon style={{ marginRight: '10px' }} />
-                            ) : group[c][e].indexOf('[Loopback]') > -1 ? (
-                              <SpeakerIcon style={{ marginRight: '10px' }} />
-                            ) : (
-                              <MicIcon style={{ marginRight: '10px' }} />
-                            )}
-                            {group[c][e].replace('[Loopback]', '')}
-                          </MenuItem>
-                        ))
-                      ])}
-                    </Select>
-                  </BladeFrame>
-                ) : (
-                  !(
-                    (type === 'mqtt_hass' && s.id === 'name') ||
-                    (type === 'mqtt_hass' && s.id === 'description')
-                  ) && (
-                    <BladeSelect
-                      children={undefined}
-                      hideDesc={hideDesc}
-                      type={type}
-                      // hide={"test"}
-                      model={model}
-                      disabled={!s.permitted}
-                      wrapperStyle={{
-                        margin: '0.5rem 0',
-                        // a name is long free text; half a row truncates it for
-                        // no benefit, unlike the short numeric fields
-                        width: s.id === 'audio_device_name' ? '100%' : '49%',
-                        flexBasis: 'unset',
-                        order: s.id.startsWith('stem') ? 1 : 0
-                      }}
-                      textStyle={{ width: '100%' }}
-                      schema={s}
-                      required={s.required}
-                      model_id={s.id}
-                      key={s.id}
-                      index={i}
-                      onChange={(model_id: string, value: any) => {
-                        const c: Record<string, unknown> = {}
-                        c[model_id] = value
-                        if (onModelChange) {
-                          return onModelChange(c)
-                        }
-                        return null
-                      }}
-                    />
-                  )
-                )
-              }
-              case 'number':
-                return (
-                  <BladeSlider
-                    step={undefined}
-                    hideDesc={hideDesc}
-                    disabled={!s.permitted}
-                    key={s.id}
-                    model_id={s.id}
-                    model={model}
-                    required={s.required}
-                    schema={s}
-                    onChange={(model_id: string, value: any) => {
-                      const c: Record<string, unknown> = {}
-                      c[model_id] = value
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
-                    }}
-                  />
-                )
-
-              case 'integer':
-                return (
-                  <BladeSlider
-                    full={s.id === 'delay_ms'}
-                    hideDesc={hideDesc}
-                    disabled={!s.permitted}
-                    step={1}
-                    key={s.id}
-                    model_id={s.id}
-                    model={model}
-                    required={s.required}
-                    schema={s}
-                    textfield={false}
-                    marks={undefined}
-                    index={undefined}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
-                    onChange={(model_id: string, value: any) => {
-                      const c: Record<string, unknown> = {}
-                      c[model_id] = value
-                      if (
-                        model_id === 'delay_ms' &&
-                        usePerDeviceDelay &&
-                        model.audio_device &&
-                        value !==
-                          perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]]
-                      ) {
-                        setPerDeviceDelay({
-                          ...perDeviceDelay,
-                          [schema.properties.audio_device?.enum[model.audio_device]]: value
-                        })
-                      }
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
-                    }}
-                  />
-                )
-              case 'int':
-                return s?.enum?.length > 10 ? (
-                  <BladeSlider
-                    hideDesc={hideDesc}
-                    disabled={!s.permitted}
-                    marks={s?.enum}
-                    step={undefined}
-                    key={s.id}
-                    model_id={s.id}
-                    model={model}
-                    required={s.required}
-                    schema={s}
-                    textfield={false}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
-                    onChange={(model_id: string, value: any) => {
-                      const c: Record<string, unknown> = {}
-                      c[model_id] = value
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
-                    }}
-                  />
-                ) : (
-                  <BladeSlider
-                    hideDesc={hideDesc}
-                    disabled={!s.permitted}
-                    marks={s?.enum}
-                    step={undefined}
-                    key={s.id}
-                    model_id={s.id}
-                    model={model}
-                    required={s.required}
-                    schema={s}
-                    textfield={false}
-                    style={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
-                    onChange={(model_id: string, value: any) => {
-                      const c: Record<string, unknown> = {}
-                      c[model_id] = value
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
-                    }}
-                  />
-                )
-              case 'color':
-                return (
-                  <GradientPicker
-                    key={s.id}
-                    pickerBgColor={model[s.id] || s.default || '#000000'}
-                    title={s.title}
-                    index={i}
-                    isGradient={s.isGradient || false}
-                    wrapperStyle={{ margin: '0.5rem 0', width: '49%', order: s.id.startsWith('stem') ? 1 : 0 }}
-                    colors={undefined}
-                    handleAddGradient={() => {}}
-                    sendColorToVirtuals={(color: string) => {
-                      const c: Record<string, unknown> = {}
-                      c[s.id] = color
-                      if (onModelChange) {
-                        return onModelChange(c)
-                      }
-                      return null
-                    }}
-                    showHex={false}
-                  />
-                )
-              case 'autocomplete':
-                return (
-                  <Autocomplete
-                    key={s.id}
-                    size="medium"
-                    options={s.enum || []}
-                    value={model[s.id] || s.default || ''}
-                    onChange={(event, newValue) => {
-                      const c: Record<string, unknown> = {}
-                      c[s.id] = newValue || ''
-                      if (onModelChange) {
-                        onModelChange(c)
-                      }
-                    }}
-                    inputValue={model[s.id] || s.default || ''}
-                    onInputChange={(event, newInputValue) => {
-                      if (event?.type === 'change') {
-                        const c: Record<string, unknown> = {}
-                        c[s.id] = newInputValue
-                        if (onModelChange) {
-                          onModelChange(c)
-                        }
-                      }
-                    }}
-                    disabled={!s.permitted}
-                    freeSolo={s.freeSolo !== false}
-                    renderOption={(props, option, state) => (
-                      <li {...props} key={`${s.id}-option-${state.index}`}>
-                        {option}
-                      </li>
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={s.title.toUpperCase()}
-                        helperText={!hideDesc && s.description ? s.description : undefined}
-                      />
-                    )}
-                    sx={{ width: '100%', mb: 1 }}
-                  />
-                )
-              default:
-                return (
-                  <>
-                    Unsupported type:
-                    {s.type}
-                  </>
-                )
+                    className={classes.bladeSelect}
+                    id="grouped-select"
+                  >
+                    {none && <MenuItem value={NULL_OPTION}>{none.label}</MenuItem>}
+                    {extra.map((o) => (
+                      <MenuItem key={`extra-${o.value}`} value={o.value as number}>
+                        {o.label}
+                      </MenuItem>
+                    ))}
+                    {groupAudioDevices(audioOptions).flatMap((g, ind) => [
+                      <ListSubheader
+                        key={`audio-header-${ind}`}
+                        className={classes.FormListHeaders}
+                        color="primary"
+                      >
+                        {g.host}
+                      </ListSubheader>,
+                      ...g.devices.map((d) => (
+                        <MenuItem key={d.index} value={d.index}>
+                          {g.host.toLowerCase() === 'sendspin' ? (
+                            <HubIcon style={{ marginRight: '10px' }} />
+                          ) : d.name.includes('[Loopback]') ? (
+                            <SpeakerIcon style={{ marginRight: '10px' }} />
+                          ) : (
+                            <MicIcon style={{ marginRight: '10px' }} />
+                          )}
+                          {d.name.replace('[Loopback]', '')}
+                        </MenuItem>
+                      ))
+                    ])}
+                  </Select>
+                </BladeFrame>
+              )
             }
-          })}
+            case 'text':
+            case 'select':
+              return (
+                <BladeSelect
+                  children={undefined}
+                  hideDesc={hideDesc}
+                  type={type}
+                  model={model}
+                  nullable={w.nullable}
+                  disabled={disabled}
+                  wrapperStyle={{
+                    margin: '0.5rem 0',
+                    // a name is long free text; half a row truncates it for
+                    // no benefit, unlike the short numeric fields
+                    width: s.id === 'audio_device_name' ? '100%' : '49%',
+                    flexBasis: 'unset',
+                    order: order(s.id)
+                  }}
+                  textStyle={{ width: '100%' }}
+                  schema={f}
+                  required={s.required}
+                  model_id={s.id}
+                  key={s.id}
+                  index={i}
+                  error={error}
+                  onChange={change}
+                />
+              )
+            case 'slider':
+              return (
+                <BladeSlider
+                  step={undefined}
+                  hideDesc={hideDesc}
+                  disabled={disabled}
+                  key={s.id}
+                  model_id={s.id}
+                  model={model}
+                  required={s.required}
+                  schema={f}
+                  error={error}
+                  onChange={change}
+                />
+              )
+            case 'integerSlider': {
+              // an enum (hand-built `int`) or `examples` (fps) make a marks slider; plain integers step by 1
+              const marks = sliderMarks(f)
+              return (
+                <BladeSlider
+                  full={s.id === 'delay_ms'}
+                  hideDesc={hideDesc}
+                  disabled={disabled}
+                  step={marks ? undefined : 1}
+                  marks={marks}
+                  key={s.id}
+                  model_id={s.id}
+                  model={model}
+                  required={s.required}
+                  schema={f}
+                  textfield={false}
+                  style={{ margin: '0.5rem 0', width: '49%', order: order(s.id) }}
+                  error={error}
+                  onChange={(model_id: string, value: any) => {
+                    const device = audioDeviceName(audioDevices, model?.audio_device)
+                    if (
+                      model_id === 'delay_ms' &&
+                      usePerDeviceDelay &&
+                      device &&
+                      value !== perDeviceDelay[device]
+                    ) {
+                      setPerDeviceDelay({ ...perDeviceDelay, [device]: value })
+                    }
+                    change(model_id, value)
+                  }}
+                />
+              )
+            }
+            case 'color':
+            case 'gradient':
+              return (
+                <GradientPicker
+                  key={s.id}
+                  pickerBgColor={model[s.id] || f.default || '#000000'}
+                  title={f.title}
+                  index={i}
+                  isGradient={w.kind === 'gradient'}
+                  wrapperStyle={{ margin: '0.5rem 0', width: '49%', order: order(s.id) }}
+                  colors={undefined}
+                  handleAddGradient={() => {}}
+                  sendColorToVirtuals={(color: string) => change(s.id, color)}
+                  showHex={false}
+                />
+              )
+            case 'autocomplete':
+              return (
+                <Autocomplete
+                  key={s.id}
+                  size="medium"
+                  options={enumOptions(f)?.map((o) => o.value) ?? []}
+                  value={model[s.id] || f.default || ''}
+                  onChange={(_event, newValue) => change(s.id, newValue || '')}
+                  inputValue={model[s.id] || f.default || ''}
+                  onInputChange={(event, newInputValue) => {
+                    if (event?.type === 'change') change(s.id, newInputValue)
+                  }}
+                  disabled={disabled}
+                  freeSolo={f.freeSolo !== false}
+                  renderOption={(props, option, state) => (
+                    <li {...props} key={`${s.id}-option-${state.index}`}>
+                      {option}
+                    </li>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={!!error}
+                      label={f.title?.toUpperCase()}
+                      helperText={error ?? (!hideDesc && f.description ? f.description : undefined)}
+                    />
+                  )}
+                  sx={{ width: '100%', mb: 1 }}
+                />
+              )
+            case 'virtual':
+            case 'unsupported':
+              return (
+                <Fragment key={s.id}>
+                  Unsupported type:
+                  {f.type}
+                </Fragment>
+              )
+            default: {
+              const _exhaustive: never = w.kind
+              return _exhaustive
+            }
+          }
+        })}
       </div>
       {!hideToggle && (
         <>

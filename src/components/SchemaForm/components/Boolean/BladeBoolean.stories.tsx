@@ -39,3 +39,14 @@ Boolean.args = {
   model: undefined,
   model_id: undefined
 }
+
+export const BooleanDefaultTrue = Template.bind({})
+BooleanDefaultTrue.args = {
+  schema: {
+    title: 'Minimise Traffic',
+    description: 'default true, no value in the model',
+    default: true
+  },
+  model: {},
+  model_id: 'minimise_traffic'
+}

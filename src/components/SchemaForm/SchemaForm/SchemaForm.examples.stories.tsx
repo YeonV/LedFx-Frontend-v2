@@ -1,7 +1,8 @@
 import { Card, CardContent } from '@mui/material'
 import { StoryFn, Meta } from '@storybook/react-webpack5'
-// eslint-disable-next-line
-import BladeSchemaForm from "./SchemaForm";
+import fixture from '../schemas.fixture.json'
+import BladeSchemaForm from './SchemaForm'
+import { withStore } from './storySeed'
 
 export default {
   /* 👇 The title prop is optional.
@@ -30,8 +31,7 @@ export default {
   ]
 } as Meta<typeof BladeSchemaForm>
 
-// eslint-disable-next-line
-const Template: StoryFn<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
+const Template: StoryFn<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />
 
 export const AddDeviceAdaLight = Template.bind({})
 AddDeviceAdaLight.args = {
@@ -366,63 +366,94 @@ AddVirtual.args = {
   hideToggle: false
 }
 
+// The schema holds no device list: the options come from the store (/api/audio/devices)
+const audioProperties = {
+  sample_rate: { type: 'integer', title: 'Sample Rate', default: 60, readOnly: true },
+  min_volume: { type: 'number', minimum: 0, maximum: 10, title: 'Min Volume', default: 0.2 },
+  audio_device: {
+    anyOf: [{ type: 'integer' }, { type: 'null' }],
+    'x-ledfx-enum-source': 'audio_devices',
+    title: 'Audio Device',
+    default: null
+  }
+}
+const audioSchema = {
+  properties: audioProperties,
+  permitted_keys: Object.keys(audioProperties),
+  required: []
+}
+const DEVICES = {
+  0: 'MME: Microsoft Sound Mapper - Input',
+  1: 'MME: Microphone (USB Audio)',
+  2: 'Windows WASAPI: Speakers [Loopback]',
+  3: 'Windows WASAPI: Microphone (USB Audio)',
+  4: 'sendspin: Living room'
+}
+
 export const AudioCard = Template.bind({})
-AudioCard.args = {
+AudioCard.args = { schema: audioSchema, model: {}, onModelChange: (e) => console.log(e) }
+AudioCard.decorators = [withStore({ audioDevices: DEVICES })]
+
+export const AudioCardSelected = Template.bind({})
+AudioCardSelected.args = { ...AudioCard.args, model: { audio_device: 2 } }
+AudioCardSelected.decorators = AudioCard.decorators
+
+// the store starts empty: the form fetches /api/audio/devices when it mounts
+export const AudioCardFetched = Template.bind({})
+AudioCardFetched.args = { ...AudioCard.args, model: { audio_device: 2 } }
+AudioCardFetched.decorators = [
+  withStore({
+    audioDevices: {},
+    routes: { '/api/audio/devices': { devices: DEVICES, active_device_index: 2 } }
+  })
+]
+
+// zero devices: only the "System default" (null) option
+export const AudioCardNoDevices = Template.bind({})
+AudioCardNoDevices.args = AudioCard.args
+AudioCardNoDevices.decorators = [withStore({ audioDevices: {} })]
+
+// adalight's `com_port` is marked `com_ports`: the select lists the host's serial ports
+export const AddDeviceAdaLightComPorts = Template.bind({})
+AddDeviceAdaLightComPorts.args = {
+  schema: fixture.devices.adalight.schema,
+  type: 'adalight',
+  model: { com_port: 'COM4' },
+  hideToggle: true
+}
+AddDeviceAdaLightComPorts.decorators = [withStore({ comPorts: ['COM3', 'COM4', '/dev/ttyUSB0'] })]
+
+// Real /api/schemas output (pydantic's native JSON Schema): a static enum select and the
+// `refresh_rate` integer with `examples` as a marks slider.
+export const FixtureEffectEnergy = Template.bind({})
+FixtureEffectEnergy.args = {
+  schema: fixture.effects.energy.schema,
+  type: 'energy',
+  model: {},
+  hideToggle: true
+}
+
+export const FixtureDeviceWled = Template.bind({})
+FixtureDeviceWled.args = {
+  schema: fixture.devices.wled.schema,
+  type: 'wled',
+  model: {},
+  hideToggle: true
+}
+
+// core's startup scene: an optional scene select, "None" clears it
+export const StartupScene = Template.bind({})
+StartupScene.args = {
   schema: {
-    properties: {
-      sample_rate: {
-        type: 'integer',
-        title: 'Sample Rate',
-        default: 60
-      },
-      mic_rate: {
-        type: 'integer',
-        title: 'Mic Rate',
-        default: 30000
-      },
-      fft_size: {
-        type: 'integer',
-        title: 'Fft Size',
-        default: 4096
-      },
-      min_volume: {
-        type: 'number',
-        minimum: 0,
-        maximum: 10,
-        title: 'Min Volume',
-        default: 0.2
-      },
-      audio_device: {
-        type: 'string',
-        enum: {
-          0: 'MME: Microsoft Soundmapper - Input',
-          1: 'MME: USB Headphones (USB PnP Audio D',
-          2: 'MME: VoiceMeeter Output (VB-Audio Vo',
-          3: 'MME: Mikrofon (Virtual Desktop Audio',
-          10: 'Windows DirectSound: Primärer Soundaufnahmetreiber',
-          11: 'Windows DirectSound: USB Headphones (USB PnP Audio Device)',
-          12: 'Windows DirectSound: VoiceMeeter Output (VB-Audio VoiceMeeter VAIO)',
-          13: 'Windows DirectSound: Mikrofon (Virtual Desktop Audio)',
-          26: 'Windows WASAPI: USB Headphones (USB PnP Audio Device)',
-          27: 'Windows WASAPI: VoiceMeeter Output (VB-Audio VoiceMeeter VAIO)',
-          28: 'Windows WASAPI: Mikrofon (Virtual Desktop Audio)',
-          30: 'Windows WDM-KS: Mikrofon (VDVAD Wave)',
-          32: 'Windows WDM-KS: Eingang (Realtek HD Audio Line input)',
-          33: 'Windows WDM-KS: Mikrofon (Realtek HD Audio Mic input)',
-          35: 'Windows WDM-KS: Stereomix (Realtek HD Audio Stereo input)',
-          37: 'Windows WDM-KS: Mikrofon (USB PnP Audio Device)',
-          40: 'Windows WDM-KS: VoiceMeeter Output (VoiceMeeter vaio)',
-          43: 'Windows WDM-KS: Kopfhörer (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Jabra Elite 75t))'
-        },
-        title: 'Audio Device',
-        default: 1
-      }
-    },
-    permitted_keys: ['min_volume', 'audio_device'],
+    properties: { startup_scene_id: fixture.core.schema.properties.startup_scene_id },
+    permitted_keys: ['startup_scene_id'],
     required: []
   },
-  model: {},
-
-  onModelChange: (e) => console.log(e),
-  hideToggle: false
+  model: { startup_scene_id: 'chill' },
+  hideToggle: true
 }
+StartupScene.decorators = [
+  withStore({
+    routes: { '/api/scenes': { scenes: { chill: { name: 'Chill' }, party: { name: 'Party' } } } }
+  })
+]

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { IMCell } from '../pages/Devices/EditVirtuals/EditMatrix/M.utils'
-import { frontendConfig } from '../store/migrate'
+import { frontendConfig } from '../store/frontendConfig'
 
 export const drawerWidth = 240
 

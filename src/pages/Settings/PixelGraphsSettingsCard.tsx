@@ -5,6 +5,7 @@ import useStore from '../../store/useStore'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 import { PixelGraphVariants } from '../../store/ui-persist/storeUIpersist'
 import { InfoRounded } from '@mui/icons-material'
+import { enumOptions } from '../../components/SchemaForm/fields'
 
 const PixelGraphsSettingsCard = () => {
   const sliderClasses = useSliderStyles()
@@ -61,7 +62,7 @@ const PixelGraphsSettingsCard = () => {
   }, [])
 
   const schemaTransmissionMode = useStore(
-    (state) => state?.schemas?.core?.schema.properties.transmission_mode
+    (state) => state?.schemas?.core?.schema.properties?.transmission_mode
   )
 
   return (
@@ -80,16 +81,16 @@ const PixelGraphsSettingsCard = () => {
           ))}
         </Select>
       </SettingsRow>
-      <SettingsRow title={schemaTransmissionMode?.title} step="zero">
+      <SettingsRow title={schemaTransmissionMode?.title ?? 'Transmission Mode'} step="zero">
         <Select
           disableUnderline
           variant="standard"
           defaultValue={config.transmission_mode || schemaTransmissionMode?.default || 'compressed'}
           onChange={(e) => setSystemSetting('transmission_mode', e.target.value)}
         >
-          {schemaTransmissionMode?.enum?.map((item: any) => (
-            <MenuItem key={item} value={item}>
-              {item}
+          {enumOptions(schemaTransmissionMode)?.map((item) => (
+            <MenuItem key={item.label} value={item.value as string}>
+              {item.label}
             </MenuItem>
           ))}
         </Select>

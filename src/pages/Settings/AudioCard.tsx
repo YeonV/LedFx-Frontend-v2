@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
+import { loadInstanceSource } from '../../components/SchemaForm/useInstanceOptions'
+import { audioDeviceName } from '../../components/SchemaForm/fields'
 import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
 import { Ledfx } from '../../api/ledfx'
 import { usePlaybackCapture } from '../../hooks/usePlaybackCapture'
@@ -131,6 +133,11 @@ const AudioCard = ({ className }: any) => {
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const schema = useStore((state) => state?.schemas?.audio?.schema)
   const model = useStore((state) => state?.config?.audio)
+  const audioDevices = useStore((state) => state.audioDevices)
+  // the names are read here, outside a form field: load them
+  useEffect(() => {
+    loadInstanceSource('audio_devices')
+  }, [])
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
   const setPerDeviceDelay = useStore((state) => state.setPerDeviceDelay)
   const usePerDeviceDelay = useStore((state) => state?.usePerDeviceDelay)
@@ -172,11 +179,11 @@ const AudioCard = ({ className }: any) => {
    */
   const applyAlignedFrameRate = (next: any) => {
     const aligned = alignedFrameRate()
-    if (!aligned || !schema?.properties?.audio_device?.enum) return next
+    if (!aligned || !schema?.properties?.audio_device) return next
     const changedDevice = next?.audio_device !== model?.audio_device
     if (!changedDevice) return next
 
-    const deviceName = schema.properties.audio_device.enum[next.audio_device] || ''
+    const deviceName = audioDeviceName(audioDevices, next.audio_device) || ''
     const isContinuous = /AudioRecord API|PlaybackCapture API/.test(deviceName)
     const wanted = isContinuous ? aligned : DEFAULT_FRAME_RATE
     if (next.sample_rate === wanted) return next
@@ -253,8 +260,8 @@ const AudioCard = ({ className }: any) => {
   const xsmall = useMediaQuery('(max-width: 600px)')
 
   useEffect(() => {
-    if (!usePerDeviceDelay || !schema.properties?.audio_device?.enum) return
-    const deviceName = schema.properties.audio_device.enum[model?.audio_device]
+    if (!usePerDeviceDelay) return
+    const deviceName = audioDeviceName(audioDevices, model?.audio_device)
     if (!deviceName) return
 
     const stored = perDeviceDelay[deviceName]
@@ -267,7 +274,7 @@ const AudioCard = ({ className }: any) => {
     // Switching to a device we never saved must reset, not inherit the delay
     // of the device we came from - that is the whole point of "per device".
     if (deviceChanged) {
-      const target = known ? stored : (schema.properties.delay_ms?.default ?? 0)
+      const target = known ? stored : (schema?.properties?.delay_ms?.default ?? 0)
       if (target !== model?.delay_ms) {
         setSystemConfig({ audio: { delay_ms: target } }).then(() => getSystemConfig())
       }
@@ -282,7 +289,7 @@ const AudioCard = ({ className }: any) => {
       setPerDeviceDelay({ ...perDeviceDelay, [deviceName]: model.delay_ms })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usePerDeviceDelay, model?.audio_device])
+  }, [usePerDeviceDelay, model?.audio_device, audioDevices])
 
   const handleInstallDriver = () => {
     setDriverLoading(true)
@@ -606,7 +613,8 @@ const AudioCard = ({ className }: any) => {
                       size="small"
                       text={`Forget delay for ${key}?`}
                       onConfirm={() => {
-                        const { [key]: _removed, ...rest } = perDeviceDelay
+                        const rest = { ...perDeviceDelay }
+                        delete rest[key]
                         setPerDeviceDelay(rest)
                       }}
                     />

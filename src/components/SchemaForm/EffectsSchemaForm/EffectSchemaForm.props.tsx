@@ -1,11 +1,12 @@
-export interface Schema {
-  properties?: any
-  required?: any
-  permitted_keys?: any
-}
+import type { FieldSchema } from '../../../api/ledfx.types'
+import type { FieldErrors } from '../../../api/fieldErrors'
 
 export interface EffectSchemaFormProps {
-  schemaProperties: any[]
+  /**
+   * Validation messages by field id, shown under each field
+   */
+  errors?: FieldErrors
+  schemaProperties?: (FieldSchema & { id: string })[]
   /**
    * Model is the current value of the schema
    */

@@ -26,7 +26,7 @@ const baseURL = isElectron()
 
 const storedURL = isBrowser ? window.localStorage.getItem('ledfx-host') : null
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: storedURL || baseURL
 })
 
@@ -38,6 +38,16 @@ export const Ledfx = async (
   responseType?: 'json' | 'blob'
 ): Promise<any> => {
   const { setState } = useStore
+  const showPayload = (payload: any) =>
+    setState(
+      produce((state: IStore) => {
+        state.ui.snackbar = {
+          isOpen: true,
+          messageType: payload.type || 'error',
+          message: payload.reason || payload.message || JSON.stringify(payload)
+        }
+      })
+    )
   try {
     let response = null as any
     const config = responseType === 'blob' ? { responseType: 'blob' as const } : {}
@@ -63,35 +73,7 @@ export const Ledfx = async (
     }
 
     if (response.data && response.data.payload && snackbar) {
-      setState(
-        produce((state: IStore) => {
-          state.ui.snackbar = {
-            isOpen: true,
-            messageType: response.data.payload.type || 'error',
-            message:
-              response.data.payload.reason ||
-              response.data.payload.message ||
-              JSON.stringify(response.data.payload)
-          }
-        })
-      )
-      if (response.data.status) {
-        return response.data
-      }
-    }
-    if (response.payload && snackbar) {
-      setState(
-        produce((state: IStore) => {
-          state.ui.snackbar = {
-            isOpen: true,
-            messageType: response.payload.type || 'error',
-            message:
-              response.payload.reason ||
-              response.payload.message ||
-              JSON.stringify(response.payload)
-          }
-        })
-      )
+      showPayload(response.data.payload)
       if (response.data.status) {
         return response.data
       }
@@ -114,6 +96,14 @@ export const Ledfx = async (
       })
     )
   } catch (error: any) {
+    // A failed non-GET request that still carries a LedFx body ({status, payload, errors?}):
+    // show its message and hand the body to the caller, like a 200/202 failure.
+    // GET callers only test truthiness, so they keep the old behaviour.
+    const errBody = error.response?.data
+    if ((method === 'PUT' || method === 'POST' || method === 'DELETE') && errBody?.status) {
+      if (snackbar) showPayload(errBody.payload ?? errBody)
+      return errBody
+    }
     if (error.message) {
       return setState(
         produce((state: IStore) => {
@@ -135,5 +125,6 @@ export const Ledfx = async (
       })
     )
   }
-  return true
+  // A failure never resolves to `true` (callers treat `res.status !== 'failed'` as success).
+  return undefined
 }

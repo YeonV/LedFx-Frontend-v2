@@ -4,7 +4,6 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
-export const frontendConfig = 52
 
 export interface MigrationState {
   [key: string]: any
@@ -535,5 +534,10 @@ export const migrations: Migrations = {
   // its baseline inside useMatrixEditor, so this key is no longer read.
   52: produce((draft) => {
     delete draft.virtualEditorSnapshot
+  }),
+  // Migration 53: /api/schemas is pydantic's native JSON Schema now. Drop any persisted copy
+  // of an older shape; getSchemas fetches it again.
+  53: produce((draft) => {
+    delete draft.schemas
   })
 }

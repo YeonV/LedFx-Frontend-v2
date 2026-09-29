@@ -107,6 +107,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
 
   const schem = useStore((state) => state?.schemas?.audio?.schema)
   const schema = {
+    ...(schem?.$schema ? { $schema: schem.$schema } : {}),
     properties: {
       audio_device: schem?.properties?.audio_device || {},
       delay_ms: schem?.properties?.delay_ms || {},
