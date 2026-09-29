@@ -320,10 +320,12 @@ const BladeSelect = ({
                 }}
                 onClick={async () => {
                   if (model.ip_address === undefined || model.ip_address === '') return
-                  const { auth_token } = await Ledfx('/api/get_nanoleaf_token', 'POST', {
+                  const res = await Ledfx('/api/get_nanoleaf_token', 'POST', {
                     ip_address: model.ip_address,
                     port: model.port || 16021
                   })
+                  const auth_token = res?.auth_token
+                  if (!auth_token) return
                   onChange(model_id, auth_token)
                   inputRef.current.value = auth_token
                 }}
