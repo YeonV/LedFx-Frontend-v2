@@ -187,6 +187,8 @@ const BladeSlider = ({
 }: BladeSliderProps) => {
   const classes = useStyles()
   const theme = useTheme()
+  // a marks slider (see BladeSliderInner) draws its labels below the track: leave room for them
+  const hasMarks = !textfield && !(typeof schema.maximum === 'number') && !!schema.enum
   return variant === 'outlined' ? (
     <Box
       className={`${classes.wrapper} step-effect-${index}`}
@@ -210,7 +212,8 @@ const BladeSlider = ({
             }
           : {
               width: style.width
-            }
+            },
+        hasMarks ? { pb: '28px' } : {}
       ]}
     >
       <label
