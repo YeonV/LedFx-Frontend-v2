@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
@@ -81,6 +82,7 @@ const EffectSchemaForm = ({
                 )
                   return (
                     <VirtualPickerSchemaForm
+                      key={s.id}
                       title={s.title}
                       id={s.id}
                       model={model}
@@ -157,6 +159,7 @@ const EffectSchemaForm = ({
             case 'virtual':
               return (
                 <VirtualPickerSchemaForm
+                  key={s.id}
                   title={s.title}
                   id={s.id}
                   model={model}
@@ -166,10 +169,10 @@ const EffectSchemaForm = ({
               )
             default:
               return (
-                <>
+                <Fragment key={s.id}>
                   Unsupported type:--
                   {s.type}
-                </>
+                </Fragment>
               )
           }
         })}
