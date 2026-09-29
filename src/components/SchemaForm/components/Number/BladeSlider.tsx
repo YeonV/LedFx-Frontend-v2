@@ -4,6 +4,7 @@ import useStyles from './BladeSlider.styles'
 import { BladeSliderInnerProps, BladeSliderProps } from './BladeSlider.props'
 import { useNumericInput } from '../../../../hooks/useNumericInput'
 import { errorAria } from '../BladeFrame'
+import { enumOptions } from '../../fields'
 
 const BladeSliderInner = ({
   schema = undefined,
@@ -22,7 +23,8 @@ const BladeSliderInner = ({
   const classes = useStyles()
   const theme = useTheme()
   // an enum schema is its own list of marks when the caller passes none
-  const enumMarks = marks ?? schema.enum
+  const enumValues = enumOptions(schema)?.map((o) => o.value)
+  const enumMarks = marks ?? enumValues
   // the track sets marginTop/Bottom itself: a shorthand `margin` beside them makes React warn
   const trackStyle = { ...style }
   delete trackStyle.margin
@@ -120,7 +122,7 @@ const BladeSliderInner = ({
         }}
       />
     </>
-  ) : schema.enum && !textfield ? (
+  ) : enumMarks && !textfield ? (
     <Slider
       aria-labelledby="input-slider"
       valueLabelDisplay="auto"
@@ -171,7 +173,7 @@ const BladeSliderInner = ({
  * Renders slider if:
  *
  *  - schema.maximum && !textfield
- *  - schema.enum && !textfield
+ *  - the schema is an enum (`enum`) && !textfield
  */
 const BladeSlider = ({
   variant = 'outlined',
@@ -196,7 +198,8 @@ const BladeSlider = ({
   const theme = useTheme()
   const errorId = useId()
   // a marks slider (see BladeSliderInner) draws its labels below the track: leave room for them
-  const hasMarks = !textfield && !(typeof schema.maximum === 'number') && !!schema.enum
+  const hasMarks =
+    !textfield && !(typeof schema.maximum === 'number') && !!(marks ?? enumOptions(schema))
   return variant === 'outlined' ? (
     <Box
       className={`${classes.wrapper} step-effect-${index}`}

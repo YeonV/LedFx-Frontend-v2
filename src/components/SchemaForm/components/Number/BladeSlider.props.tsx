@@ -24,7 +24,7 @@ export interface BladeSliderProps {
    * Renders slider if:
    *
    *  - schema.maximum && !textfield
-   *  - schema.enum && !textfield
+   *  - the schema is an enum (`enum`) && !textfield
    *
    * Else: renders input field
    */

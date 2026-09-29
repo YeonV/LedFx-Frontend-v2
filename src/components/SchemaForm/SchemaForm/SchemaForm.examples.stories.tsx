@@ -392,30 +392,12 @@ AudioCard.args = {
         title: 'Min Volume',
         default: 0.2
       },
+      // the device list isn't in the schema: the form reads it from the store
       audio_device: {
-        type: 'string',
-        enum: {
-          0: 'MME: Microsoft Soundmapper - Input',
-          1: 'MME: USB Headphones (USB PnP Audio D',
-          2: 'MME: VoiceMeeter Output (VB-Audio Vo',
-          3: 'MME: Mikrofon (Virtual Desktop Audio',
-          10: 'Windows DirectSound: Primärer Soundaufnahmetreiber',
-          11: 'Windows DirectSound: USB Headphones (USB PnP Audio Device)',
-          12: 'Windows DirectSound: VoiceMeeter Output (VB-Audio VoiceMeeter VAIO)',
-          13: 'Windows DirectSound: Mikrofon (Virtual Desktop Audio)',
-          26: 'Windows WASAPI: USB Headphones (USB PnP Audio Device)',
-          27: 'Windows WASAPI: VoiceMeeter Output (VB-Audio VoiceMeeter VAIO)',
-          28: 'Windows WASAPI: Mikrofon (Virtual Desktop Audio)',
-          30: 'Windows WDM-KS: Mikrofon (VDVAD Wave)',
-          32: 'Windows WDM-KS: Eingang (Realtek HD Audio Line input)',
-          33: 'Windows WDM-KS: Mikrofon (Realtek HD Audio Mic input)',
-          35: 'Windows WDM-KS: Stereomix (Realtek HD Audio Stereo input)',
-          37: 'Windows WDM-KS: Mikrofon (USB PnP Audio Device)',
-          40: 'Windows WDM-KS: VoiceMeeter Output (VoiceMeeter vaio)',
-          43: 'Windows WDM-KS: Kopfhörer (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Jabra Elite 75t))'
-        },
+        anyOf: [{ type: 'integer' }, { type: 'null' }],
+        'x-ledfx-enum-source': 'audio_devices',
         title: 'Audio Device',
-        default: 1
+        default: null
       }
     },
     permitted_keys: ['min_volume', 'audio_device'],

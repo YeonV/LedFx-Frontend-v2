@@ -19,16 +19,18 @@ import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
+import { enumOptions, fromSelectValue, NULL_OPTION, toSelectValue } from '../../fields'
 
 /**
  * ## String
  * ### render as `input field` or `select`
- * Renders select if schema.enum is defined properly
+ * Renders select if the schema is an enum (`enum`, or a single `const`); `nullable` adds a null option
  */
 const BladeSelect = ({
   variant = 'outlined',
   disabled = false,
   schema,
+  nullable = false,
   model,
   model_id,
   onChange,
@@ -47,16 +49,28 @@ const BladeSelect = ({
   const errorId = useId()
   const aria = errorAria(errorId, error)
   const [showReserved, setShowReserved] = useState(false)
+  const current = model && model_id ? model[model_id] : undefined
+  const options = enumOptions(schema, nullable)
   const [icon, setIcon] = useState(
-    schema.id === 'icon_name'
-      ? (model && model_id && model[model_id]) || (schema.enum && schema.enum[0])
-      : ''
+    schema.id === 'icon_name' ? (model && model_id && model[model_id]) || options?.[0]?.value : ''
   )
   useEffect(() => {
     const v = model && model_id ? model[model_id] : undefined
     if (v != null && inputRef.current) inputRef.current.value = v
   }, [model, model_id])
-  const current = model && model_id ? model[model_id] : undefined
+  // MUI Select can't hold null: a null option (and a null value, when there is one) is NULL_OPTION
+  const selectValue = toSelectValue(options, current, schema.default)
+  const pick = (v: unknown) => onChange(model_id, fromSelectValue(v))
+  const items = (style?: any) =>
+    options?.map((o, i) => (
+      <MenuItem
+        key={`${o.value}-${i}`}
+        value={(o.value === null ? NULL_OPTION : o.value) as any}
+        style={style}
+      >
+        {o.label}
+      </MenuItem>
+    ))
   // console.log(schema, model)
   return (
     <BladeFrame
@@ -124,13 +138,7 @@ const BladeSelect = ({
         )
       }
       className={`step-effect-${index}`}
-      full={
-        !(
-          schema.enum &&
-          schema.enum.length &&
-          Object.values(schema.enum).every((a: any) => a?.length < 20)
-        )
-      }
+      full={!(options?.length && options.every((o) => o.label.length < 20))}
       required={required}
       style={{
         // default first, caller last: a wrapperStyle asking for a full-width
@@ -140,7 +148,7 @@ const BladeSelect = ({
       }}
     >
       {variant === 'contained' ? (
-        schema.enum ? (
+        options ? (
           <Select
             variant="filled"
             disabled={disabled}
@@ -150,15 +158,10 @@ const BladeSelect = ({
               ...(selectStyle as any)
             }}
             defaultValue={schema.default}
-            value={current ?? schema.default ?? schema.enum[0]}
-            onChange={(e) => onChange(model_id, e.target.value)}
+            value={selectValue}
+            onChange={(e) => pick(e.target.value)}
           >
-            {children ||
-              schema.enum.map((item: any, i: number) => (
-                <MenuItem key={`enum-${item}-${i}`} value={item}>
-                  {item}
-                </MenuItem>
-              ))}
+            {children || items()}
           </Select>
         ) : (
           <>
@@ -175,7 +178,7 @@ const BladeSelect = ({
             />
           </>
         )
-      ) : schema.enum && Array.isArray(schema.enum) ? (
+      ) : options ? (
         <Select
           variant="standard"
           disableUnderline
@@ -186,43 +189,10 @@ const BladeSelect = ({
             ...(selectStyle as any)
           }}
           defaultValue={schema.default}
-          value={current ?? schema.default ?? schema.enum[0]}
-          onChange={(e) => onChange(model_id, e.target.value)}
+          value={selectValue}
+          onChange={(e) => pick(e.target.value)}
         >
-          {schema.enum.map((item: any, i: number) => (
-            <MenuItem key={`${item}-${i}`} value={item} style={menuItemStyle as any}>
-              {item}
-            </MenuItem>
-          ))}
-        </Select>
-      ) : schema.enum && !Array.isArray(schema.enum) ? (
-        <Select
-          variant="standard"
-          disableUnderline
-          disabled={disabled}
-          style={{
-            flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...(selectStyle as any)
-          }}
-          defaultValue={schema.default}
-          value={
-            (model && model_id && schema.enum[model[model_id]]) || schema.default || schema.enum[0]
-          }
-          onChange={(e) =>
-            onChange(
-              model_id,
-              parseInt(
-                Object.keys(schema.enum).find((en) => schema.enum[en] === e.target.value) || '0',
-                10
-              )
-            )
-          }
-        >
-          {Object.keys(schema.enum).map((item, i) => (
-            <MenuItem key={`${item}-${i}`} value={schema.enum[item]}>
-              {schema.enum[item]}
-            </MenuItem>
-          ))}
+          {items(menuItemStyle)}
         </Select>
       ) : (
         <>

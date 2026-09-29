@@ -1,10 +1,5 @@
+import type { ObjectSchema } from '../../../api/ledfx.types'
 import type { FieldErrors } from '../../../api/fieldErrors'
-
-export interface Schema {
-  properties?: any
-  required?: any
-  permitted_keys?: any
-}
 
 export interface SchemaFormProps {
   /**
@@ -17,7 +12,7 @@ export interface SchemaFormProps {
    * an external api or a store-management. <br />
    * See examples, for manual usage...
    */
-  schema: Schema
+  schema: ObjectSchema
   /**
    * Model is the current value of the schema
    */
