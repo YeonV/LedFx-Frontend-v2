@@ -253,7 +253,7 @@ const AudioCard = ({ className }: any) => {
   const xsmall = useMediaQuery('(max-width: 600px)')
 
   useEffect(() => {
-    if (!usePerDeviceDelay || !schema.properties?.audio_device?.enum) return
+    if (!usePerDeviceDelay || !schema?.properties?.audio_device?.enum) return
     const deviceName = schema.properties.audio_device.enum[model?.audio_device]
     if (!deviceName) return
 
@@ -267,7 +267,7 @@ const AudioCard = ({ className }: any) => {
     // Switching to a device we never saved must reset, not inherit the delay
     // of the device we came from - that is the whole point of "per device".
     if (deviceChanged) {
-      const target = known ? stored : (schema.properties.delay_ms?.default ?? 0)
+      const target = known ? stored : (schema?.properties?.delay_ms?.default ?? 0)
       if (target !== model?.delay_ms) {
         setSystemConfig({ audio: { delay_ms: target } }).then(() => getSystemConfig())
       }

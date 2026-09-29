@@ -124,7 +124,8 @@ const useStore = create(
                   // 404 instead of its fallback.
                   'thumbnailPath',
                   'albumArtCacheBuster',
-                  'configError'
+                  'configError',
+                  'schemasMissing'
                 ].includes(key)
             )
           )

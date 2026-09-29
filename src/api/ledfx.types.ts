@@ -687,3 +687,63 @@ export type CacheStats = GetCacheImagesApiResponse;
  */
 export type Assets = GetAssetsApiResponse;
 
+
+/**
+ * One property of a `/api/schemas` object schema: the JSON Schema 2020-12 keys the
+ * forms read, plus the keys of the frontend's own hand-built schemas.
+ */
+export interface FieldSchema {
+  type?: string
+  title?: string
+  description?: string
+  default?: any
+  minimum?: number
+  maximum?: number
+  enum?: any[]
+  format?: string
+  anyOf?: FieldSchema[]
+  $ref?: string
+  [key: string]: any
+}
+
+export interface ObjectSchema {
+  $schema?: string
+  type?: string
+  title?: string
+  properties?: Record<string, FieldSchema>
+  required?: string[]
+  permitted_keys?: string[]
+}
+
+export interface SchemaEntry {
+  schema: ObjectSchema
+}
+export interface PluginSchemaEntry extends SchemaEntry {
+  id: string
+}
+export interface IntegrationSchemaEntry extends PluginSchemaEntry {
+  name: string
+  description: string
+  beta: boolean
+}
+export interface EffectSchemaEntry extends PluginSchemaEntry {
+  name: string
+  category: string
+  uses_melbank_range: boolean
+  hidden_keys?: string[]
+  advanced_keys?: string[]
+  permitted_keys?: string[]
+}
+
+/** GET /api/schemas */
+export interface Schemas {
+  audio: SchemaEntry
+  melbanks: SchemaEntry
+  melbank_collection: SchemaEntry
+  wled_preferences: SchemaEntry
+  virtuals: SchemaEntry
+  core: SchemaEntry
+  devices: Record<string, PluginSchemaEntry>
+  integrations: Record<string, IntegrationSchemaEntry>
+  effects: Record<string, EffectSchemaEntry>
+}

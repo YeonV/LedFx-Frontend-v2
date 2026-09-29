@@ -26,7 +26,7 @@ const baseURL = isElectron()
 
 const storedURL = isBrowser ? window.localStorage.getItem('ledfx-host') : null
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: storedURL || baseURL
 })
 

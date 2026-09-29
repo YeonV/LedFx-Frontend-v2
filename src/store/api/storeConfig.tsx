@@ -1,16 +1,8 @@
 import { produce } from 'immer'
-import { Ledfx } from '../../api/ledfx'
+import { Ledfx, api } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 import useStore from '../useStore'
-import { EffectConfig } from '../../api/ledfx.types'
-
-export interface Schema {
-  type: string
-  title: string
-  properties: any
-  required: string[]
-  order: string[]
-}
+import type { EffectConfig, Schemas } from '../../api/ledfx.types'
 
 export interface Intergration {
   active: boolean
@@ -83,23 +75,38 @@ export interface ISystemConfig {
 }
 
 const storeConfig = (set: any) => ({
-  schemas: {} as any,
+  schemas: {} as Partial<Schemas>,
+  /** Set when the backend has no /api/schemas: it predates this frontend. */
+  schemasMissing: false,
   getSchemas: async (forceRefresh = false) => {
-    // Cache check: skip if already loaded (unless force refresh)
+    // Cache check: skip if already loaded (unless force refresh). `schemas` is
+    // persisted, so a copy of the legacy /api/schema (no $schema) doesn't count.
     const currentSchemas = useStore.getState().schemas
-    if (!forceRefresh && currentSchemas && Object.keys(currentSchemas).length > 0) {
-      return
-    }
+    if (!forceRefresh && currentSchemas?.virtuals?.schema?.$schema) return
 
-    const resp = await Ledfx('/api/schema')
-    if (resp) {
+    try {
+      const { data } = await api.get('/api/schemas')
       set(
         produce((s: IStore) => {
-          s.schemas = resp
+          s.schemas = data
+          s.schemasMissing = false
         }),
         false,
         'gotSchemas'
       )
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        set(
+          produce((s: IStore) => {
+            s.schemas = {}
+            s.schemasMissing = true
+          }),
+          false,
+          'schemasMissing'
+        )
+      } else {
+        useStore.getState().ui.showSnackbar('error', error.message)
+      }
     }
   },
 

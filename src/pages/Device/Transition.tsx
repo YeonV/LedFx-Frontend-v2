@@ -27,15 +27,10 @@ const TransitionCard = ({ virtual, style }: any) => {
       transition_time: newValue
     })
 
+  const time = schemas?.transition_time
   const marks = [
-    {
-      value: schemas?.transition_time.minimum,
-      label: `${schemas?.transition_time.minimum}s`
-    },
-    {
-      value: schemas?.transition_time.maximum,
-      label: `${schemas?.transition_time.maximum}s`
-    }
+    { value: time?.minimum ?? 0, label: `${time?.minimum ?? 0}s` },
+    { value: time?.maximum ?? 5, label: `${time?.maximum ?? 5}s` }
   ]
 
   return (
@@ -52,12 +47,12 @@ const TransitionCard = ({ virtual, style }: any) => {
         <FormControl sx={{ marginRight: '0.5rem', flex: 1 }}>
           <BladeFrame title="Duration">
             <Slider
-              defaultValue={transition_time ?? schemas?.transition_time.default}
+              defaultValue={transition_time ?? time?.default}
               onChangeCommitted={onSliderChange}
               aria-labelledby="discrete-slider"
               step={0.1}
-              min={schemas?.transition_time.minimum}
-              max={schemas?.transition_time.maximum}
+              min={time?.minimum}
+              max={time?.maximum}
               marks={marks}
               style={{ color: '#aaa' }}
               valueLabelDisplay="auto"
@@ -75,14 +70,14 @@ const TransitionCard = ({ virtual, style }: any) => {
         >
           <Select
             fullWidth
-            defaultValue={transition_mode || schemas?.transition_mode.default}
+            defaultValue={transition_mode || schemas?.transition_mode?.default}
             onChange={(e) => {
               handleSetTransition(virtual.id, {
                 transition_mode: e.target.value
               })
             }}
           >
-            {schemas?.transition_mode.enum.map((mode: string, i: number) => (
+            {schemas?.transition_mode?.enum?.map((mode: string, i: number) => (
               <MenuItem key={i} value={mode}>
                 {mode}
               </MenuItem>

@@ -61,7 +61,7 @@ const PixelGraphsSettingsCard = () => {
   }, [])
 
   const schemaTransmissionMode = useStore(
-    (state) => state?.schemas?.core?.schema.properties.transmission_mode
+    (state) => state?.schemas?.core?.schema.properties?.transmission_mode
   )
 
   return (
@@ -80,7 +80,7 @@ const PixelGraphsSettingsCard = () => {
           ))}
         </Select>
       </SettingsRow>
-      <SettingsRow title={schemaTransmissionMode?.title} step="zero">
+      <SettingsRow title={schemaTransmissionMode?.title ?? 'Transmission Mode'} step="zero">
         <Select
           disableUnderline
           variant="standard"
