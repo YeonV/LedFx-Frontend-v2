@@ -29,7 +29,7 @@ const VirtualPicker = ({
           const c = e.target.value
           return onChange && onChange(c)
         }}
-        value={value}
+        value={value ?? ''}
         fullWidth
         disableUnderline
       >
