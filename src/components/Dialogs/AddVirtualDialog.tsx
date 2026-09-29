@@ -71,7 +71,7 @@ const AddVirtualDialog = () => {
         config: { ...defaultModel, ...cleanedModel }
       }).then((res) => {
         // console.log(res);
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddVirtual(false)
           getDevices()
           getVirtuals()
@@ -87,7 +87,7 @@ const AddVirtualDialog = () => {
         config: { ...model }
       }).then((res) => {
         // console.log(res);
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddVirtual(false)
           getDevices()
           getVirtuals()

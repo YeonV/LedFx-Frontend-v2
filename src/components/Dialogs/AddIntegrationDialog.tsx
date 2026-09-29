@@ -104,7 +104,7 @@ const AddIntegrationDialog = () => {
         type: integrationType,
         config: { ...defaultModel, ...cleanedModel }
       }).then((res) => {
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddIntegration(false)
           getIntegrations()
         }
@@ -116,7 +116,7 @@ const AddIntegrationDialog = () => {
         type: integrationType,
         config: { ...model }
       }).then((res) => {
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddIntegration(false)
           getIntegrations()
         }

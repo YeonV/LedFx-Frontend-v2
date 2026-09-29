@@ -100,7 +100,7 @@ const AddDeviceDialog = () => {
         type: deviceType,
         config: { ...defaultModel, ...cleanedModel }
       }).then((res: any) => {
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           if (deviceType === 'wled') {
             const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
             const newDevices = [] as { name: string; ip_address: string }[]
@@ -123,7 +123,7 @@ const AddDeviceDialog = () => {
     } else {
       // console.log("EDITING");
       updateDevice(deviceId, { config: model }).then((res) => {
-        if (res !== 'failed') {
+        if (res && res.status !== 'failed') {
           setDialogOpenAddDevice(false)
           getDevices()
           getVirtuals()
