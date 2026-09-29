@@ -126,6 +126,7 @@ const useStore = create(
                   'albumArtCacheBuster',
                   'configError',
                   'schemasMissing',
+                  'audioDevices',
                   'comPorts',
                   'instanceLoaded'
                 ].includes(key)

@@ -78,6 +78,8 @@ const storeConfig = (set: any) => ({
   schemas: {} as Partial<Schemas>,
   /** Set when the backend has no /api/schemas: it predates this frontend. */
   schemasMissing: false,
+  /** /api/audio/devices: device index -> "Host: Name". Names live here, not in the schema. */
+  audioDevices: {} as Record<string, string>,
   /** Sources (`x-ledfx-enum-source`) whose getter has resolved once: until then, "not in the list" means "not loaded yet". */
   instanceLoaded: {} as Record<string, boolean>,
   markInstanceLoaded: (source: string) =>
@@ -207,10 +209,7 @@ const storeConfig = (set: any) => ({
     if (resp && resp.devices !== undefined && resp.active_device_index !== undefined) {
       set(
         produce((state: IStore) => {
-          // Update the audio device list in the schema
-          if (state.schemas?.audio?.schema?.properties?.audio_device) {
-            state.schemas.audio.schema.properties.audio_device.enum = resp.devices
-          }
+          state.audioDevices = resp.devices
           // Update the active device index in the config
           if (state.config?.audio) {
             state.config.audio.audio_device = resp.active_device_index

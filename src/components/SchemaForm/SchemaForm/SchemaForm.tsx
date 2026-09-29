@@ -1,7 +1,10 @@
-import { Fragment, ReactElement, useState } from 'react'
+import { Fragment, ReactElement, useId, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import {
   DialogContentText,
+  Select,
+  MenuItem,
+  ListSubheader,
   Switch,
   FormControlLabel,
   Divider,
@@ -9,21 +12,33 @@ import {
   TextField
 } from '@mui/material'
 import { Info } from '@mui/icons-material'
+import MicIcon from '@mui/icons-material/Mic'
+import SpeakerIcon from '@mui/icons-material/Speaker'
+import HubIcon from '@mui/icons-material/Hub'
 import type { FieldSchema } from '../../../api/ledfx.types'
 import {
   audioDeviceName,
   enumOptions,
+  fromSelectValue,
+  groupAudioDevices,
+  NULL_OPTION,
+  nullOption,
   orderFormProperties,
+  sourcedOptions,
+  sourceOf,
+  unwrapNullable,
   sliderMarks,
   widgetFor
 } from '../fields'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
+import BladeFrame, { errorAria } from '../components/BladeFrame'
 import GradientPicker from '../components/GradientPicker/GradientPicker'
 import BladeMultiSelect from '../components/MultiSelect/BladeMultiSelect'
 import { SchemaFormProps } from './SchemaForm.props'
 import useStore from '../../../store/useStore'
+import { useInstanceLoaded, useInstanceOptions } from '../useInstanceOptions'
 
 const PREFIX = 'SchemaForm'
 
@@ -70,6 +85,16 @@ const SchemaForm = ({
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
   const setPerDeviceDelay = useStore((state) => state.setPerDeviceDelay)
   const usePerDeviceDelay = useStore((state) => state?.usePerDeviceDelay)
+  const audioDevices = useStore((state) => state.audioDevices)
+  // only a form with an audio field loads (and follows) the devices
+  const audioSource = Object.values(schema?.properties ?? {}).some(
+    (p) => sourceOf(unwrapNullable(p).field) === 'audio_devices'
+  )
+    ? 'audio_devices'
+    : undefined
+  const audioOptions = useInstanceOptions(audioSource)
+  const audioLoaded = useInstanceLoaded(audioSource)
+  const audioErrorId = useId()
 
   const change = (id: string, value: unknown) => onModelChange?.({ [id]: value })
   const order = (id: string) => (id.startsWith('stem') ? 1 : 0)
@@ -116,6 +141,76 @@ const SchemaForm = ({
                   onClick={change}
                 />
               )
+            case 'audioDevice': {
+              // "System default", when the field is nullable (also with no devices, no enum)
+              const none = w.nullable ? nullOption(f) : undefined
+              const current = model?.[s.id]
+              // the known devices, plus a stored one the store doesn't list (unplugged) once loaded
+              const options = sourcedOptions(
+                f,
+                audioOptions ?? [],
+                current,
+                s.required,
+                audioLoaded
+              )
+              const extra = options?.filter((o) => !audioOptions?.includes(o)) ?? []
+              // before the devices load a stored index has no option yet: empty, not out of range
+              const value = options?.some((o) => o.value === current)
+                ? current
+                : current == null && none
+                  ? NULL_OPTION
+                  : ''
+              return (
+                <BladeFrame
+                  key={s.id}
+                  style={{ order: -1 }}
+                  title="Audio Device"
+                  full
+                  error={error}
+                  errorId={audioErrorId}
+                >
+                  <Select
+                    value={value}
+                    SelectDisplayProps={errorAria(audioErrorId, error)}
+                    fullWidth
+                    onChange={(e: any) => {
+                      const v = fromSelectValue(e.target.value)
+                      change(s.id, v === null ? null : Number(v))
+                    }}
+                    className={classes.bladeSelect}
+                    id="grouped-select"
+                  >
+                    {none && <MenuItem value={NULL_OPTION}>{none.label}</MenuItem>}
+                    {extra.map((o) => (
+                      <MenuItem key={`extra-${o.value}`} value={o.value as number}>
+                        {o.label}
+                      </MenuItem>
+                    ))}
+                    {groupAudioDevices(audioOptions).flatMap((g, ind) => [
+                      <ListSubheader
+                        key={`audio-header-${ind}`}
+                        className={classes.FormListHeaders}
+                        color="primary"
+                      >
+                        {g.host}
+                      </ListSubheader>,
+                      ...g.devices.map((d) => (
+                        <MenuItem key={d.index} value={d.index}>
+                          {g.host.toLowerCase() === 'sendspin' ? (
+                            <HubIcon style={{ marginRight: '10px' }} />
+                          ) : d.name.includes('[Loopback]') ? (
+                            <SpeakerIcon style={{ marginRight: '10px' }} />
+                          ) : (
+                            <MicIcon style={{ marginRight: '10px' }} />
+                          )}
+                          {d.name.replace('[Loopback]', '')}
+                        </MenuItem>
+                      ))
+                    ])}
+                  </Select>
+                </BladeFrame>
+              )
+            }
             case 'text':
             case 'select':
               return (
@@ -178,10 +273,7 @@ const SchemaForm = ({
                   style={{ margin: '0.5rem 0', width: '49%', order: order(s.id) }}
                   error={error}
                   onChange={(model_id: string, value: any) => {
-                    const device = audioDeviceName(
-                      schema.properties?.audio_device,
-                      model?.audio_device
-                    )
+                    const device = audioDeviceName(audioDevices, model?.audio_device)
                     if (
                       model_id === 'delay_ms' &&
                       usePerDeviceDelay &&
@@ -241,7 +333,6 @@ const SchemaForm = ({
                   sx={{ width: '100%', mb: 1 }}
                 />
               )
-            case 'audioDevice':
             case 'virtual':
             case 'unsupported':
               return (

@@ -104,6 +104,7 @@ export const sliderMarks = (field: FieldSchema): EnumOption['value'][] | undefin
   (field.type === 'integer' && Array.isArray(field.examples) ? field.examples : undefined)
 
 export interface InstanceState {
+  audio_devices?: Record<string, string>
   virtuals?: Record<string, { id: string; config?: { name?: string } }>
   com_ports?: string[]
   scenes?: Record<string, { name?: string }>
@@ -126,6 +127,11 @@ export const instanceOptions = (
   state: InstanceState
 ): EnumOption[] | undefined => {
   switch (source) {
+    case 'audio_devices':
+      // "Host: Name", by index
+      return Object.entries(state.audio_devices ?? {})
+        .map(([i, label]) => ({ value: Number(i), label }))
+        .sort((a, b) => a.value - b.value)
     case 'virtuals':
       return named(state.virtuals, (v) => v.config?.name)
     case 'com_ports':
@@ -334,8 +340,27 @@ export const orderEffectProperties = (
     .map(({ p }) => p)
 }
 
-/** The label of an audio device index in the audio_device `{index: "Host: Name"}` enum. */
+export interface AudioDeviceGroup {
+  host: string
+  devices: { index: number; name: string }[]
+}
+
+/** Group the audio device options (see instanceOptions) by host, in order. */
+export const groupAudioDevices = (options: EnumOption[] | undefined): AudioDeviceGroup[] => {
+  const groups: AudioDeviceGroup[] = []
+  for (const { value, label } of options ?? []) {
+    const cut = label.indexOf(':')
+    const host = cut < 0 ? '' : label.slice(0, cut)
+    const name = (cut < 0 ? label : label.slice(cut + 1)).trim()
+    let group = groups.find((g) => g.host === host)
+    if (!group) groups.push((group = { host, devices: [] }))
+    group.devices.push({ index: Number(value), name })
+  }
+  return groups
+}
+
+/** The "Host: Name" of an audio device index, or undefined when it isn't in the map. */
 export const audioDeviceName = (
-  field: FieldSchema | undefined,
+  names: Record<string, string> | undefined,
   index: unknown
-): string | undefined => (typeof index === 'number' ? field?.enum?.[index] : undefined)
+): string | undefined => (typeof index === 'number' ? names?.[index] : undefined)

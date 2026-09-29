@@ -7,6 +7,7 @@ import { instanceOptions, type EnumOption, type InstanceState } from './fields'
 // Each source's slice of the store; a component subscribes to its own slice only.
 const slice = (s: IStore, source?: string): InstanceState[keyof InstanceState] =>
   ({
+    audio_devices: s.audioDevices,
     virtuals: s.virtuals,
     com_ports: s.comPorts,
     scenes: s.scenes,
@@ -15,6 +16,7 @@ const slice = (s: IStore, source?: string): InstanceState[keyof InstanceState] =
   })[source as keyof InstanceState]
 
 const loaders = (s: IStore) => ({
+  audio_devices: s.getAudioDevices,
   virtuals: s.getVirtuals,
   com_ports: s.getComPorts,
   scenes: s.getScenes,

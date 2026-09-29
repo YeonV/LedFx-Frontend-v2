@@ -6,6 +6,7 @@ import {
   unwrapNullable,
   orderFormProperties,
   orderEffectProperties,
+  groupAudioDevices,
   audioDeviceName,
   instanceOptions,
   sliderMarks,
@@ -412,11 +413,43 @@ test('orderEffectProperties drops hidden keys, and advanced keys unless advanced
   assert.deepEqual(orderEffectProperties(undefined), [])
 })
 
-test('audioDeviceName finds device index 0', () => {
-  const field = { type: 'string', enum: { 0: 'MME: Mic', 1: 'MME: Line' } }
-  assert.equal(audioDeviceName(field, 0), 'MME: Mic')
-  assert.equal(audioDeviceName(field, 1), 'MME: Line')
-  assert.equal(audioDeviceName(field, undefined), undefined)
+const NAMES = {
+  1: 'PulseAudio: Default Source',
+  3: 'PulseAudio: RDPSink.monitor',
+  4: 'PulseAudio: RDPSource'
+}
+
+const opts = (m: Record<string, string>) =>
+  Object.entries(m).map(([k, label]) => ({ value: Number(k), label }))
+
+test('groupAudioDevices groups the device options by host, index 0 included', () => {
+  assert.deepEqual(groupAudioDevices(opts(NAMES)), [
+    {
+      host: 'PulseAudio',
+      devices: [
+        { index: 1, name: 'Default Source' },
+        { index: 3, name: 'RDPSink.monitor' },
+        { index: 4, name: 'RDPSource' }
+      ]
+    }
+  ])
+  // a colon inside the device name stays in the name
+  assert.deepEqual(groupAudioDevices(opts({ 0: 'WASAPI: Mic (USB: 2)', 2: 'MME: Line' })), [
+    { host: 'WASAPI', devices: [{ index: 0, name: 'Mic (USB: 2)' }] },
+    { host: 'MME', devices: [{ index: 2, name: 'Line' }] }
+  ])
+  assert.deepEqual(groupAudioDevices([]), [])
+  assert.deepEqual(groupAudioDevices(undefined), [])
+})
+
+test('audioDeviceName looks the name up by index, including index 0', () => {
+  const names = { 0: 'A: zero', 1: 'A: one' }
+  assert.equal(audioDeviceName(names, 0), 'A: zero')
+  // an unplugged device (not in the map) has no name, so nothing is keyed by it
+  assert.equal(audioDeviceName(names, 7), undefined)
+  assert.equal(audioDeviceName(names, null), undefined)
+  assert.equal(audioDeviceName(names, undefined), undefined)
+  assert.equal(audioDeviceName(undefined, 0), undefined)
 })
 
 test('a select maps a null option to NULL_OPTION and back', () => {
@@ -502,6 +535,7 @@ test('an integer with examples is a slider with marks at the examples', () => {
 })
 
 const STATE = {
+  audio_devices: { 3: 'PulseAudio: B', 0: 'ALSA: Zero', 12: 'ALSA: Twelve' },
   virtuals: { v1: { id: 'v1', config: { name: 'Strip' } }, v2: { id: 'v2', config: {} } },
   scenes: { s1: { name: 'Chill' } },
   playlists: { p1: { id: 'p1', name: 'Party' } },
@@ -510,6 +544,12 @@ const STATE = {
 }
 
 test('instanceOptions builds the options of each source from the store', () => {
+  // audio devices: sorted by index, numeric values, index 0 kept
+  assert.deepEqual(instanceOptions('audio_devices', STATE), [
+    { value: 0, label: 'ALSA: Zero' },
+    { value: 3, label: 'PulseAudio: B' },
+    { value: 12, label: 'ALSA: Twelve' }
+  ])
   // virtuals: id -> name, the id when there is no name
   assert.deepEqual(instanceOptions('virtuals', STATE), [
     { value: 'v1', label: 'Strip' },
@@ -525,12 +565,43 @@ test('instanceOptions builds the options of each source from the store', () => {
 })
 
 test('instanceOptions: empty sources are empty, unknown sources are undefined', () => {
-  for (const s of ['virtuals', 'com_ports', 'scenes', 'playlists', 'devices']) {
+  for (const s of ['audio_devices', 'virtuals', 'com_ports', 'scenes', 'playlists', 'devices']) {
     assert.deepEqual(instanceOptions(s, {}), [], s)
     assert.deepEqual(instanceOptions(s, { [s]: s === 'com_ports' ? [] : {} }), [], s)
   }
   assert.equal(instanceOptions('nope', STATE), undefined)
   assert.equal(instanceOptions(undefined, STATE), undefined)
+})
+
+const deepFreeze = <T>(o: T): T => {
+  if (o && typeof o === 'object') {
+    Object.freeze(o)
+    for (const v of Object.values(o)) deepFreeze(v)
+  }
+  return o
+}
+
+test('nothing in the widget path writes into the schemas', () => {
+  // a frozen fixture throws (strict mode, ESM) on any write
+  const frozen = deepFreeze(structuredClone(schemas))
+  const forms: [any, string | undefined][] = [
+    [frozen.audio, undefined],
+    [frozen.virtuals, undefined],
+    ...Object.entries<any>(frozen.devices).map(([t, e]): [any, string] => [e, t]),
+    ...Object.entries<any>(frozen.integrations).map(([t, e]): [any, string] => [e, t]),
+    ...Object.entries<any>(frozen.effects).map(([t, e]): [any, string] => [e, t]),
+    [frozen.core, undefined]
+  ]
+  for (const [entry, type] of forms) {
+    orderFormProperties(entry.schema)
+    orderEffectProperties(entry.schema, entry.hidden_keys, entry.advanced_keys, true)
+    for (const [id, field] of Object.entries<any>(entry.schema.properties)) {
+      const w = widgetFor(field, id, type, true)
+      enumOptions(w.field, w.nullable, instanceOptions(w.field['x-ledfx-enum-source'], STATE))
+      sliderMarks(w.field)
+    }
+  }
+  groupAudioDevices(instanceOptions('audio_devices', STATE))
 })
 
 test('loadSource calls the getter once and marks the source loaded, however it ends', async () => {
