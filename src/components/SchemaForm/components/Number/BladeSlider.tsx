@@ -21,6 +21,9 @@ const BladeSliderInner = ({
   const theme = useTheme()
   // an enum schema is its own list of marks when the caller passes none
   const enumMarks = marks ?? schema.enum
+  // the track sets marginTop/Bottom itself: a shorthand `margin` beside them makes React warn
+  const trackStyle = { ...style }
+  delete trackStyle.margin
 
   const computedValue =
     model_id && typeof model[model_id] === 'number'
@@ -75,7 +78,7 @@ const BladeSliderInner = ({
           onChangeCommitted={(_e, b) => handleUpstream(b as number)}
           style={{
             color: '#aaa',
-            ...style,
+            ...trackStyle,
             width: '100%',
             marginBottom: 0.5,
             marginTop: 0.5
