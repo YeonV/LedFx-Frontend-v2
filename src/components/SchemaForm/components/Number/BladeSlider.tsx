@@ -19,6 +19,8 @@ const BladeSliderInner = ({
 }: BladeSliderInnerProps) => {
   const classes = useStyles()
   const theme = useTheme()
+  // an enum schema is its own list of marks when the caller passes none
+  const enumMarks = marks ?? schema.enum
 
   const computedValue =
     model_id && typeof model[model_id] === 'number'
@@ -116,13 +118,13 @@ const BladeSliderInner = ({
       aria-labelledby="input-slider"
       valueLabelDisplay="auto"
       disabled={disabled}
-      marks={marks.map((m: any, i: number) => ({
+      marks={enumMarks.map((m: any, i: number) => ({
         value: m,
-        label: i === 0 || i === marks.length - 1 ? m : ''
+        label: i === 0 || i === enumMarks.length - 1 ? m : ''
       }))}
       step={null}
-      min={marks[0]}
-      max={marks[marks.length - 1]}
+      min={enumMarks[0]}
+      max={enumMarks[enumMarks.length - 1]}
       value={computedValue}
       onChange={handleSliderChange}
       onChangeCommitted={(_e, b) => handleUpstream(b as number)}
