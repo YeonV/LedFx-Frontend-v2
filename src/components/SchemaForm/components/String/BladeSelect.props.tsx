@@ -1,5 +1,5 @@
 import { CSSProperties } from '@mui/styles'
-import { JsxElement } from 'typescript'
+import type { ReactNode } from 'react'
 
 export interface BladeSelectProps {
   variant?: 'outlined' | 'contained'
@@ -15,6 +15,6 @@ export interface BladeSelectProps {
   textStyle?: CSSProperties
   menuItemStyle?: CSSProperties
   hideDesc?: boolean
-  children?: JsxElement
+  children?: ReactNode
   type?: string
 }
