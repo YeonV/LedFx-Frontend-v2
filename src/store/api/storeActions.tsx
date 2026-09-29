@@ -133,6 +133,8 @@ const storeActions = (set: any) => ({
       action: 'restart'
     }),
   backendFeatures: { sendspin: false } as Record<string, boolean>,
+  /** /api/info config_error: set while the backend is in safe mode or can't save */
+  configError: null as string | null,
   getInfo: async () => {
     const resp = await Ledfx('/api/info')
     if (resp?.features) {
@@ -142,6 +144,15 @@ const storeActions = (set: any) => ({
         }),
         false,
         'api/gotInfo'
+      )
+    }
+    if (resp?.name) {
+      set(
+        produce((state: IStore) => {
+          state.configError = resp.config_error ?? null
+        }),
+        false,
+        'api/gotConfigError'
       )
     }
     return resp

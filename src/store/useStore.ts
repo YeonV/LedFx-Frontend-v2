@@ -123,7 +123,8 @@ const useStore = create(
                   // to a file that no longer exists, and the player renders a
                   // 404 instead of its fallback.
                   'thumbnailPath',
-                  'albumArtCacheBuster'
+                  'albumArtCacheBuster',
+                  'configError'
                 ].includes(key)
             )
           )
