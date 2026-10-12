@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+import { getMatrixFrameShape, getMatrixRows } from './matrixRows'
 
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
@@ -41,13 +42,7 @@ const PixelGraphBase = ({
       config: state.config
     }))
   )
-
-  const rows = virtuals[virtId]?.is_device
-    ? (typeof virtuals[virtId]?.is_device === 'string' &&
-        (devices[virtuals[virtId]?.is_device]?.config as any)?.rows) ||
-      virtuals[virtId]?.config?.rows ||
-      1
-    : virtuals[virtId]?.config?.rows || 1
+  const rows = getMatrixRows(virtuals[virtId], devices)
 
   // console.time('hexColor');
   // console.log('timestamp', new Date().getTime())
@@ -76,10 +71,15 @@ const PixelGraphBase = ({
         setPixels(eventData.pixels)
       }
 
-      if (eventData.shape[0] !== shape[0] && eventData.shape[1] !== shape[1])
-        setShape(eventData.shape)
+      const frameShape = getMatrixFrameShape(
+        eventData.shape[0] * eventData.shape[1],
+        eventData.shape,
+        rows,
+        showMatrix
+      )
+      if (frameShape[0] !== shape[0] || frameShape[1] !== shape[1]) setShape(frameShape)
     },
-    [virtId, shape]
+    [virtId, shape, rows, showMatrix]
   )
 
   useSubscription('visualisation_update', handleWebsockets)
