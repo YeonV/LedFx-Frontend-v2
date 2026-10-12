@@ -27,6 +27,12 @@ export interface IPreset {
   config: EffectConfig
 }
 
+export interface SilenceSceneConfig {
+  enabled: boolean
+  scene_id: string | null
+  timeout_seconds: number
+}
+
 export interface ISystemConfig {
   integrations: undefined
   user_gradients: Record<string, string>
@@ -77,6 +83,7 @@ export interface ISystemConfig {
   sendspin_always_on: boolean
   /** Opt-in. While false the core never reads the OS media session. */
   now_playing_enabled?: boolean
+  silence_scene?: SilenceSceneConfig
   lifx_broadcast_address?: string
   lifx_discovery_timeout?: number
   sendspin_servers?: Record<string, { server_url: string; client_name: string }>

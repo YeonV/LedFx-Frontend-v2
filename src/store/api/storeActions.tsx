@@ -3,6 +3,19 @@ import { Ledfx } from '../../api/ledfx'
 import type { IStore, IOpenRgbDevice } from '../useStore'
 import nameToIcon from '../../utils/nameToIcon'
 
+export interface SilenceSceneStatus {
+  enabled: boolean
+  scene_id: string | null
+  timeout_seconds: number
+  audio_silent: boolean | null
+  timeout_pending: boolean
+  silence_scene_active: boolean
+  restoring: boolean
+  state: string
+  reason: string | null
+  recovery_pending: boolean
+}
+
 const storeActions = (set: any) => ({
   scanForOpenRgbDevices: async () => {
     const resp = await Ledfx('/api/find_openrgb', 'GET', {})
@@ -132,13 +145,17 @@ const storeActions = (set: any) => ({
       timeout: 0,
       action: 'restart'
     }),
-  backendFeatures: { sendspin: false } as Record<string, boolean>,
+  backendFeatures: { sendspin: false, silence_scene: false } as Record<string, boolean>,
+  silenceSceneStatus: null as SilenceSceneStatus | null,
   getInfo: async () => {
     const resp = await Ledfx('/api/info')
-    if (resp?.features) {
+    if (resp) {
       set(
         produce((state: IStore) => {
-          state.backendFeatures = { ...state.backendFeatures, ...resp.features }
+          if (resp.features) {
+            state.backendFeatures = { ...state.backendFeatures, ...resp.features }
+          }
+          state.silenceSceneStatus = resp.silence_scene ?? null
         }),
         false,
         'api/gotInfo'

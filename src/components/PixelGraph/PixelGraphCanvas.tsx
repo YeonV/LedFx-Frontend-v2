@@ -2,6 +2,7 @@ import { useRef, useCallback } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+import { getMatrixFrameShape, getMatrixRows } from './matrixRows'
 
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
@@ -29,14 +30,16 @@ const PixelGraphCanvas = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const { virtuals, graphs } = useStore(
+  const { virtuals, devices, graphs } = useStore(
     useShallow((state) => ({
       virtuals: state.virtuals,
+      devices: state.devices,
       graphs: state.graphs
     }))
   )
   const smoothing = useStore((state) => state.uiPersist.pixelGraphSettings?.smoothing)
   const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
+  const matrixRows = getMatrixRows(virtuals[virtId], devices)
 
   const handleVisualisationUpdate = useCallback(
     (eventData: any) => {
@@ -48,14 +51,15 @@ const PixelGraphCanvas = ({
       const ctx = canvas?.getContext('2d')
       if (!canvas || !ctx) return
 
-      const { virtuals } = useStore.getState()
-
       ctx.imageSmoothingEnabled = false
 
       if (eventData.rgba) {
-        const [srcRows, srcCols] = eventData.shape
-        const cols = showMatrix ? srcCols : srcRows * srcCols
-        const rows = showMatrix ? srcRows : 1
+        const [rows, cols] = getMatrixFrameShape(
+          eventData.rgba.length / 4,
+          eventData.shape,
+          matrixRows,
+          showMatrix
+        )
         if (canvas.width !== cols) canvas.width = cols
         if (canvas.height !== rows) canvas.height = rows
         ctx.putImageData(new ImageData(eventData.rgba, cols, rows), 0, 0)
@@ -67,23 +71,13 @@ const PixelGraphCanvas = ({
           ? hexColor(eventData.pixels, 'compressed')
           : eventData.pixels
 
-      const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-
-      const shape = eventData.shape
       const totalPixels = pixels.length
-      const realPixelCount = virtuals[virtId]?.pixel_count || totalPixels
-      const realCols = Math.ceil(realPixelCount / rows)
-      const aspectRatio = realCols / rows
-
-      let displayRows, displayCols
-      if (showMatrix) {
-        displayRows =
-          (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
-        displayCols = (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
-      } else {
-        displayRows = 1
-        displayCols = totalPixels
-      }
+      const [displayRows, displayCols] = getMatrixFrameShape(
+        totalPixels,
+        eventData.shape,
+        matrixRows,
+        showMatrix
+      )
 
       canvas.width = displayCols
       canvas.height = displayRows
@@ -101,13 +95,15 @@ const PixelGraphCanvas = ({
       }
       ctx.putImageData(imageData, 0, 0)
     },
-    [virtId, showMatrix]
+    [virtId, matrixRows, showMatrix]
   )
 
   useSubscription('visualisation_update', handleVisualisationUpdate)
 
   const render =
-    (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) || virtuals[virtId]?.streaming
+    active ||
+    (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) ||
+    virtuals[virtId]?.streaming
 
   if (!(graphs || intGraphs)) {
     return null
@@ -120,8 +116,7 @@ const PixelGraphCanvas = ({
       style={{
         maxWidth: fill ? 'unset' : fullScreen ? '100vw' : '520px',
         maxHeight: fill ? 'unset' : fullScreen ? '100vh' : '520px',
-        height:
-          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix ? '20px' : 'auto',
+        height: !render || matrixRows < 2 || !showMatrix ? '20px' : 'auto',
         width: '100%',
         borderRadius: '10px',
         overflow: 'hidden',

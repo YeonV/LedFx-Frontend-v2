@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+import { getMatrixFrameShape, getMatrixRows } from './matrixRows'
 
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
@@ -42,6 +43,7 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
   const smoothing = useStore((state) => state.uiPersist.pixelGraphSettings?.smoothing)
 
   const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
+  const matrixRows = getMatrixRows(virtuals[virtId], devices)
 
   const initializeWorker = async () => {
     const canvas = canvasRef.current
@@ -86,9 +88,12 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
       }
 
       if (eventData.rgba) {
-        const [srcRows, srcCols] = eventData.shape
-        const cols = showMatrix ? srcCols : srcRows * srcCols
-        const rows = showMatrix ? srcRows : 1
+        const [rows, cols] = getMatrixFrameShape(
+          eventData.rgba.length / 4,
+          eventData.shape,
+          matrixRows,
+          showMatrix
+        )
 
         post({ rgba: eventData.rgba, rows, cols })
         return
@@ -98,12 +103,12 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
         config.transmission_mode === 'compressed'
           ? hexColor(eventData.pixels, config.transmission_mode)
           : eventData.pixels
-      const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+      const rows = showMatrix ? matrixRows : 1
       const cols = Math.ceil(pixels.length / rows)
 
       post({ pixels, rows, cols })
     },
-    [virtId, virtuals, config, showMatrix]
+    [virtId, matrixRows, config, showMatrix]
   )
 
   useSubscription('visualisation_update', handleWebsockets)
@@ -117,7 +122,9 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
   )
 
   const render =
-    (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) || virtuals[virtId]?.streaming
+    active ||
+    (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) ||
+    virtuals[virtId]?.streaming
 
   if (!(graphs || intGraphs)) {
     return null
@@ -130,8 +137,7 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',
         maxHeight: fullScreen ? '100vh' : 'unset',
-        height:
-          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix ? '20px' : 'auto',
+        height: !render || matrixRows < 2 || !showMatrix ? '20px' : 'auto',
         width: '100%',
         borderRadius: '10px',
         overflow: 'hidden',

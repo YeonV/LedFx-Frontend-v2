@@ -116,6 +116,7 @@ const useStore = create(
                   // another core's stale config before the real fetch lands.
                   'nowPlayingState',
                   'nowPlayingAvailable',
+                  'silenceSceneStatus',
                   // Points at an artwork asset in the core's cache, which the
                   // core deletes when Now Playing is switched off. Persisting
                   // it means a restart with nothing playing rehydrates a path

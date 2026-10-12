@@ -3,7 +3,9 @@ import LogColorFilterSelect from './LogFilterSelect'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
-import { Box, TextField } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { Box, MenuItem, Select, TextField, Typography } from '@mui/material'
+import type { SilenceSceneConfig } from '../../store/api/storeConfig'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
@@ -18,6 +20,27 @@ const Uncategorized = () => {
   const setCurrentTrack = useStore((state) => state.setCurrentTrack)
   const setThumbnailPath = useStore((state) => state.setThumbnailPath)
   const setPositionData = useStore((state) => state.setPositionData)
+  const scenes = useStore((state) => state.scenes)
+  const silenceSceneStatus = useStore((state) => state.silenceSceneStatus)
+  const silenceSceneAvailable = backendFeatures.silence_scene || silenceSceneStatus !== null
+
+  const silenceSceneConfig: SilenceSceneConfig = config.silence_scene ?? {
+    enabled: false,
+    scene_id: null,
+    timeout_seconds: 5
+  }
+  const [timeoutSecondsDraft, setTimeoutSecondsDraft] = useState(
+    String(silenceSceneConfig.timeout_seconds)
+  )
+
+  useEffect(() => {
+    setTimeoutSecondsDraft(String(silenceSceneConfig.timeout_seconds))
+  }, [silenceSceneConfig.timeout_seconds])
+
+  const updateSilenceSceneConfig = async (updates: Partial<SilenceSceneConfig>) => {
+    await setSystemConfig({ silence_scene: { ...silenceSceneConfig, ...updates } })
+    await Promise.all([getSystemConfig(), getInfo()])
+  }
 
   // Offscreen capture state
   const offscreenCaptureEnabled = useStore(
@@ -205,6 +228,94 @@ const Uncategorized = () => {
             }
           }}
         />
+      )}
+      {silenceSceneAvailable && (
+        <>
+          <SettingsRow
+            title="Silence Monitoring"
+            info="Temporarily applies a scene, or clears and deactivates virtuals, after the configured silent timeout."
+          >
+            <SettingsSwitch
+              checked={silenceSceneConfig.enabled}
+              onChange={(event) => updateSilenceSceneConfig({ enabled: event.target.checked })}
+            />
+          </SettingsRow>
+          {silenceSceneConfig.enabled && (
+            <Box
+              sx={{
+                mb: 3,
+                ml: 2,
+                p: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1
+              }}
+            >
+              <SettingsRow title="Silence scene">
+                <Select
+                  size="small"
+                  displayEmpty
+                  value={silenceSceneConfig.scene_id ?? ''}
+                  onChange={(event) =>
+                    updateSilenceSceneConfig({ scene_id: event.target.value || null })
+                  }
+                  sx={{ minWidth: 220 }}
+                >
+                  <MenuItem value="">None (Clear and Deactivate)</MenuItem>
+                  {Object.entries(scenes).map(([sceneId, scene]) => (
+                    <MenuItem key={sceneId} value={sceneId}>
+                      {scene.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </SettingsRow>
+              <SettingsRow title="Silence timeout (seconds)">
+                <TextField
+                  size="small"
+                  type="number"
+                  value={timeoutSecondsDraft}
+                  inputProps={{ min: 0, step: 0.1 }}
+                  onChange={(event) => setTimeoutSecondsDraft(event.target.value)}
+                  onBlur={() => {
+                    const timeoutSeconds = Number(timeoutSecondsDraft)
+                    if (
+                      timeoutSecondsDraft.trim() === '' ||
+                      !Number.isFinite(timeoutSeconds) ||
+                      timeoutSeconds < 0
+                    ) {
+                      setTimeoutSecondsDraft(String(silenceSceneConfig.timeout_seconds))
+                      return
+                    }
+                    setTimeoutSecondsDraft(String(timeoutSeconds))
+                    if (timeoutSeconds !== silenceSceneConfig.timeout_seconds) {
+                      updateSilenceSceneConfig({ timeout_seconds: timeoutSeconds })
+                    }
+                  }}
+                  sx={{ width: 120 }}
+                />
+              </SettingsRow>
+              {silenceSceneStatus && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: 'block', mb: 1 }}
+                >
+                  Runtime: {silenceSceneStatus.state};{' '}
+                  {silenceSceneStatus.audio_silent === null
+                    ? 'audio unknown'
+                    : silenceSceneStatus.audio_silent
+                      ? 'silent'
+                      : 'audio active'}
+                  {silenceSceneStatus.timeout_pending ? '; timeout pending' : ''}
+                  {silenceSceneStatus.silence_scene_active ? '; override active' : ''}
+                  {silenceSceneStatus.restoring ? '; restoring' : ''}
+                  {silenceSceneStatus.recovery_pending ? '; recovery pending' : ''}
+                  {silenceSceneStatus.reason ? `; ${silenceSceneStatus.reason}` : ''}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </>
       )}
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />

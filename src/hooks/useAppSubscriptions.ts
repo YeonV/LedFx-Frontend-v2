@@ -57,6 +57,16 @@ const useAppSubscriptions = () => {
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const setProtoCall = useStore((state) => state.setProtoCall)
   const getAudioDevices = useStore((state) => state.getAudioDevices)
+  const getInfo = useStore((state) => state.getInfo)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getDevices = useStore((state) => state.getDevices)
+  const getPlaylistState = useStore((state) => state.getPlaylistState)
+
+  const refreshSilenceSceneState = () => {
+    Promise.all([getInfo(), getVirtuals(), getDevices(), getPlaylistState()]).catch((error) =>
+      console.error('Failed to refresh silence scene state', error)
+    )
+  }
 
   useSubscription('audio_device_list_changed', () => {
     getAudioDevices() // Refresh audio devices list and active device index
@@ -70,6 +80,8 @@ const useAppSubscriptions = () => {
   useSubscription('song_detected', (e: any) => {
     setProtoCall(buildSongProtocolUrl(e))
   })
+  useSubscription('silence_scene_entered', refreshSilenceSceneState)
+  useSubscription('silence_scene_exited', refreshSilenceSceneState)
 
   // song_detected is fire-and-forget: a browser that connects mid-track hears
   // nothing until the next one. Replay it once through the same handler.
