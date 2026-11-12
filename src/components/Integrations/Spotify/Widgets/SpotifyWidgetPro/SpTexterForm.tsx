@@ -208,7 +208,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
                     value={spotifyTexter.font}
                     onChange={(e) => setSpTexterFont(e.target.value)}
                   >
-                    {schemas.effects.texter2d.schema.properties.font.enum.map((f: string) => (
+                    {schemas.effects?.texter2d?.schema.properties.font.enum.map((f: string) => (
                       <MenuItem key={f} value={f}>
                         {f}
                       </MenuItem>
@@ -223,7 +223,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
                     value={spotifyTexter.text_effect}
                     onChange={(e) => setSpTexterTextEffect(e.target.value)}
                   >
-                    {schemas.effects.texter2d.schema.properties.text_effect.enum.map(
+                    {schemas.effects?.texter2d?.schema.properties.text_effect.enum.map(
                       (f: string) => (
                         <MenuItem key={f} value={f}>
                           {f}

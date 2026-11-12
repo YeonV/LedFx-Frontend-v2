@@ -50,3 +50,17 @@ String.args = {
   hideDesc: false,
   children: undefined
 }
+
+export const SelectZeroValue = Template.bind({})
+SelectZeroValue.args = {
+  schema: { title: 'Gpio Pin', type: 'integer', enum: [0, 10, 12], default: 10 },
+  model: { gpio_pin: 0 },
+  model_id: 'gpio_pin'
+}
+
+export const TextEmptyValue = Template.bind({})
+TextEmptyValue.args = {
+  schema: { title: 'Description', type: 'string', default: 'LedFx' },
+  model: { description: '' },
+  model_id: 'description'
+}

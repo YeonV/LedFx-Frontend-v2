@@ -38,3 +38,48 @@ test('Add Virtual Device FAB interaction', async ({ page }) => {
   await page.waitForTimeout(500)
   await page.screenshot({ path: 'test-results/virtual-created.png' })
 })
+
+test('Add Virtual shows field errors from a 400 and stays open', async ({ page }) => {
+  test.setTimeout(60000)
+  await page.goto('/#/')
+  await clearDialogs(page)
+
+  // The virtual form clamps every input, so no real invalid value reaches the
+  // backend: answer the add with the backend's validation_error body instead.
+  await page.route('**/api/virtuals', (route) =>
+    route.request().method() === 'POST'
+      ? route.fulfill({
+          status: 400,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'failed',
+            payload: { type: 'error', reason: '1 invalid value(s)' },
+            errors: [
+              {
+                type: 'string_too_long',
+                loc: ['name'],
+                msg: 'String should have at most 64 characters',
+                input: 'Invalid Virtual'
+              }
+            ]
+          })
+        })
+      : route.continue()
+  )
+
+  await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
+  await page.waitForTimeout(1000)
+  await page.locator('.MuiFab-root[aria-label="add"]').click()
+  await page.waitForTimeout(500)
+  await page.getByRole('menuitem', { name: 'Add Virtual' }).click()
+
+  const dialog = page.getByRole('dialog')
+  await dialog.waitFor({ state: 'visible' })
+  const nameInput = dialog.locator('input').first()
+  await nameInput.waitFor({ state: 'visible', timeout: 10000 })
+  await nameInput.fill('Invalid Virtual')
+  await page.getByRole('button', { name: 'Add & Setup Segments' }).click()
+
+  await expect(dialog.getByText('String should have at most 64 characters')).toBeVisible()
+  await expect(dialog).toBeVisible()
+})

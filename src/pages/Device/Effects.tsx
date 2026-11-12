@@ -22,60 +22,18 @@ import {
   Stop
 } from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import { fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
-import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
+import { orderEffectProperties } from '../../components/SchemaForm/fields'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { Effect, Virtual } from '../../api/ledfx.types'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import { IVirtualEventUpdate } from '../../store/api/storeVirtuals'
-
-const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
-
-export const orderEffectProperties = (
-  schema: Schema,
-  hidden_keys?: string[],
-  advanced_keys?: string[],
-  advanced?: boolean
-) => {
-  const properties: any[] =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .filter((k) => {
-        if (hidden_keys && hidden_keys.length > 0) {
-          return hidden_keys?.indexOf(k) === -1
-        }
-        return true
-      })
-      .filter((ke) => {
-        if (advanced_keys && advanced_keys.length > 0 && !advanced) {
-          return advanced_keys?.indexOf(ke) === -1
-        }
-        return true
-      })
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk
-      }))
-  const ordered = [] as any[]
-  configOrder.forEach((type) => {
-    ordered.push(...properties.filter((x) => x.type === type))
-  })
-  ordered.push(...properties.filter((x) => !configOrder.includes(x.type)))
-  return ordered
-    .sort((a) => (a.id === 'advanced' ? 1 : -1))
-    .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
-    .sort((a) => (a.type === 'number' ? -1 : 1))
-    .sort((a) => (a.type === 'integer' ? -1 : 1))
-    .sort((a) => (a.id === 'bg_color' ? -1 : 1))
-    .sort((a) => (a.type === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'gradient' ? -1 : 1))
-}
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false)
@@ -126,18 +84,18 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (v) setVirtual(v)
   }, [JSON.stringify(virtuals[virtId])])
 
+  const [errors, setErrors] = useState<FieldErrors>({})
   const effectType = virtual && virtual.effect.type
   const lastEffect = virtual && virtual.last_effect
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
-  const orderedProperties =
-    effects &&
-    effectType &&
-    orderEffectProperties(
-      effects[effectType].schema,
-      effects[effectType].hidden_keys,
-      effects[effectType].advanced_keys,
-      theModel?.advanced
-    )
+  useEffect(() => setErrors({}), [effectType, virtId])
+  const effect = effectType ? effects?.[effectType] : undefined
+  const orderedProperties = orderEffectProperties(
+    effect?.schema,
+    effect?.hidden_keys,
+    effect?.advanced_keys,
+    !!theModel?.advanced
+  )
   const handleClearEffect = () => {
     if (virtual) {
       clearEffect(virtId).then(() => {
@@ -164,7 +122,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
       // No need to refetch - WebSocket event will update state, and parent already has presets
-      updateEffect(virtId, effectType, config, false)
+      updateEffect(virtId, effectType, config, false).then((resp: any) =>
+        setErrors(fieldErrors(resp))
+      )
     }
   }
 
@@ -386,6 +346,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 {theModel && effectType && (
                   <div>
                     <BladeEffectSchemaForm
+                      errors={errors}
                       handleEffectConfig={handleEffectConfig}
                       virtId={virtual.id}
                       schemaProperties={orderedProperties}

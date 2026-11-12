@@ -327,7 +327,7 @@ const DbDevices = () => {
         devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online
           ? virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
-            : `${virtuals[params.row.id]?.last_effect ? `Last Effect: ${schemas.effects[virtuals[params.row.id]?.last_effect as string].name}` : 'Online'}`
+            : `${virtuals[params.row.id]?.last_effect ? `Last Effect: ${schemas.effects?.[virtuals[params.row.id]?.last_effect as string]?.name ?? virtuals[params.row.id]?.last_effect}` : 'Online'}`
           : virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
             : params.row.is_device

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Ledfx } from '../api/ledfx'
-import { supportsPlaybackCapture, requestPlaybackCapture } from '../components/FireTv/android.bridge'
+import {
+  supportsPlaybackCapture,
+  requestPlaybackCapture
+} from '../components/FireTv/android.bridge'
 
 /**
  * Android's Playback Capture (system audio) consent state and actions -

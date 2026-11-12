@@ -11,6 +11,8 @@ export interface BladeSliderInnerProps {
   hideDesc?: boolean
   disableUnderline?: boolean
   full?: boolean
+  /** aria props tying the inputs to the error caption (see errorAria) */
+  aria?: Record<string, unknown>
 }
 
 export interface BladeSliderProps {
@@ -50,4 +52,6 @@ export interface BladeSliderProps {
   hideDesc?: boolean
   style?: any
   full?: boolean
+  /** validation message shown under the field */
+  error?: string
 }

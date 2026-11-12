@@ -1,3 +1,5 @@
+import type { FieldErrors } from '../../../api/fieldErrors'
+
 export interface Schema {
   properties?: any
   required?: any
@@ -5,6 +7,10 @@ export interface Schema {
 }
 
 export interface EffectSchemaFormProps {
+  /**
+   * Validation messages by field id, shown under each field
+   */
+  errors?: FieldErrors
   schemaProperties: any[]
   /**
    * Model is the current value of the schema

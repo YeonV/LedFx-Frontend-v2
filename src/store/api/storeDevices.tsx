@@ -36,7 +36,7 @@ const storeDevices = (set: any) => ({
   addDevice: async (config: any) => await Ledfx('/api/devices', 'POST', config),
   activateDevice: async (deviceId: string) => {
     const resp = await Ledfx(`/api/devices/${deviceId}`, 'POST', {})
-    if (resp) {
+    if (resp && resp.status !== 'failed') {
       set(
         produce((state: IStore) => {
           state.paused = resp.paused

@@ -1,5 +1,6 @@
+import { useId } from 'react'
 import { Switch, Checkbox, Button, Typography } from '@mui/material'
-import BladeFrame from '../BladeFrame'
+import BladeFrame, { errorAria } from '../BladeFrame'
 import { BBooleanProps } from './BBoolean.props'
 
 /**
@@ -16,18 +17,29 @@ const BBoolean = ({
   value,
   title = '',
   description = '',
-  hideDesc = false
+  hideDesc = false,
+  error
 }: BBooleanProps) => {
+  const errorId = useId()
+  const aria = errorAria(errorId, error)
   switch (type) {
     case 'switch':
       return (
-        <BladeFrame index={index} required={required} style={style} title={title}>
+        <BladeFrame
+          index={index}
+          required={required}
+          style={style}
+          title={title}
+          error={error}
+          errorId={errorId}
+        >
           <Switch
             defaultValue={defaultValue || value}
             checked={value}
             onChange={onChange}
             name={title}
             color="primary"
+            slotProps={{ input: aria }}
           />
           {!hideDesc && description ? (
             <Typography variant="body2" className="MuiFormHelperText-root">
@@ -38,13 +50,14 @@ const BBoolean = ({
       )
     case 'checkbox':
       return (
-        <BladeFrame index={index} title={title}>
+        <BladeFrame index={index} title={title} error={error} errorId={errorId}>
           <Checkbox
             defaultValue={defaultValue || value}
             checked={value}
             onChange={onChange}
             name={title}
             color="primary"
+            slotProps={{ input: aria }}
           />
         </BladeFrame>
       )

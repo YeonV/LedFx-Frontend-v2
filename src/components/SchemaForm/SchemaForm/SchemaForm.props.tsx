@@ -1,3 +1,5 @@
+import type { FieldErrors } from '../../../api/fieldErrors'
+
 export interface Schema {
   properties?: any
   required?: any
@@ -5,6 +7,10 @@ export interface Schema {
 }
 
 export interface SchemaFormProps {
+  /**
+   * Validation messages by field id, shown under each field
+   */
+  errors?: FieldErrors
   /**
    * Schema to generate Form from. <br />
    * in production this is provided by <br />

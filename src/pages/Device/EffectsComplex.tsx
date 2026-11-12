@@ -14,57 +14,15 @@ import {
 } from '@mui/material'
 import { GridOn, GridOff, Settings } from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import { fieldErrors } from '../../api/fieldErrors'
+import type { FieldErrors } from '../../api/fieldErrors'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
-import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
+import { orderEffectProperties } from '../../components/SchemaForm/fields'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import { Ledfx } from '../../api/ledfx'
 import { EffectConfig, Virtual } from '../../api/ledfx.types'
-
-const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
-
-const orderEffectProperties = (
-  schema: Schema,
-  hidden_keys?: string[],
-  advanced_keys?: string[],
-  advanced?: boolean
-) => {
-  const properties: any[] =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .filter((k) => {
-        if (hidden_keys && hidden_keys.length > 0) {
-          return hidden_keys?.indexOf(k) === -1
-        }
-        return true
-      })
-      .filter((ke) => {
-        if (advanced_keys && advanced_keys.length > 0 && !advanced) {
-          return advanced_keys?.indexOf(ke) === -1
-        }
-        return true
-      })
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk
-      }))
-  const ordered = [] as any[]
-  configOrder.forEach((type) => {
-    ordered.push(...properties.filter((x) => x.type === type))
-  })
-  ordered.push(...properties.filter((x) => !configOrder.includes(x.type)))
-  return ordered
-    .sort((a) => (a.id === 'advanced' ? 1 : -1))
-    .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
-    .sort((a) => (a.type === 'number' ? -1 : 1))
-    .sort((a) => (a.type === 'integer' ? -1 : 1))
-    .sort((a) => (a.id === 'bg_color' ? -1 : 1))
-    .sort((a) => (a.type === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'gradient' ? -1 : 1))
-}
 
 const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boolean }) => {
   const getDevices = useStore((state) => state.getDevices)
@@ -105,24 +63,25 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     if (v) setVirtual(v)
   }, [JSON.stringify(virtuals[virtId] ?? {})])
 
+  const [errors, setErrors] = useState<FieldErrors>({})
   const effectType = virtual && virtual.effect?.type
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
-  const orderedProperties =
-    effects &&
-    effectType &&
-    orderEffectProperties(
-      effects[effectType].schema,
-      effects[effectType].hidden_keys,
-      effects[effectType].advanced_keys,
-      theModel?.advanced
-    )
+  useEffect(() => setErrors({}), [effectType, virtId])
+  const effect = effectType ? effects?.[effectType] : undefined
+  const orderedProperties = orderEffectProperties(
+    effect?.schema,
+    effect?.hidden_keys,
+    effect?.advanced_keys,
+    !!theModel?.advanced
+  )
 
   const handleEffectConfig = (config: EffectConfig, vId: string) => {
     // Optimistically update theModel immediately to prevent flickering
     setTheModel((prev: any) => ({ ...prev, ...config }))
 
     if (updateEffect && getVirtuals !== undefined && effectType) {
-      updateEffect(vId, effectType, config, false).then(() => {
+      updateEffect(vId, effectType, config, false).then((resp: any) => {
+        setErrors(fieldErrors(resp))
         getVirtuals()
         getDevices()
       })
@@ -280,6 +239,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
                 </BladeFrame>
               )}
               <BladeEffectSchemaForm
+                errors={errors}
                 handleEffectConfig={(e: any) => handleEffectConfig(e, virtId)}
                 virtId={virtId}
                 schemaProperties={orderedProperties}

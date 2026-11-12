@@ -1,5 +1,6 @@
+import { useId } from 'react'
 import { Autocomplete, Chip, TextField } from '@mui/material'
-import BladeFrame from '../BladeFrame'
+import BladeFrame, { errorAria } from '../BladeFrame'
 
 export interface BladeMultiSelectProps {
   schema: any
@@ -11,6 +12,7 @@ export interface BladeMultiSelectProps {
   disabled?: boolean
   hideDesc?: boolean
   wrapperStyle?: any
+  error?: string
 }
 
 /**
@@ -30,8 +32,10 @@ const BladeMultiSelect = ({
   required = false,
   disabled = false,
   hideDesc = false,
-  wrapperStyle = { margin: '0.5rem 0', width: '100%' }
+  wrapperStyle = { margin: '0.5rem 0', width: '100%' },
+  error
 }: BladeMultiSelectProps) => {
+  const errorId = useId()
   const options: string[] = schema.enum || []
   const raw = model && model_id ? model[model_id] : undefined
   // Tolerate a scalar or a missing value so a half-migrated config still renders
@@ -39,6 +43,8 @@ const BladeMultiSelect = ({
 
   return (
     <BladeFrame
+      error={error}
+      errorId={errorId}
       title={schema.title}
       required={required}
       disabled={disabled}
@@ -68,6 +74,7 @@ const BladeMultiSelect = ({
             placeholder={value.length ? '' : 'Full mix'}
             helperText={!hideDesc && schema.description ? schema.description : undefined}
             slotProps={{
+              htmlInput: { ...params.inputProps, ...errorAria(errorId, error) },
               input: { ...params.InputProps, disableUnderline: true }
             }}
           />

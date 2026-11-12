@@ -606,7 +606,8 @@ const AudioCard = ({ className }: any) => {
                       size="small"
                       text={`Forget delay for ${key}?`}
                       onConfirm={() => {
-                        const { [key]: _removed, ...rest } = perDeviceDelay
+                        const rest = { ...perDeviceDelay }
+                        delete rest[key]
                         setPerDeviceDelay(rest)
                       }}
                     />

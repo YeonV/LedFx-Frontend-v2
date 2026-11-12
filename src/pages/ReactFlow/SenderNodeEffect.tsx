@@ -3,7 +3,7 @@ import { Box, IconButton, Paper, Collapse, Typography } from '@mui/material'
 import { PlayArrow, HdrAuto, ArrowDropDown } from '@mui/icons-material'
 import EffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import useStore from '../../store/useStore'
-import { orderEffectProperties } from '../Device/Effects'
+import { orderEffectProperties } from '../../components/SchemaForm/fields'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import { useEffect, useRef } from 'react'
 import { deepEqual } from '../../utils/helpers'
@@ -56,14 +56,12 @@ const SenderNodeEffect = ({
   }, [virtual?.effect, copyTo, getVirtuals, primaryVirtualId, targetVirtualIds, isSyncing])
 
   const effectType = virtual && virtual.effect.type
-  const orderedProperties =
-    effects &&
-    effectType &&
-    orderEffectProperties(
-      effects[effectType].schema,
-      effects[effectType].hidden_keys,
-      effects[effectType].advanced_keys
-    )
+  const effect = effectType ? effects?.[effectType] : undefined
+  const orderedProperties = orderEffectProperties(
+    effect?.schema,
+    effect?.hidden_keys,
+    effect?.advanced_keys
+  )
 
   return (
     <div

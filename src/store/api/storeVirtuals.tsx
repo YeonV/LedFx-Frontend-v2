@@ -245,6 +245,7 @@ const storeVirtuals = (set: any) => ({
         )
       }
     }
+    return resp
   },
   copyTo: async (virtId: string, target: string[]) => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
