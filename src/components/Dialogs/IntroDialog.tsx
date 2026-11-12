@@ -37,7 +37,7 @@ import { isAndroidApp } from '../FireTv/android.bridge'
 import { UPDATE_CONSENT, requestUpdateGrantIfNeeded } from '../FireTv/androidUpdateConsent'
 import {
   NOW_PLAYING_CONSENT,
-  requestNowPlayingGrantIfNeeded,
+  enableNowPlayingWhenGranted,
   shouldAskForNowPlaying
 } from '../FireTv/androidNowPlayingConsent'
 
@@ -328,10 +328,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         label_right: NOW_PLAYING_CONSENT.accept,
         action_left: handleNext,
         action_right: () => {
-          // Switch the feature on and ask for the grant in one go: on its own
-          // the switch reads nothing, and on its own the grant does nothing.
-          onSystemSettingsChange('now_playing_enabled', true)
-          requestNowPlayingGrantIfNeeded()
+          enableNowPlayingWhenGranted(() => onSystemSettingsChange('now_playing_enabled', true))
           // Same fire-and-forget Intent, same race - see the 'updates' step.
           setTimeout(handleNext, 400)
         }

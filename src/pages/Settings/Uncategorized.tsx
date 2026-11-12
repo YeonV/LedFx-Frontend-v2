@@ -4,6 +4,7 @@ import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
 import { Box, TextField } from '@mui/material'
+import { enableNowPlayingWhenGranted } from '../../components/FireTv/androidNowPlayingConsent'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
@@ -18,6 +19,7 @@ const Uncategorized = () => {
   const setCurrentTrack = useStore((state) => state.setCurrentTrack)
   const setThumbnailPath = useStore((state) => state.setThumbnailPath)
   const setPositionData = useStore((state) => state.setPositionData)
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
   // Offscreen capture state
   const offscreenCaptureEnabled = useStore(
@@ -184,6 +186,17 @@ const Uncategorized = () => {
           checked={!!config.now_playing_enabled}
           onChange={async () => {
             const next = !config.now_playing_enabled
+            if (next) {
+              enableNowPlayingWhenGranted(
+                async () => {
+                  await setSystemConfig({ now_playing_enabled: true })
+                  await Promise.all([getSystemConfig(), getInfo()])
+                },
+                () =>
+                  showSnackbar('info', 'Now Playing stays off: notification access was not granted')
+              )
+              return
+            }
             await setSystemConfig({ now_playing_enabled: next })
             // getInfo too: the core reports the live state in /api/info, and the
             // Song Detector's engine switches key off it.

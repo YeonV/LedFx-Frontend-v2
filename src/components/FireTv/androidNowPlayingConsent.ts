@@ -24,10 +24,40 @@ export const NOW_PLAYING_CONSENT = {
  */
 export const shouldAskForNowPlaying = (): boolean => isAndroidApp() && !hasNotificationAccess()
 
+let armedReturn: (() => void) | null = null
+
 /**
- * Send the user to the notification-access screen, but only if the grant is
- * actually missing.
+ * Switch Now Playing on only once it can work.
+ *
+ * Off Android, or with the grant already given, `enable` runs at once.
+ * Otherwise the user is sent to the notification-access screen first, and
+ * `enable` runs when they come back - once, and only if they granted access;
+ * `onDenied` runs if they came back without it.
+ *
+ * "Coming back" is the page turning visible after that screen hid it. One
+ * request arms one return: the listener ignores everything until the page was
+ * hidden, removes itself on the first return, and a new request replaces it,
+ * so switching apps later never switches anything on.
  */
-export const requestNowPlayingGrantIfNeeded = (): void => {
-  if (!hasNotificationAccess()) requestNotificationAccess()
+export const enableNowPlayingWhenGranted = (enable: () => void, onDenied?: () => void): void => {
+  if (!isAndroidApp() || hasNotificationAccess()) {
+    enable()
+    return
+  }
+  if (armedReturn) document.removeEventListener('visibilitychange', armedReturn)
+  let left = false
+  const onVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      left = true
+      return
+    }
+    if (!left) return
+    document.removeEventListener('visibilitychange', onVisibilityChange)
+    armedReturn = null
+    if (hasNotificationAccess()) enable()
+    else onDenied?.()
+  }
+  armedReturn = onVisibilityChange
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  requestNotificationAccess()
 }
