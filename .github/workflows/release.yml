@@ -99,7 +99,7 @@ jobs:
           workflow: LedFx BuildPipeline UV
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}" }'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "version": "${{ steps.package-version.outputs.current-version }}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}" }'
 
       # - name: 📂 Sync files
       #   continue-on-error: true
