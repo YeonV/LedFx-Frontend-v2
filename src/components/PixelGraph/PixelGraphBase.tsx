@@ -76,7 +76,7 @@ const PixelGraphBase = ({
         setPixels(eventData.pixels)
       }
 
-      if (eventData.shape[0] !== shape[0] && eventData.shape[1] !== shape[1])
+      if (eventData.shape[0] !== shape[0] || eventData.shape[1] !== shape[1])
         setShape(eventData.shape)
     },
     [virtId, shape]
