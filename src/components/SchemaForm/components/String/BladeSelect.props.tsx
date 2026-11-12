@@ -5,6 +5,8 @@ export interface BladeSelectProps {
   variant?: 'outlined' | 'contained'
   disabled?: boolean
   schema?: any
+  /** The field may be null: the select offers a null option. */
+  nullable?: boolean
   model?: any
   model_id?: string
   onChange?: any

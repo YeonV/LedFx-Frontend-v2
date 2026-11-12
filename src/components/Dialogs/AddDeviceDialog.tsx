@@ -90,7 +90,7 @@ const AddDeviceDialog = () => {
       }
     }
 
-    const valid = currentSchema.required.every((val: string) =>
+    const valid = (currentSchema.required || []).every((val: string) =>
       Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
     )
 
@@ -212,17 +212,11 @@ const AddDeviceDialog = () => {
                 ? currentSchema
                 : {
                     ...currentSchema,
-                    properties:
-                      currentSchema.properties &&
-                      Object.keys(currentSchema.properties)
-                        .filter((p) => p !== 'icon_name' && p !== 'name')
-                        .reduce(
-                          (cur, key) =>
-                            Object.assign(cur, {
-                              [key]: currentSchema.properties[key]
-                            }),
-                          {}
-                        )
+                    properties: Object.fromEntries(
+                      Object.entries(currentSchema.properties || {}).filter(
+                        ([p]) => p !== 'icon_name' && p !== 'name'
+                      )
+                    )
                   }
             }
             errors={errors}

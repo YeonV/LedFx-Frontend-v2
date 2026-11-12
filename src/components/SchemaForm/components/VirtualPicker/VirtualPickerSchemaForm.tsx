@@ -5,12 +5,14 @@ const VirtualPickerSchemaForm = ({
   id,
   model,
   hide,
-  handleEffectConfig
+  handleEffectConfig,
+  defaultValue
 }: {
   title: string
   id: string
   model: Record<string, unknown>
   hide?: boolean
+  defaultValue?: string
   handleEffectConfig?: (_config: Record<string, unknown>) => void
 }) => {
   if (hide) return null
@@ -19,6 +21,7 @@ const VirtualPickerSchemaForm = ({
     <VirtualPicker
       title={title}
       value={model[id] as string}
+      defaultValue={defaultValue}
       onChange={(value: string) => {
         if (handleEffectConfig) {
           handleEffectConfig({ [id]: value })

@@ -7,6 +7,20 @@ const storeDevices = (set: any) => ({
   devices: {} as Record<string, Device>,
   openRgbDevices: [] as IOpenRgbDevice[],
   launchpadDevice: '' as string,
+  /** /api/comports: the serial ports on the host. Fetched when a com_ports field mounts. */
+  comPorts: [] as string[],
+  getComPorts: async () => {
+    const resp = await Ledfx('/api/comports', 'GET', undefined, false)
+    if (Array.isArray(resp)) {
+      set(
+        produce((state: IStore) => {
+          state.comPorts = resp
+        }),
+        false,
+        'api/gotComPorts'
+      )
+    }
+  },
   getDevices: async () => {
     const resp = await Ledfx('/api/devices')
     if (resp && resp.devices) {

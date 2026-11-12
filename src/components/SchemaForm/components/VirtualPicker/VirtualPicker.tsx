@@ -1,4 +1,6 @@
 import { MenuItem, Select } from '@mui/material'
+import { useInstanceLoaded, useInstanceOptions } from '../../useInstanceOptions'
+import { unlistedLabel } from '../../fields'
 import useStore from '../../../../store/useStore'
 import BladeFrame from '../BladeFrame'
 
@@ -6,14 +8,19 @@ const VirtualPicker = ({
   title,
   value,
   showAll,
-  onChange
+  onChange,
+  defaultValue
 }: {
   title?: string
   value?: string
   showAll?: boolean
+  /** The schema default: a "none" value (radial's 'unknown'), shown blank, never unavailable */
+  defaultValue?: string
   onChange?: (value: string) => void
 }) => {
   const virtuals = useStore((state) => state.virtuals)
+  useInstanceOptions('virtuals') // loads them
+  const loaded = useInstanceLoaded('virtuals')
   const complex = ['mask', 'foreground', 'background']
   // device-backed virtuals only; a layer may still point at one this hides (automagic's
   // `<name>-mask`), which then gets its own entry below
@@ -45,7 +52,9 @@ const VirtualPicker = ({
         disableUnderline
       >
         {value && !listed.includes(value) && (
-          <MenuItem value={value}>{virtuals[value]?.config?.name ?? value}</MenuItem>
+          <MenuItem value={value}>
+            {unlistedLabel(value, virtuals[value]?.config?.name, defaultValue, loaded)}
+          </MenuItem>
         )}
         {listed.map((v) => {
           return (

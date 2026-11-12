@@ -534,5 +534,10 @@ export const migrations: Migrations = {
   // its baseline inside useMatrixEditor, so this key is no longer read.
   52: produce((draft) => {
     delete draft.virtualEditorSnapshot
+  }),
+  // Migration 53: /api/schemas is pydantic's native JSON Schema now. Drop any persisted copy
+  // of an older shape; getSchemas fetches it again.
+  53: produce((draft) => {
+    delete draft.schemas
   })
 }

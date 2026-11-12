@@ -63,7 +63,7 @@ const AddVirtualDialog = () => {
       }
     }
 
-    const valid = currentSchema.required.every((val: string) =>
+    const valid = (currentSchema.required || []).every((val: string) =>
       Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
     )
 
