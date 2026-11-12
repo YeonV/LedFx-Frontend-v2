@@ -68,3 +68,4 @@ playwright/animated/*
 playwright/videos/*
 playwright/screenshots/*
 /.idea/
+ledfx-schemas.json
