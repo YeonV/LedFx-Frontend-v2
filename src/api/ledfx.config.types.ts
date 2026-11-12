@@ -16,6 +16,7 @@ export interface CoreConfig {
   devices?: DeviceEntry[];
   virtuals?: VirtualEntry[];
   audio?: AudioConfig;
+  silence_scene?: SilenceSceneConfig;
   melbank_collection?: MelbankCollectionEntry[];
   melbanks?: MelbanksConfig;
   user_presets?: {
@@ -30,7 +31,7 @@ export interface CoreConfig {
     [k: string]: Playlist;
   };
   integrations?: IntegrationEntry[];
-  transmission_mode?: "compressed" | "uncompressed";
+  transmission_mode?: "compressed" | "uncompressed" | "binary_rgb";
   visualisation_fps?: number;
   visualisation_maxlen?: number;
   /**
@@ -58,7 +59,20 @@ export interface CoreConfig {
     [k: string]: SendspinServerConfig;
   };
   sendspin_always_on?: boolean;
+  now_playing_enabled?: boolean;
   now_playing?: NowPlayingConfig;
+  /**
+   * Extra web origins (e.g. "https://ledfx.example.com") allowed to use the API from a browser. "*" allows every origin
+   */
+  allowed_origins?: string[];
+  /**
+   * Extra host names (e.g. "ledfx.example.com") that browsers may use to reach LedFx. "*" allows every name
+   */
+  allowed_hosts?: string[];
+  /**
+   * Accept browser requests whose Origin is "null"
+   */
+  allow_null_origin?: boolean;
   debug_asyncio?: boolean;
   image_cache?: ImageCacheConfig;
 }
@@ -162,6 +176,18 @@ export interface AudioConfig {
    * Pitch detection tolerance
    */
   pitch_tolerance?: number;
+  /**
+   * Separate the audio into drums, bass, vocals and other so effects can react to a single instrument group. Needs a stereo input and costs CPU.
+   */
+  stems_enabled?: boolean;
+  /**
+   * Samples per separation update. Smaller reacts faster but costs more CPU: 512 ~86Hz, 1024 ~43Hz, 2048 ~21Hz.
+   */
+  stem_hop?: 512 | 1024 | 2048;
+  /**
+   * CPU threads the separation model may use.
+   */
+  stem_threads?: number;
   sample_rate?: number;
   mic_rate?: number;
   fft_size?: number;
@@ -172,7 +198,28 @@ export interface AudioConfig {
    * Add a delay to LedFx's output to sync with your audio. Useful for Bluetooth devices which typically have a short audio lag.
    */
   delay_ms?: number;
+  /**
+   * Only affects the Android "System Audio (root)" input. Auto detects whether the ROM already plays audio through the speaker while capturing and only echoes it back when needed; On/Off override that detection.
+   */
+  android_remote_submix_echo?: "auto" | "on" | "off";
   [k: string]: unknown;
+}
+/**
+ * Settings for temporarily activating a scene while audio is silent.
+ */
+export interface SilenceSceneConfig {
+  /**
+   * Enable automatic silence scene handling
+   */
+  enabled?: boolean;
+  /**
+   * Scene to activate after the configured silence timeout
+   */
+  scene_id?: string | null;
+  /**
+   * Continuous silence duration before activating the scene
+   */
+  timeout_seconds?: number;
 }
 export interface MelbankCollectionEntry {
   id: string;
@@ -1386,6 +1433,30 @@ export interface BandsEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Number of bands
    */
   band_count?: number;
@@ -1430,6 +1501,30 @@ export interface BandsMatrixEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Number of bands
    */
@@ -1488,6 +1583,30 @@ export interface BarEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Choose from different animations
    */
   mode?: "bounce" | "wipe" | "in-out";
@@ -1544,6 +1663,30 @@ export interface BladePowerPlusEffectConfig {
    * Use perceptually even hue distribution
    */
   fix_hues?: boolean;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Mirror the effect
    */
@@ -1609,6 +1752,30 @@ export interface BleepEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -1692,6 +1859,30 @@ export interface BlenderEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * How to stretch the mask source pixles to the effect pixels
    */
   mask_stretch?: "2d full" | "2d tile";
@@ -1769,6 +1960,30 @@ export interface BlockReflectionsEffectConfig {
    */
   fix_hues?: boolean;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Effect Speed modifier
    */
   speed?: number;
@@ -1818,6 +2033,30 @@ export interface BlocksEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Number of color blocks
    */
   block_count?: number;
@@ -1854,6 +2093,30 @@ export interface CloneEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -1936,6 +2199,30 @@ export interface ConcentricEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -2031,6 +2318,30 @@ export interface CrawlerEffectConfig {
    */
   fix_hues?: boolean;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Effect Speed modifier
    */
   speed?: number;
@@ -2087,6 +2398,30 @@ export interface Digitalrain2dEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -2170,6 +2505,30 @@ export interface EnergyEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Amount to blur the effect
    */
   blur?: number;
@@ -2247,6 +2606,30 @@ export interface Energy2EffectConfig {
    */
   fix_hues?: boolean;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Effect Speed modifier
    */
   speed?: number;
@@ -2296,6 +2679,30 @@ export interface EqualizerEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Alignment of bands
    */
   align?: "left" | "right" | "invert" | "center";
@@ -2344,6 +2751,30 @@ export interface Equalizer2dEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -2508,6 +2939,30 @@ export interface FilterEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Simple color selector
    */
   color?: string;
@@ -2572,6 +3027,30 @@ export interface FireEffectConfig {
    * Use perceptually even hue distribution
    */
   fix_hues?: boolean;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   speed?: number;
   color_shift?: number;
   intensity?: number;
@@ -2609,6 +3088,30 @@ export interface Flame2dEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -2692,6 +3195,30 @@ export interface FrontendEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -2745,6 +3272,30 @@ export interface GameOfLifeEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -2828,6 +3379,30 @@ export interface GifplayerEffectConfig {
    */
   resize_method?: "Fastest" | "Fast" | "Slow" | "Slowest";
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -2905,6 +3480,30 @@ export interface GlitchEffectConfig {
    * Use perceptually even hue distribution
    */
   fix_hues?: boolean;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Effect Speed modifier
    */
@@ -3008,6 +3607,30 @@ export interface HierarchyEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Color of low, bassy sounds
    */
   color_lows?: string;
@@ -3068,6 +3691,30 @@ export interface ImagespinEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -3162,6 +3809,30 @@ export interface Keybeat2dEffectConfig {
    * What strategy to use when resizing GIF
    */
   resize_method?: "Fastest" | "Fast" | "Slow" | "Slowest";
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -3289,6 +3960,30 @@ export interface LavaLampEffectConfig {
    */
   fix_hues?: boolean;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Effect Speed modifier
    */
   speed?: number;
@@ -3342,6 +4037,30 @@ export interface MagnitudeEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Frequency range for the beat detection
    */
   frequency_range?: "Beat" | "Bass" | "Lows (beat+bass)" | "Mids" | "High";
@@ -3390,6 +4109,30 @@ export interface MarchingEffectConfig {
    * Use perceptually even hue distribution
    */
   fix_hues?: boolean;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Effect Speed modifier
    */
@@ -3444,6 +4187,30 @@ export interface MeltEffectConfig {
    */
   fix_hues?: boolean;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Effect Speed modifier
    */
   speed?: number;
@@ -3496,6 +4263,30 @@ export interface MeltAndSparkleEffectConfig {
    * Use perceptually even hue distribution
    */
   fix_hues?: boolean;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Effect Speed modifier
    */
@@ -3561,6 +4352,30 @@ export interface MetroEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Time between flash in seconds
    */
@@ -3631,6 +4446,30 @@ export interface MultibarEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Choose from different animations
    */
   mode?: "cascade" | "wipe";
@@ -3684,6 +4523,30 @@ export interface Noise2dEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -3731,6 +4594,87 @@ export interface Noise2dEffectConfig {
   [k: string]: unknown;
 }
 
+export interface NotespectrumEffectConfig {
+  /**
+   * Flip the effect
+   */
+  flip?: boolean;
+  /**
+   * Brightness of strip
+   */
+  brightness?: number;
+  /**
+   * Apply a background color
+   */
+  background_color?: string;
+  /**
+   * Brightness of the background color
+   */
+  background_brightness?: number;
+  /**
+   * Enable diagnostic logging
+   */
+  diag?: boolean;
+  advanced?: boolean | null;
+  /**
+   * Color gradient to display
+   */
+  gradient?: string;
+  /**
+   * Amount to shift the gradient
+   */
+  gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
+   * Amount to blur the effect
+   */
+  blur?: number;
+  /**
+   * Mirror the effect
+   */
+  mirror?: boolean;
+  /**
+   * Lowest note shown, as a MIDI number. Below ~47 a semitone is narrower than one FFT bin, so notes start to smear together.
+   */
+  note_min?: number;
+  /**
+   * Highest note shown, as a MIDI number
+   */
+  note_max?: number;
+  /**
+   * How quickly a note fades once it stops sounding. Lower leaves a longer trail behind the melody.
+   */
+  fade_rate?: number;
+  /**
+   * Brightness applied to note energy after levelling
+   */
+  gain?: number;
+  [k: string]: unknown;
+}
+
 export interface NumberEffectConfig {
   /**
    * Amount to blur the effect
@@ -3769,6 +4713,30 @@ export interface NumberEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -3877,6 +4845,99 @@ export interface NumberEffectConfig {
   [k: string]: unknown;
 }
 
+export interface PitchlineEffectConfig {
+  /**
+   * Flip the effect
+   */
+  flip?: boolean;
+  /**
+   * Brightness of strip
+   */
+  brightness?: number;
+  /**
+   * Apply a background color
+   */
+  background_color?: string;
+  /**
+   * Brightness of the background color
+   */
+  background_brightness?: number;
+  /**
+   * Enable diagnostic logging
+   */
+  diag?: boolean;
+  advanced?: boolean | null;
+  /**
+   * Color gradient to display
+   */
+  gradient?: string;
+  /**
+   * Amount to shift the gradient
+   */
+  gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
+   * Amount to blur the effect
+   */
+  blur?: number;
+  /**
+   * Mirror the effect
+   */
+  mirror?: boolean;
+  /**
+   * Note at the start of the strip, as a MIDI number. A bassline sits around 33-54; a vocal or lead line around 55-84. A narrow range gives bigger, clearer movement.
+   */
+  note_min?: number;
+  /**
+   * Note at the end of the strip, as a MIDI number
+   */
+  note_max?: number;
+  /**
+   * Frames of median filtering. Higher is steadier but lags behind the music: about 67ms at 9 frames, 33ms at 5. Lower it if the line feels delayed against your other effects.
+   */
+  smoothing?: number;
+  /**
+   * Low-pass the audio before detecting pitch, in Hz. An octave-up error is the detector locking onto the second harmonic, so removing it helps: on a real bassline, 100Hz cut octave errors from 12% to 5%. Set 0 to use the shared detector instead. Only sensible for low sources - leave off for vocals.
+   */
+  pitch_lowpass?: 0 | 100 | 150 | 200 | 250 | 400;
+  /**
+   * Level in dBFS below which the stem counts as silent and the point goes dark. A separated stem always carries residue, so this has to be judged on level. Scored against a hand-labelled track, -30 agreed with where the bass actually played 74% of the time and -27 got 82%, while -45 false-lit 87% of the silent passages. Lower it if quiet notes are being cut.
+   */
+  silence_floor?: number;
+  /**
+   * Width of the point, as a fraction of the strip
+   */
+  width?: number;
+  /**
+   * How quickly the trail behind the point fades. Lower leaves a longer tail showing where the line has been.
+   */
+  fade_rate?: number;
+  [k: string]: unknown;
+}
+
 export interface PitchspectrumEffectConfig {
   /**
    * Flip the effect
@@ -3907,6 +4968,30 @@ export interface PitchspectrumEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Amount to blur the effect
    */
@@ -4022,6 +5107,30 @@ export interface Plasma2dEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -4108,6 +5217,30 @@ export interface PlasmawledEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -4186,6 +5319,30 @@ export interface PowerEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Mirror the effect
    */
   mirror?: boolean;
@@ -4238,6 +5395,30 @@ export interface RadialEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -4328,6 +5509,30 @@ export interface RainEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Mirror the effect
    */
@@ -4496,6 +5701,30 @@ export interface RealStrobeEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Color scheme for bass strobe to cycle through
    */
   gradient?: string;
@@ -4568,6 +5797,30 @@ export interface ScanEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Amount to blur the effect
    */
@@ -4649,6 +5902,30 @@ export interface ScanAndFlareEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Amount to blur the effect
    */
@@ -4739,6 +6016,30 @@ export interface ScanMultiEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Amount to blur the effect
    */
   blur?: number;
@@ -4824,6 +6125,30 @@ export interface ScrollEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Amount to blur the effect
    */
   blur?: number;
@@ -4880,6 +6205,30 @@ export interface ScrollPlusEffectConfig {
    */
   diag?: boolean;
   advanced?: boolean | null;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Amount to blur the effect
    */
@@ -5007,6 +6356,30 @@ export interface Smoke2dEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -5089,6 +6462,30 @@ export interface Soap2dEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * flip the image horizontally
    */
   flip_horizontal?: boolean;
@@ -5159,6 +6556,30 @@ export interface SpectrumEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * How the melbank filters are applied to the RGB values
    */
   rgb_mix?: number;
@@ -5203,6 +6624,30 @@ export interface SpotlightEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Spotlight width relative to strip length (%)
    */
@@ -5277,6 +6722,30 @@ export interface StrobeEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * How many strobes per beat
    */
   strobe_frequency?: "1/1 (.,. )" | "1/2 (.-. )" | "1/4 (.o. )" | "1/8 (◉◡◉ )" | "1/16 (◉﹏◉ )" | "1/32 (⊙▃⊙ )";
@@ -5333,6 +6802,30 @@ export interface Texter2dEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -5456,6 +6949,30 @@ export interface VumeterEffectConfig {
   diag?: boolean;
   advanced?: boolean | null;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Decay filter applied to raw volume to track peak, 0 is None
    */
   peak_decay?: number;
@@ -5529,6 +7046,30 @@ export interface WaterEffectConfig {
    */
   fix_hues?: boolean;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Effect Speed modifier
    */
   speed?: number;
@@ -5593,6 +7134,30 @@ export interface Waterfall2dEffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * flip the image horizontally
    */
@@ -5672,13 +7237,37 @@ export interface WavelengthEffectConfig {
    */
   gradient_roll?: number;
   /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
+  /**
    * Amount to blur the effect
    */
   blur?: number;
   [k: string]: unknown;
 }
 
-export type EffectType = "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "frontend" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "number" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "smoke2d" | "soap2d" | "spectrum" | "spotlight" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength"
+export type EffectType = "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "frontend" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "noteSpectrum" | "number" | "pitchLine" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "smoke2d" | "soap2d" | "spectrum" | "spotlight" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength"
 
 export interface EffectConfigByType {
   "bands": BandsEffectConfig
@@ -5717,7 +7306,9 @@ export interface EffectConfigByType {
   "metro": MetroEffectConfig
   "multiBar": MultibarEffectConfig
   "noise2d": Noise2dEffectConfig
+  "noteSpectrum": NotespectrumEffectConfig
   "number": NumberEffectConfig
+  "pitchLine": PitchlineEffectConfig
   "pitchSpectrum": PitchspectrumEffectConfig
   "pixels": PixelsEffectConfig
   "plasma2d": Plasma2dEffectConfig
@@ -5786,7 +7377,9 @@ export interface EffectConfig {
     | "metro"
     | "multiBar"
     | "noise2d"
+    | "noteSpectrum"
     | "number"
+    | "pitchLine"
     | "pitchSpectrum"
     | "pixels"
     | "plasma2d"
@@ -5850,6 +7443,30 @@ export interface EffectConfig {
    * Amount to shift the gradient
    */
   gradient_roll?: number;
+  /**
+   * React only to these instrument groups. Selecting several sums them. Leave empty to react to the whole mix. Requires stem separation to be enabled in audio settings.
+   *
+   * @maxItems 4
+   */
+  stems?:
+    | []
+    | ["drums" | "bass" | "vocals" | "other"]
+    | ["drums" | "bass" | "vocals" | "other", "drums" | "bass" | "vocals" | "other"]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ]
+    | [
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other",
+        "drums" | "bass" | "vocals" | "other"
+      ];
+  /**
+   * Analyse only part of the selected stem. The melbank normalises against its own loudest band, so on a drum stem the kick buries the hats: picking 'high' filters the kick out first and makes hats 44x stronger. Needs a stem selection - it does nothing on the full mix.
+   */
+  stem_band?: "full" | "low" | "mid" | "high";
   /**
    * Number of bands
    */
@@ -6399,6 +8016,22 @@ export interface EffectConfig {
    */
   zoom?: number;
   /**
+   * Lowest note shown, as a MIDI number. Below ~47 a semitone is narrower than one FFT bin, so notes start to smear together.
+   */
+  note_min?: number;
+  /**
+   * Highest note shown, as a MIDI number
+   */
+  note_max?: number;
+  /**
+   * How quickly a note fades once it stops sounding. Lower leaves a longer trail behind the melody.
+   */
+  fade_rate?: number;
+  /**
+   * Brightness applied to note energy after levelling
+   */
+  gain?: number;
+  /**
    * apply alpha effect to text
    */
   alpha?: boolean;
@@ -6463,9 +8096,17 @@ export interface EffectConfig {
    */
   negative?: boolean;
   /**
-   * Rate at which notes fade
+   * Frames of median filtering. Higher is steadier but lags behind the music: about 67ms at 9 frames, 33ms at 5. Lower it if the line feels delayed against your other effects.
    */
-  fade_rate?: number;
+  smoothing?: number;
+  /**
+   * Low-pass the audio before detecting pitch, in Hz. An octave-up error is the detector locking onto the second harmonic, so removing it helps: on a real bassline, 100Hz cut octave errors from 12% to 5%. Set 0 to use the shared detector instead. Only sensible for low sources - leave off for vocals.
+   */
+  pitch_lowpass?: 0 | 100 | 150 | 200 | 250 | 400;
+  /**
+   * Level in dBFS below which the stem counts as silent and the point goes dark. A separated stem always carries residue, so this has to be judged on level. Scored against a hand-labelled track, -30 agreed with where the bass actually played 74% of the time and -27 got 82%, while -45 false-lit 87% of the silent passages. Lower it if quiet notes are being cut.
+   */
+  silence_floor?: number;
   /**
    * Responsiveness to note changes
    */

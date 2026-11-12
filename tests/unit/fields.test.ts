@@ -706,3 +706,10 @@ test('loadSource shares one request per source while it is pending, then fetches
   release()
   await third
 })
+
+test('widgetFor: an array of enum values is a multiselect', () => {
+  const stems = { type: 'array', items: { type: 'string', enum: ['bass', 'drums', 'other', 'vocals'] } }
+  assert.equal(widgetFor(stems as any, 'stems', 'bands', true).kind, 'multiselect')
+  const freqs = { type: 'array', items: { type: 'integer' } }
+  assert.equal(widgetFor(freqs as any, 'max_frequencies', undefined, true).kind, 'unsupported')
+})

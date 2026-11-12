@@ -117,26 +117,6 @@ export const requestPlaybackCapture = () => {
   window.AndroidRemoteControl?.requestPlaybackCapture?.()
 }
 
-/**
- * The frame rate LedFx should use so its audio blocks land on the HAL quantum.
- *
- * LedFx derives its block size from samplerate / sample_rate, and only blocks
- * that are a whole multiple of the HAL quantum can take the fast capture path.
- * A Pixel 8 reports 48000 Hz / 480 frames, so 100 divides exactly - blocks of
- * 480 frames, 10ms each, aligned. Returns null when the device cannot tell us,
- * or when the answer is not a sane frame rate to run at.
- */
-export const alignedFrameRate = (): number | null => {
-  const quantum = window.AndroidRemoteControl?.getAudioFramesPerBuffer?.() ?? 0
-  const rate = window.AndroidRemoteControl?.getAudioSampleRate?.() ?? 0
-  if (!quantum || !rate) return null
-  const fps = Math.round(rate / quantum)
-  // Below ~30 the visuals stutter; above ~120 the Python callback overhead
-  // costs more than the latency it saves.
-  if (fps < 30 || fps > 120) return null
-  return fps
-}
-
 export const downloadAndInstallApk = (url: string) => {
   if (window.AndroidRemoteControl?.downloadAndInstallApk) {
     console.log(`Requesting APK download: ${url}`)

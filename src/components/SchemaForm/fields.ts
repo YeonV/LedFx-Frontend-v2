@@ -232,6 +232,7 @@ const kindOf = (field: FieldSchema, backend: boolean): WidgetKind => {
   }
   const sourced = sourceKind(field)
   if (sourced) return sourced
+  if (backend && field.type === 'array' && enumOptions(field.items)) return 'multiselect'
   if (backend && field.format === 'gradient') return 'gradient'
   if (backend && field.format === 'color') return 'color'
   if (enumOptions(field) && (backend || field.type === 'string')) return 'select'

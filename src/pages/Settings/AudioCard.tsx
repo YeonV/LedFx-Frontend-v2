@@ -39,10 +39,6 @@ import {
   Hub as HubIcon,
   GraphicEq
 } from '@mui/icons-material'
-import { alignedFrameRate } from '../../components/FireTv/android.bridge'
-
-/** LedFx's own default; what a non-continuous input goes back to. */
-const DEFAULT_FRAME_RATE = 60
 
 /**
  * Device names carry three kinds of information at once, e.g.
@@ -166,29 +162,6 @@ const AudioCard = ({ className }: any) => {
   // are shared with the setup wizard via usePlaybackCapture.
   const { captureSupported, captureActive, handleRequestCapture, handleRevokeCapture } =
     usePlaybackCapture()
-
-  /**
-   * Keep sample_rate matched to the selected input's nature.
-   *
-   * sample_rate is what LedFx divides the device rate by to get its block size,
-   * so it is also the only lever that can land a block on the audio HAL's
-   * buffer quantum. The two continuous Android inputs benefit: aligned blocks
-   * take the fast capture path and are shorter, roughly halving buffered
-   * latency. The Visualizer does not - its buffer only refreshes about 20 times
-   * a second, so asking for more frames only burns CPU re-reading stale data.
-   */
-  const applyAlignedFrameRate = (next: any) => {
-    const aligned = alignedFrameRate()
-    if (!aligned || !schema?.properties?.audio_device) return next
-    const changedDevice = next?.audio_device !== model?.audio_device
-    if (!changedDevice) return next
-
-    const deviceName = audioDeviceName(audioDevices, next.audio_device) || ''
-    const isContinuous = /AudioRecord API|PlaybackCapture API/.test(deviceName)
-    const wanted = isContinuous ? aligned : DEFAULT_FRAME_RATE
-    if (next.sample_rate === wanted) return next
-    return { ...next, sample_rate: wanted }
-  }
 
   const refreshStemModel = async () => {
     try {
@@ -342,7 +315,7 @@ const AudioCard = ({ className }: any) => {
           model={model}
           onModelChange={(e) => {
             setSystemConfig({
-              audio: applyAlignedFrameRate(e)
+              audio: e
             }).then(() => getSystemConfig())
           }}
         />
