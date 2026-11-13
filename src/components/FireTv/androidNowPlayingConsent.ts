@@ -1,4 +1,9 @@
-import { hasNotificationAccess, isAndroidApp, requestNotificationAccess } from './android.bridge'
+import {
+  canRequestNotificationAccess,
+  hasNotificationAccess,
+  isAndroidApp,
+  requestNotificationAccess
+} from './android.bridge'
 
 /**
  * Wording for the Now Playing opt-in on Android.
@@ -18,18 +23,22 @@ export const NOW_PLAYING_CONSENT = {
 /**
  * Should the setup assistant offer this step at all?
  *
- * Only on the Android app, and only while the grant is missing - Android keeps
- * it across updates, so re-asking someone who already allowed it is pure
- * friction.
+ * Only on an Android app that still carries its own notification listener, and
+ * only while the grant is missing - Android keeps it across updates, so
+ * re-asking someone who already allowed it is pure friction. Newer APKs leave
+ * the listener to the LedFx Now Playing addon and have nothing to grant here.
  */
-export const shouldAskForNowPlaying = (): boolean => isAndroidApp() && !hasNotificationAccess()
+export const shouldAskForNowPlaying = (): boolean =>
+  isAndroidApp() && canRequestNotificationAccess() && !hasNotificationAccess()
 
 let armedReturn: (() => void) | null = null
 
 /**
  * Switch Now Playing on only once it can work.
  *
- * Off Android, or with the grant already given, `enable` runs at once.
+ * Off Android, on an APK without its own listener (Now Playing then comes from
+ * the LedFx Now Playing addon), or with the grant already given, `enable` runs
+ * at once.
  * Otherwise the user is sent to the notification-access screen first, and
  * `enable` runs when they come back - once, and only if they granted access;
  * `onDenied` runs if they came back without it.
@@ -40,7 +49,7 @@ let armedReturn: (() => void) | null = null
  * so switching apps later never switches anything on.
  */
 export const enableNowPlayingWhenGranted = (enable: () => void, onDenied?: () => void): void => {
-  if (!isAndroidApp() || hasNotificationAccess()) {
+  if (!isAndroidApp() || !canRequestNotificationAccess() || hasNotificationAccess()) {
     enable()
     return
   }

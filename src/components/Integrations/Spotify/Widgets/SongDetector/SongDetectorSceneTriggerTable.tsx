@@ -99,7 +99,7 @@ export default function SongDetectorSceneTriggerTable() {
 
   // Interpolate position for smooth updates
   useEffect(() => {
-    if (!position || !timestamp || !playing) {
+    if (position == null || !timestamp || !playing) {
       const newPos = position
       previousPositionRef.current = currentPositionRef.current
       currentPositionRef.current = newPos

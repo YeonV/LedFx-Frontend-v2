@@ -79,6 +79,9 @@ export const hasNotificationAccess = (): boolean => {
 }
 
 /** Sends the user to the notification-access settings screen. */
+export const canRequestNotificationAccess = (): boolean =>
+  !!window.AndroidRemoteControl?.requestNotificationAccess
+
 export const requestNotificationAccess = () => {
   window.AndroidRemoteControl?.requestNotificationAccess?.()
 }

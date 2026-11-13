@@ -6,6 +6,7 @@ import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
 import { useEffect, useState } from 'react'
 import { Box, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { enableNowPlayingWhenGranted } from '../../components/FireTv/androidNowPlayingConsent'
+import { canRequestNotificationAccess, isAndroidApp } from '../../components/FireTv/android.bridge'
 import type { SilenceSceneConfig } from '../../store/api/storeConfig'
 
 const Uncategorized = () => {
@@ -204,7 +205,10 @@ const Uncategorized = () => {
           info={
             'Lets LedFx read your media session: the track title can be shown on your virtuals, ' +
             'artist and title are sent to MusicBrainz to find cover art, and that art is cached ' +
-            'to disk. Off by default. Switching it off stops all of it and deletes the cache.'
+            'to disk. Off by default. Switching it off stops all of it and deletes the cache.' +
+            (isAndroidApp() && !canRequestNotificationAccess()
+              ? ' On Android the track comes from the LedFx Now Playing addon: install it and grant it notification access.'
+              : '')
           }
           checked={!!config.now_playing_enabled}
           onChange={async () => {

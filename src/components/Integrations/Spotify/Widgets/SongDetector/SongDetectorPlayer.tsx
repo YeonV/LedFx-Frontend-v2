@@ -103,7 +103,7 @@ const SongDetectorPlayer = ({
       setCurrentPosition(next)
     }
 
-    if (!position || !timestamp || !playing) {
+    if (position == null || !timestamp || !playing) {
       apply(position)
       return
     }
