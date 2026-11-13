@@ -40,6 +40,8 @@ import {
   enableNowPlayingWhenGranted,
   shouldAskForNowPlaying
 } from '../FireTv/androidNowPlayingConsent'
+import AndroidExtrasStep from '../FireTv/AndroidExtrasStep'
+import { ANDROID_EXTRAS } from '../FireTv/androidExtras'
 
 export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
   const intro = useStore((state) => state.intro)
@@ -334,6 +336,15 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           setTimeout(handleNext, 400)
         }
       },
+      isAndroidApp() &&
+        !askForNowPlaying && {
+          key: 'androidExtras',
+          icon: 'extension',
+          title: ANDROID_EXTRAS.title,
+          label_right: 'Continue',
+          action_left: (): any => false,
+          action_right: handleNext
+        },
       {
         key: 'tour',
         icon: 'checkCircleOutlined',
@@ -756,6 +767,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               {NOW_PLAYING_CONSENT.footnote}
             </Typography>
           )}
+          {steps[activeStep].key === 'androidExtras' && <AndroidExtrasStep />}
           <Stack
             direction={small ? 'column' : 'row'}
             gap={xsmall ? 1.5 : 3}

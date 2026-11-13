@@ -18,7 +18,7 @@ import { ios } from '../../utils/helpers'
 export const useStyles = makeStyles((theme: Theme) => ({
   globalWrapper: {
     position: 'fixed',
-    bottom: ios ? 80 : 56,
+    bottom: ios ? 80 : 'calc(56px + var(--android-nav-bar, 0px))',
     left: 0,
     right: 0,
     paddingLeft: ios ? 6 : 16,

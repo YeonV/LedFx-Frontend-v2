@@ -87,6 +87,17 @@ export const requestNotificationAccess = () => {
 }
 
 /**
+ * Whether the LedFx Now Playing addon is installed.
+ *
+ * null when unknown: off Android, or an APK without this bridge method. Callers
+ * keep their old UI then instead of claiming the addon is missing.
+ */
+export const isNowPlayingAddonInstalled = (): boolean | null => {
+  if (!window.AndroidRemoteControl?.isNowPlayingAddonInstalled) return null
+  return window.AndroidRemoteControl.isNowPlayingAddonInstalled()
+}
+
+/**
  * Whether this build can capture the audio other apps are playing.
  *
  * AudioPlaybackCapture arrived in Android 10, and older APKs have no bridge

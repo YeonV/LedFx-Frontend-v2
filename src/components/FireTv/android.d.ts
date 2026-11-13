@@ -15,6 +15,8 @@ declare global {
       hasNotificationAccess?: () => boolean
       /** Opens the notification-access settings screen. */
       requestNotificationAccess?: () => void
+      /** True when the LedFx Now Playing addon (com.ledfx.nowplaying) is installed. */
+      isNowPlayingAddonInstalled?: () => boolean
       /** False on Android 9 and below, where AudioPlaybackCapture does not exist. */
       supportsPlaybackCapture?: () => boolean
       /** True once a capture consent has been approved and not revoked. */

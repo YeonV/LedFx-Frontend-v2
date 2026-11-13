@@ -4,8 +4,14 @@ import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
 import { useEffect, useState } from 'react'
-import { Box, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Download } from '@mui/icons-material'
 import { enableNowPlayingWhenGranted } from '../../components/FireTv/androidNowPlayingConsent'
+import {
+  ANDROID_EXTRAS,
+  useAndroidExtrasUrls,
+  useNowPlayingAddonInstalled
+} from '../../components/FireTv/androidExtras'
 import { canRequestNotificationAccess, isAndroidApp } from '../../components/FireTv/android.bridge'
 import type { SilenceSceneConfig } from '../../store/api/storeConfig'
 
@@ -26,6 +32,9 @@ const Uncategorized = () => {
   const scenes = useStore((state) => state.scenes)
   const silenceSceneStatus = useStore((state) => state.silenceSceneStatus)
   const silenceSceneAvailable = backendFeatures.silence_scene || silenceSceneStatus !== null
+  const addonInstalled = useNowPlayingAddonInstalled()
+  const extrasUrls = useAndroidExtrasUrls()
+  const addonCopy = ANDROID_EXTRAS.addon
 
   const silenceSceneConfig: SilenceSceneConfig = config.silence_scene ?? {
     enabled: false,
@@ -198,7 +207,14 @@ const Uncategorized = () => {
         checked={blenderAutomagic}
         onChange={() => setBlenderAutomagic(!blenderAutomagic)}
       />
-      {backendFeatures.now_playing && (
+      {backendFeatures.now_playing && addonInstalled === false && (
+        <SettingsRow beta title="Now Playing" info={`${addonCopy.body} ${addonCopy.guide}`}>
+          <Button href={extrasUrls.addon} target="_blank" rel="noreferrer" startIcon={<Download />}>
+            {addonCopy.download}
+          </Button>
+        </SettingsRow>
+      )}
+      {backendFeatures.now_playing && addonInstalled !== false && (
         <SettingsRow
           beta
           title="Now Playing"

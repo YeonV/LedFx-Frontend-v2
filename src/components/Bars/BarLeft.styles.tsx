@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
   drawerPaper: {
     width: drawerWidth,
     overflowX: 'hidden',
-    marginTop: isElectron() ? '31px' : 0
+    marginTop: isElectron() ? '31px' : 'var(--android-status-bar, 0px)'
   },
   drawerHeader: {
     display: 'flex',

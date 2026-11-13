@@ -75,7 +75,7 @@ export default function BarBottom() {
   useEffect(() => {
     document.documentElement.style.setProperty(
       '--ledfx-bottom-stack',
-      `${botHeight + (ios ? 80 : 56)}px`
+      ios ? `${botHeight + 80}px` : `calc(${botHeight + 56}px + var(--android-nav-bar, 0px))`
     )
     return () => {
       document.documentElement.style.removeProperty('--ledfx-bottom-stack')
@@ -116,14 +116,14 @@ export default function BarBottom() {
                 height: 80
               }
             : {
-                height: 56
+                height: 'calc(56px + var(--android-nav-bar, 0px))'
               },
           ios
             ? {
                 paddingBottom: '16px'
               }
             : {
-                paddingBottom: 0
+                paddingBottom: 'var(--android-nav-bar, 0px)'
               },
           ios
             ? {
@@ -235,7 +235,12 @@ export default function BarBottom() {
 
         {features.showAssetManagerInBottomBar && <AssetManager variant="navitem" />}
         {features.showMidiInBottomBar && <MidiInputDialog variant="navitem" />}
-        {features.showGamepadInBottomBar && <Gamepad bottom={botHeight + 56} variant="navitem" />}
+        {features.showGamepadInBottomBar && (
+          <Gamepad
+            bottom={`calc(${botHeight + 56}px + var(--android-nav-bar, 0px))`}
+            variant="navitem"
+          />
+        )}
         {features.showVisualiserInBottomBar &&
           !features.bgvisualiser &&
           !(window.localStorage.getItem('guestmode') === 'activated') && (
@@ -297,7 +302,10 @@ export default function BarBottom() {
       <EditSceneDialog />
       {features.gamepad && (
         <>
-          <Gamepad setScene={handleActivateScene} bottom={botHeight + 65} />
+          <Gamepad
+            setScene={handleActivateScene}
+            bottom={`calc(${botHeight + 65}px + var(--android-nav-bar, 0px))`}
+          />
           <SmartBar open={smartBarPadOpen} setOpen={setSmartBarPadOpen} direct={false} />
         </>
       )}
@@ -305,7 +313,7 @@ export default function BarBottom() {
         <AddButton
           setBackdrop={setBackdrop}
           sx={{
-            bottom: botHeight + 65,
+            bottom: `calc(${botHeight + 65}px + var(--android-nav-bar, 0px))`,
             position: 'fixed',
             left: '50%',
             transform: 'translateX(-50%)',

@@ -63,6 +63,7 @@ const MainContentWrapper = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: theme.spacing(0, 1),
+            marginTop: 'calc(var(--android-status-bar, 0px) - var(--android-toolbar-trim, 0px))',
             ...theme.mixins.toolbar
           }}
         />

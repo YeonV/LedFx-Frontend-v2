@@ -279,7 +279,8 @@ const TopBar = () => {
           position="fixed"
           sx={[
             {
-              paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
+              paddingTop:
+                isElectron() && platform !== 'darwin' ? '32px' : 'var(--android-status-bar, 0px)',
               zIndex: 10,
 
               transition: theme.transitions.create(['margin', 'width'], {
@@ -321,7 +322,7 @@ const TopBar = () => {
           <Toolbar
             style={{
               justifyContent: 'space-between',
-              minHeight: 56
+              minHeight: 'calc(56px - var(--android-toolbar-trim, 0px))'
             }}
           >
             <div style={{ position: 'absolute', top: 0, left: 16 }}>
@@ -369,7 +370,12 @@ const TopBar = () => {
             <Typography
               variant="h6"
               noWrap
-              style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
+              style={{
+                margin: '0 auto',
+                display: 'flex',
+                alignItems: 'center',
+                transform: 'translateY(calc(var(--android-toolbar-trim, 0px) / 2))'
+              }}
             >
               {features.firetv && <FireTv />}
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}

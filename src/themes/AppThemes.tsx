@@ -56,6 +56,9 @@ export const common = {
       styleOverrides: {
         paper: {
           backgroundImage: 'none'
+        },
+        paperFullScreen: {
+          paddingTop: 'var(--android-status-bar, 0px)'
         }
       }
     },

@@ -340,7 +340,8 @@ const AssetManager = ({
         PaperProps={{
           sx: {
             bgcolor: theme.palette.background.default,
-            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+            paddingTop:
+              isElectron() && platform !== 'darwin' ? '32px' : 'var(--android-status-bar, 0px)'
           }
         }}
       >

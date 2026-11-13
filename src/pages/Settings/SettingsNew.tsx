@@ -25,6 +25,11 @@ import {
 } from '@mui/icons-material'
 import Tile from '../../components/Tile'
 import Uncategorized from './Uncategorized'
+import {
+  ANDROID_EXTRAS,
+  useAndroidExtrasUrls,
+  useNowPlayingAddonInstalled
+} from '../../components/FireTv/androidExtras'
 
 const NOW_PLAYING_FEATURES = [
   'Scene Triggers',
@@ -57,6 +62,8 @@ const SettingsNew = () => {
   const coreParams = useStore((state) => state.coreParams)
 
   const isCC = coreParams && Object.keys(coreParams).length > 0
+  const addonInstalled = useNowPlayingAddonInstalled()
+  const extrasUrls = useAndroidExtrasUrls()
 
   const loc = useLocation()
 
@@ -159,29 +166,44 @@ const SettingsNew = () => {
             tooltip="Manage Sendspin servers (HA Music Assistant)"
           />
         )}
-        <Tile
-          beta
-          icon={<LibraryMusic fontSize="large" />}
-          text="Now Playing"
-          onClick={() => setSongDetectorScreenOpen(true)}
-          onContextMenu={(e) => {
-            e.preventDefault()
-            setSdPlus(true)
-          }}
-          tooltip={
-            <Stack spacing={0.5} alignItems="flex-start">
-              {NOW_PLAYING_FEATURES.map((f) => (
-                <Chip
-                  key={f}
-                  label={f}
-                  size="small"
-                  variant="outlined"
-                  sx={{ color: 'common.white', borderColor: 'rgba(255,255,255,0.35)' }}
-                />
-              ))}
-            </Stack>
-          }
-        />
+        {addonInstalled === false ? (
+          <Tile
+            beta
+            icon={<LibraryMusic fontSize="large" />}
+            text={ANDROID_EXTRAS.addon.title}
+            onClick={() => window.open(extrasUrls.addon, '_blank')}
+            tooltip={
+              <Stack spacing={0.5} alignItems="flex-start">
+                <Typography variant="body2">{ANDROID_EXTRAS.addon.body}</Typography>
+                <Typography variant="caption">{ANDROID_EXTRAS.addon.guide}</Typography>
+              </Stack>
+            }
+          />
+        ) : (
+          <Tile
+            beta
+            icon={<LibraryMusic fontSize="large" />}
+            text="Now Playing"
+            onClick={() => setSongDetectorScreenOpen(true)}
+            onContextMenu={(e) => {
+              e.preventDefault()
+              setSdPlus(true)
+            }}
+            tooltip={
+              <Stack spacing={0.5} alignItems="flex-start">
+                {NOW_PLAYING_FEATURES.map((f) => (
+                  <Chip
+                    key={f}
+                    label={f}
+                    size="small"
+                    variant="outlined"
+                    sx={{ color: 'common.white', borderColor: 'rgba(255,255,255,0.35)' }}
+                  />
+                ))}
+              </Stack>
+            }
+          />
+        )}
         <Tile
           client
           beta
