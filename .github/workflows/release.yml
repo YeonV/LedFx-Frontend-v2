@@ -7,7 +7,7 @@ jobs:
   build:
     name: Build & Release
     if: "startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Beta')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         node-version: [24.x]
