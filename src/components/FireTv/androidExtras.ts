@@ -79,7 +79,7 @@ const resolveUrls = (): Promise<AndroidExtrasUrls> => {
         assets.find((a) => test(a.name))?.browser_download_url || RELEASE_PAGE
       return {
         addon: find((n) => n.startsWith('LedFx_NowPlaying_Addon') && n.endsWith('.apk')),
-        rootModule: find((n) => n.endsWith('android-root-audio-module.zip'))
+        rootModule: find((n) => n.endsWith('android-root-module.zip'))
       }
     } catch {
       return FALLBACK
