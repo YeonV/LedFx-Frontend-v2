@@ -58,6 +58,44 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 
 ---
 
+## Spotify login with your own app (browser)
+
+The shared Spotify app only accepts redirects registered by its owner. For a
+personal installation, create an app at the
+[Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and select
+Web API and Web Playback SDK if asked. Development-mode apps require Spotify
+Premium for the app owner; add any other test accounts in Users Management.
+
+Register these exact redirect URIs if you use both local development and the
+Python-served frontend:
+
+```text
+http://127.0.0.1:3000/callback/
+http://127.0.0.1:8888/callback/
+```
+
+Open the frontend using `127.0.0.1`, not `localhost`. Spotify requires HTTPS for
+non-loopback hosts and does not accept `localhost` callbacks. Register the actual
+origin and port if yours differ. The browser callback contains no hash route;
+the frontend returns to Integrations after exchanging the authorization code.
+
+Create a gitignored `.env.local` at the repository root:
+
+```dotenv
+REACT_APP_SPOTIFY_CLIENT_ID=your_client_id
+```
+
+The client ID is public. Do not enter a client secret: this frontend uses PKCE.
+Restart `yarn start` or rebuild after changing the value. The same configured ID
+is used for login, token exchange and refresh. Without this setting, the shared
+client ID remains the default; its owner must register the corrected callback.
+This browser fix leaves the existing Electron deep-link callback unchanged.
+
+Run `yarn start` and open `http://127.0.0.1:3000` to test against your existing
+LedFx backend before replacing an installed frontend. Login fixes do not remove
+Spotify's restrictions on development-mode APIs such as audio analysis, or
+change the frontend's backend compatibility requirements.
+
 ## Credits
 
 [![ledfx-github](https://img.shields.io/badge/Github-LedFx-blue.svg?logo=github&logoColor=white)](https://github.com/LedFx/LedFx/tree/main/ledfx) [![ledfx-discord](https://img.shields.io/badge/Discord-LedFx-blue.svg?logo=discord&logoColor=white)](https://discord.gg/nyMeUR8C)

@@ -29,6 +29,13 @@ const SpotifyLoginRedirect = () => {
   const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken) // Get Zustand setter
 
   useEffect(() => {
+    const returnToIntegrations = () => {
+      if (isElectron()) {
+        navigate('/integrations', { replace: true })
+      } else {
+        window.location.replace(`${window.location.origin}/#/integrations`)
+      }
+    }
     const processAuth = async () => {
       let code: string | null = null
 
@@ -96,14 +103,18 @@ const SpotifyLoginRedirect = () => {
       // If no code from electron store, extract from URL search params
       if (!code) {
         const params = new URLSearchParams(window.location.search)
+        const error = params.get('error')
+        if (error) {
+          setStatus('error')
+          setErrorMessage(params.get('error_description') || error)
+          return
+        }
         code = params.get('code')
       }
 
       if (!code) {
         setStatus('error')
         setErrorMessage('Authorization code not found in URL.')
-        // Optional: Redirect to login or integrations page after delay
-        setTimeout(() => navigate('/#/Integrations', { replace: true }), 4000)
         return
       }
 
@@ -120,27 +131,16 @@ const SpotifyLoginRedirect = () => {
           setSpAuthenticated(true)
           setSpotifyAuthToken(authResult.accessToken)
 
-          // Navigate to the clean Integrations path FIRST
-          navigate('/#/Integrations', { replace: true })
-
-          // THEN schedule the reload shortly after navigation
-          setTimeout(() => {
-            console.log('Reloading page...')
-            window.location.reload()
-          }, 100) // Short delay (50-100ms) to allow navigation to potentially process
+          returnToIntegrations()
         } else {
           console.error('finishAuth failed or did not return tokens.')
           setStatus('error')
-          setErrorMessage('Failed to exchange code for tokens.')
-          // Optional: Redirect after delay
-          setTimeout(() => navigate('/#/Integrations', { replace: true }), 4000)
+          setErrorMessage(authResult.error || 'Failed to exchange code for tokens.')
         }
       } catch (err: any) {
         console.error('Error during finishAuth:', err)
         setStatus('error')
         setErrorMessage(`Authentication error: ${err.message || 'Unknown error'}`)
-        // Optional: Redirect after delay
-        setTimeout(() => navigate('/#/Integrations', { replace: true }), 4000)
       }
     }
 
