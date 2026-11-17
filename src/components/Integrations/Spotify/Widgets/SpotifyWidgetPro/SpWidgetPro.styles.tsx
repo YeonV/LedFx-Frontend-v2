@@ -184,20 +184,6 @@ export const PosSliderStyles = {
       opacity: 1,
       backgroundColor: 'currentColor'
     }
-  },
-  // '& span[aria-hidden].MuiSlider-markLabel:nth-child(4n)': {
-  //   opacity: 0,
-  //   color: '#f00',
-  // },
-  '& .MuiSlider-markLabel': {
-    opacity: 0,
-    color: '#aaa'
-  },
-  '& .MuiSlider-mark:hover + .MuiSlider-markLabel, & .MuiSlider-markLabel:hover': {
-    opacity: 1
-  },
-  '& .MuiSlider-markActive + .MuiSlider-markLabel': {
-    opacity: 1
   }
 }
 

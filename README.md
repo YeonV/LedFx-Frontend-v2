@@ -58,6 +58,12 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 
 ---
 
+## Spotify playback timeline
+
+Playback cue ticks remain on the timeline, with the current scene shown in a
+single caption below it. Long names are truncated; hover the caption for its
+full text. Before the first cue, the caption names the next scene.
+
 ## Credits
 
 [![ledfx-github](https://img.shields.io/badge/Github-LedFx-blue.svg?logo=github&logoColor=white)](https://github.com/LedFx/LedFx/tree/main/ledfx) [![ledfx-discord](https://img.shields.io/badge/Discord-LedFx-blue.svg?logo=discord&logoColor=white)](https://discord.gg/nyMeUR8C)
