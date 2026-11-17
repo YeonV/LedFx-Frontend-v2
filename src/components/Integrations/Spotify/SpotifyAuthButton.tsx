@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
 // import axios from 'axios'
 import Cookies from 'universal-cookie'
 import getPkce from 'oauth-pkce'
@@ -13,6 +14,7 @@ import {
   SPOTIFY_REDIRECT_URI,
   SPOTIFY_SCOPES
 } from '../../../utils/spotifyConstants'
+import { getSpotifyAuthorizationUrl } from '../../../utils/spotifyAuthConfig'
 
 const apiCredentials = {
   CLIENT_ID: SPOTIFY_CLIENT_ID,
@@ -21,17 +23,24 @@ const apiCredentials = {
   SCOPES: SPOTIFY_SCOPES
 }
 
-const SpotifyAuthButton = ({ disabled = false }: any) => {
+const SpotifyAuthButton = ({ disabled = false }: { disabled?: boolean }) => {
   const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
   const player = useStore((state) => state.spotify.player)
   const setspAuthenticated = useStore((state) => state.setSpAuthenticated)
   const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken)
-  const [codes, setCodes] = useState({})
-  const cookies = new Cookies()
+  const [codes, setCodes] = useState<{ verifier: string; challenge: string } | null>(null)
+  const [authError, setAuthError] = useState('')
+  const cookies = new Cookies(null, { path: '/' })
   const classes = useIntegrationCardStyles()
   useEffect(() => {
-    getPkce(50, (_error: any, { verifier, challenge }: any) => {
-      setCodes({ verifier, challenge })
+    getPkce(50, (error: Error | null, result?: { verifier: string; challenge: string }) => {
+      if (error || !result) {
+        setAuthError(
+          error?.message || 'Could not prepare Spotify login. Please reload and try again.'
+        )
+        return
+      }
+      setCodes(result)
     })
     if (cookies.get('access_token')) {
       setspAuthenticated(true)
@@ -39,19 +48,22 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const beginAuth = () => {
-    cookies.set('verifier', (codes as any).verifier)
+    if (!codes) return
+    cookies.set('verifier', codes.verifier)
     // For Electron, also store in electron-store since cookies won't persist across protocol redirect
     if (isElectron()) {
       window.api.send('toMain', {
         command: 'set-store-value',
         key: 'pkce-verifier',
-        value: (codes as any).verifier
+        value: codes.verifier
       })
     }
-    const authURL =
-      'https://accounts.spotify.com/authorize/' +
-      '?response_type=code' +
-      `&client_id=${encodeURIComponent(apiCredentials.CLIENT_ID)}&scope=${encodeURIComponent('user-library-read user-library-modify user-read-email user-top-read streaming user-read-private user-read-playback-state user-modify-playback-state')}&redirect_uri=${encodeURIComponent(apiCredentials.REDIRECT_URL)}&code_challenge=${encodeURIComponent((codes as any).challenge)}&code_challenge_method=S256`
+    const authURL = getSpotifyAuthorizationUrl(
+      apiCredentials.CLIENT_ID,
+      apiCredentials.REDIRECT_URL,
+      codes.challenge,
+      apiCredentials.SCOPES
+    )
     if (window.location.pathname.includes('hassio_ingress')) {
       window.location.href = authURL
     } else {
@@ -98,17 +110,20 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   }, [cookies])
 
   return !spAuthenticated ? (
-    <Button
-      disabled={disabled}
-      size="small"
-      color="inherit"
-      className={classes.editButton}
-      onClick={() => {
-        beginAuth()
-      }}
-    >
-      <Login />
-    </Button>
+    <>
+      {authError && <Alert severity="error">{authError}</Alert>}
+      <Button
+        disabled={disabled || !codes}
+        size="small"
+        color="inherit"
+        className={classes.editButton}
+        onClick={() => {
+          beginAuth()
+        }}
+      >
+        <Login />
+      </Button>
+    </>
   ) : (
     <Button
       disabled={disabled}
