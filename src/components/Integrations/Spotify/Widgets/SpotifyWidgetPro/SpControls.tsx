@@ -51,15 +51,24 @@ export default function SpControls({ className }: any) {
   const shuffle = spotifyCtx?.shuffle || false
 
   const { setVol, prev, togglePlay, next, setPos } = ctrlSpotify
-  const marks = triggers?.map(({ position_ms, sceneName }) => ({
-    value: position_ms,
-    label: sceneName
+  const playbackPosition = spotifyCtx?.position ?? spCtx?.progress_ms ?? 0
+  const currentTrigger = triggers
+    ?.slice()
+    .reverse()
+    .find(({ position_ms }) => position_ms <= playbackPosition)
+  const sceneCaption = currentTrigger
+    ? `Scene: ${currentTrigger.sceneName}`
+    : triggers?.length
+      ? `Next scene: ${triggers[0].sceneName}`
+      : ''
+  const marks = triggers?.map(({ position_ms }) => ({
+    value: position_ms
   }))
 
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}
-      sx={{ width: '45%', margin: '0 auto' }}
+      sx={{ width: '45%', minWidth: 0, margin: '0 auto' }}
     >
       {hijack === '' ? (
         <div>
@@ -174,12 +183,12 @@ export default function SpControls({ className }: any) {
               justifyContent: 'space-between'
             }}
           >
-            <TinyText>{formatTime(spotifyCtx?.position || spCtx?.progress_ms || 0)}</TinyText>
+            <TinyText>{formatTime(playbackPosition)}</TinyText>
             <Slider
               aria-label="time-indicator"
               size="small"
               marks={marks}
-              value={position >= 0 ? position : spotifyCtx?.position || spCtx?.progress_ms || 0}
+              value={position >= 0 ? position : playbackPosition}
               min={0}
               step={1}
               max={duration}
@@ -194,6 +203,17 @@ export default function SpControls({ className }: any) {
             />
             <TinyText>{formatTime(duration)}</TinyText>
           </Box>
+          {sceneCaption && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              noWrap
+              title={sceneCaption}
+              sx={{ minWidth: 0, textAlign: 'center' }}
+            >
+              {sceneCaption}
+            </Typography>
+          )}
         </>
       )}
     </Box>
